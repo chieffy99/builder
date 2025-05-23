@@ -1,0 +1,429 @@
+ตัวอย่างการตั้งชื่อฟีลด์, name ต่างๆ 
+
+ Field Name      Data Type    Description
+Date    Date (YYYY/MM/DD) Date of data
+ID1      Text     ID from the original database key or newly created
+ID2      Text     ID from the original database key or newly created
+StatN   Single Number (0:9)   used with StatC to represent the rules of the data system used. This number does not need to be entered as an input
+StatC   Single Character (A:Z) used with StatN to represent the rules of the data system used. This character does not need to be entered as an input
+slot (1:n)         Text           The required value Input can be as many as the logic management and data system used can support. Both Text and Number can be used. These values ​​are counted in order from left to right and cannot be blank. In this context
+slot6    Text           reduce here means the discount value of data that is different according to the group to be used. For example
+slot7    Text           Debpaid is a value used in the trading system when the customer pays the debt of the product. In finance
+slot4    Text     ค่าที่ต้องการ Input มีได้มากตราบที่การจัดการ logic และระบบข้อมูลที่ใช้จะมีได้ ใช้ได้ทั้ง Text และ Number ค่าเหล่านี้จะนับตามลำดับจากซ้ายไปขวาและห้ามปล่อยว่าง
+slot5    Text     ค่าที่ต้องการ Input มีได้มากตราบที่การจัดการ logic และระบบข้อมูลที่ใช้จะมีได้ ใช้ได้ทั้ง Text และ Number ค่าเหล่านี้จะนับตามลำดับจากซ้ายไปขวาและห้ามปล่อยว่าง
+slot6    Text           reduce ในที่นี้หมายถึงค่าส่วนลดของข้อมูลที่ต่างกันตามกลุ่มที่จะใช้ เช่น คลังจะเป็นเลขจำนวนสินค้า ส่วนของการซื้อขายจะเป็นเงินส่วนลดของลูกค้า
+slot7    Text           Deduce เป็นค่าที่ใช้ในระบบการซื้อขายเมื่อลูกค้าชำระหนี้สินค้า, ในการเงินแสดงผลเป็นพื้นที่ยอดรวมเพื่อตรวจสอบ ไม่มีความหมายใดๆเมื่ออยู่ในรูปบบ code ค่าที่ต้องการ Input มีได้มากตราบที่การจัดการ logic และระบบข้อมูลที่ใช้จะมีได้ ใช้ได้ทั้ง Text และ Number ค่าเหล่านี้จะนับตามลำดับจากซ้ายไปขวาและห้ามปล่อยว่าง
+ 
+ 
+Field Name      Data Type    Description
+Date          YYYY/MM/DD           The date the data was recorded
+ID1      Text     Main identifier of the action owner
+ID2      Text           Identifier of the action type or target
+StatN   Number (0-9)        Defines logic group (e.g. cash, credit)
+StatC   Character (A-Z)    Defines content type or function per logic
+slot1-slot5       Text or Number       Main input values for logic execution
+slot6 (reduce)  Text or Number           Value used for reduction logic
+slot7 (deduce)  Text or Number           Value used for Deduction logic
+ 
+ 
+StatC   label           Description
+A         Result value           แสดงค่าเงินที่ผ่านการคำนวนในระบบบัญชี หรือใช้ในระบบคลังสินค้าเพื่อดูมูลค่าหรือผลคำนวนจาก B กับ C 
+B         Count value           แสดงค่าของจำนวนต่างๆที่ยังไม่ผ่านการคำนวนกับตัวแปรในตาราของ slot ในรหัส Input ลดการคำนวนที่ไม่จำเป็นได้ดี หากเป็นรหัส Input ที่มาจากข้อมูลอื่น เข้ามาใตระบบการเงิน ค่านี้จะบังคับเป็น A ด้วยการคำนวนกับ Static Value ในตารางของมัน
+C         Static value           เป็นค่าที่จะใช้แก้ไขในระบบฐานข้อมูลประเภทค่าคงที่หรือฐานข้อมูลที่ไม่มีการเปลี่ยนแปลงตามเวลา สามารถดูจุดที่จะแก้ไขได้จาก ID1 จับคู่กับ ID2_ID หากมีการใช้ในคำสั่งอื่นที่ไม่ได้กำหนดการแก้ไข จะหมายถึงการเรียกดูค่าที่ตรงกับ input ของ slot ในรหัส
+                     
+                     
+StatN   label           Description
+0         เงินสด 
+1         หนี้, เงินเชื่อ    
+2         ชำระสินเชื่อ         ใช้ในระบบข้อมูลบัญชี หากมาจาก รหัส input ที่ใช้กับฐานข้อมูลอื่น จะเป็นค่าของ slot7:Debpaid 
+3         เงินโอน         ใช้ในระบบข้อมูลบัญชีเพื่อแยกรายการชำระ
+ 
+ID1      ID2
+Per_sup          PO
+Per_sup          RV
+DistRv  PK
+DistRv  DM
+DistRv  RT
+DistRv  SA
+Cust_OT          BYT
+Cust_MK         BYK
+Cust_SH          BYH
+ST       RF
+ST       BL
+ 
+ID1      Key           ตัวอย่าง
+Per_sup           Sup_ID           SU,PS,SK
+ST_ID  Store_ID           ST
+DistRv  Dist_ID           OT,MK,SH
+Cust_OT           Dist_ID with suffix sus as charecter or number "OTE,OT00,OT01,...,OTn"
+Cust_MK           Dist_ID with suffix sus as charecter or number "MKE,MK00,MK01,...,MKn"
+Cust_SH           Dist_ID with suffix sus as charecter or number "SHE,SH00,SH01,...,SHn"
+ 
+ 
+ID2_id  ID2      from           result   to
+BL       คงเหลือ(Balance)        ST           เช็ค    ST
+PO       สั่งสินค้า (Order) Sup_id เพิ่ม         ST
+RV       ตีกลับ (Rrvert)           Sup_id ลด         ST
+PK       เบิก (Picking)           Dist_ID ลด         ST
+RT       ส่งคืน (Return)           Dist_ID เพิ่ม         ST
+DM      DM (Damage)           Dist_ID ลด         Dist_ID
+RF       อ้าอิง (Refer) Dist_ID ยกยอด   Dist_ID
+Byn      ซื้อ (Buy)           Cust_id ลด         Dist_ID
+BYT     ซื้อ (Buy)           Cust_OT           ลด     OT
+BYK     ซื้อ (Buy)           Cust_MK           ลด     MK
+BYH     ซื้อ (Buy)           Cust_SH           ลด     SH
+SA       ขาย (sale)           Dist_ID เพิ่ม         Cust_id
+ 
+ 
+Sup_ID Sup_cost           PT       LT           ST       CL           CU       Wc           Bs
+SU       SU-cost 4.25           27.00           27.00           28.00           13.33   0.00           0.00
+PS       PS-cost 0.00           0.00           27.00           27.00   0.00           0.00     0.00
+SK       SK-cost 4.00           27.00           27.00           22.86   0.00           0.00     0.00
+RE       RE-cost           55.00           40.00           40.00           40.00           20.00           55.00   0.00
+ 
+OT       WS_Price           6.50           55.00           55.00           55.00           25.00           75.00           100.00
+MK      WS_Price           6.50           55.00           55.00           55.00           25.00           75.00           100.00
+SH       WS_Price           6.50           55.00           55.00           55.00           25.00           75.00           100.00
+ 
+ 
+วันที่   ID1      ID2           position1           position2           position3           position4           position5
+รถใหญ่         DistRv  INC           Slot2    -           -          -           -
+รอบร้าน         DistRv  INC           Slot3    -           -          -           -
+หน้าร้าน         DistRv  INC           Slot1    -           -          -           -
+ค่าน้ำ/ถัง         DistRv  INC           slot4    -           -          -           -
+อื่นๆ   DistRv  INC           Slot5    -           -          -           -
+รวมรายได้     -           -          -           -          -           -          -
+เงินสดรับ      INC           INC           Kumsakul           CH       mom           Other   -
+เงินสดหลังรายจ่าย        -           -          -           -          -           -          -
+ยอดยกมา/ยอดปิดวัน     -          -           -          -           -          -           -
+รวมรายจ่าย   -           -          -           -          -           -          -
+view    SU           CostP   slot1           -          -           -          -
+PS       PS           CostP   -           slot2    -           -          -
+SK       SK           CostP   -           -          slot3           -          -
+น้ำดื่ม/น้ำแข็ง RE           CostP   -           -          -           slot4    -
+ถุง-กระสอบ-ถัง         PG           CostP   -           -          -           -          slot5
+แม่     INC      INC           slot3    -           -          -           -
+ในบ้าน         Kai           Wag    เบิก         เช้า    บ่าย         เดี่ยว  หยุด
+จ่ายพิเศษ     Ex           Wag    เบิก         เช้า    บ่าย         เดี่ยว  หยุด
+คนงาน         -           -          -           -          -           -          -
+แจ็ค   JACK    JA           JACK           momSav           study   -           -
+ไฟฟ้าปะปา         EL_WA Upk           E-House           E-Office           W-House           W-Office           W-Papa
+อท่นๆ อื่นๆ   Upk           Doc           Waste  TaX           -          -
+โทร-เนต      Call           Upk     Aoff           Doff           Apapa           Dpapa  -
+โทร-เนต      Call2           Upk     JACK           mom    พี่ต้อย   wifi      ai
+น้ำมัน Fuel     Vhe           SH       OT           MK      -           -
+ซ่อมบำรุง     Part           Vhe     SH           OT       MK           -          -
+ค่างวด ค่างวด Vhe           SH       OT           MK      -           -
+ภาษี-ประกัน         ทะเบียน         Vhe     SH           OT       MK           -          -
+ออมถัง         ออมถัง      JA        Slot2           -          -           -          -
+อื่นๆ            JA           Slot1    -           -          -           -
+พ่อ     papa    JA           slot3    -           -          -           -
+เงินเกิน        -           -          -           -          -           -          -
+-          -          -           -          -           -          -           -
+-          -          -           -          -           -          -           -
+-          -          -           -          -           -          -           -
+-          -          -           -          -           -          -           -
+บีน     บีน     Wag           เบิก    เช้า         บ่าย         เดี่ยว  หยุด
+เบนซ์ (เบน)         เบนซ์  Wag           เบิก    เช้า         บ่าย         เดี่ยว  หยุด
+มด     มด     Wag           เบิก    เช้า         บ่าย         เดี่ยว  หยุด
+ดาว    ดาว    Wag           เบิก    เช้า         บ่าย         เดี่ยว  หยุด
+บัง     บัง     Wag           เบิก    เช้า         บ่าย         เดี่ยว  หยุด
+ต้น     ต้น     Wag           เบิก    เช้า         บ่าย         เดี่ยว  หยุด
+ป้ง     ปัง     Wag           เบิก    เช้า         บ่าย         เดี่ยว  หยุด
+ 
++++
+ 
+OTPKPT OTPKLT OTPKST OTPKCL OTPKCU OTSAPT OTSALT OTSAST OTSACL OTSACU OTDMPT OTDMLT OTDMST OTDMCL OTDMCU OTRTPT OTRTLT OTRTST OTRTCL OTRTCU OTTTLT OTCLSH OTDEPT OTREDU OTDEDU
+ 
+MKPKPT MKPKLT MKPKST MKPKCL MKPKCU MKSAPT MKSALT MKSAST MKSACL MKSACU MKDMPT MKDMLT MKDMST MKDMCL MKDMCU MKRTPT MKRTLT MKRTST MKRTCL MKRTCU MKTTLT MKCLSH MKDEPT MKREDU MKDEDU
+ 
+SHPKPT SHPKLT SHPKST SHPKCL SHPKCU SHSAPT SHSALT SHSAST SHSACL SHSACU SHDMPT SHDMLT SHDMST SHDMCL SHDMCU SHRTPT SHRTLT SHRTST SHRTCL SHRTCU SHTTLT SHCLSH SHDEPT SHREDU SHDEDU
+ 
+ 
+=SUMIFS(A0slot1, A0ID1, "OT", A0ID2, "PK", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot2, A0ID1, "OT", A0ID2, "PK", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot3, A0ID1, "OT", A0ID2, "PK", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot4, A0ID1, "OT", A0ID2, "PK", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot5, A0ID1, "OT", A0ID2, "PK", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+ 
+=SUMIFS(A0slot1, A0ID1, "OT", A0ID2, "SA", A0StatN, ">=0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot2, A0ID1, "OT", A0ID2, "SA", A0StatN, ">=0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot3, A0ID1, "OT", A0ID2, "SA", A0StatN, ">=0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot4, A0ID1, "OT", A0ID2, "SA", A0StatN, ">=0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot5, A0ID1, "OT", A0ID2, "SA", A0StatN, ">=0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+ 
+=SUMIFS(A0slot1, A0ID1, "OT", A0ID2, "DM", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot2, A0ID1, "OT", A0ID2, "DM", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot3, A0ID1, "OT", A0ID2, "DM", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot4, A0ID1, "OT", A0ID2, "DM", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot5, A0ID1, "OT", A0ID2, "DM", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+ 
+=SUMIFS(A0slot1, A0ID1, "OT", A0ID2, "RT", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot2, A0ID1, "OT", A0ID2, "RT", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot3, A0ID1, "OT", A0ID2, "RT", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot4, A0ID1, "OT", A0ID2, "RT", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot5, A0ID1, "OT", A0ID2, "RT", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+ 
+ 
+=SUMIFS(A0slot6, A0ID1, "OT", A0ID2, "SA", A0StatN, ">=0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=SUMIFS(A0slot7, A0ID1, "OT", A0ID2, "SA", A0StatN, ">=0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)
+=(SUMIFS(A0slot1, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, ">=0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)*If(StatC=C,))+((SUMIFS(A0slot2, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, ">=0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)+SUMIFS(A0slot3, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, ">=0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)+SUMIFS(A0slot4, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, ">=0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin))*55)+(SUMIFS(A0slot5, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, ">=0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)*25)
+ 
+=(SUMIFS(A0slot1, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)*6.5)+((SUMIFS(A0slot2, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)+SUMIFS(A0slot3, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)+SUMIFS(A0slot4, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin))*55)+(SUMIFS(A0slot5, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, "0", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)*25)
+ 
+=(SUMIFS(A0slot1, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, "1", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)*6.5)+((SUMIFS(A0slot2, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, "1", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)+SUMIFS(A0slot3, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, "1", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)+SUMIFS(A0slot4, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, "1", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin))*55)+(SUMIFS(A0slot5, A0ID1, "<>OT", A0ID2, "BYT", A0StatN, "1", A0StatC, "B", A0Date, ">="&DateFin, A0Date, "<="&DateFin)*25)
+ 
+=If(and(A0ID1="OT",A0ID2="BYT",A0StatC="C",A0Date"<="&DateFin),A0slot1,"0")
+ 
+12/31/2023,SU,PO,0,C,4.25,27,27,28,13.33,0,45170
+12/31/2023,PS,PO,0,C,0,0,27,27,0,0,45170
+12/31/2023,SK,PO,0,C,4,27,27,23,0,0,45170
+12/31/2023,RE,PO,0,C,55,45,45,45,25,0,45170
+12/31/2023,CS,BYT,0,C,6.5,55,55,55,25,0,45170
+12/31/2023,CS,BYK,0,C,6.5,55,55,55,25,0,45170
+12/31/2023,CS,BYH,0,C,6.5,55,55,55,25,0,45170
+12/31/2023,SH00,BYH,0,C,7,55,55,55,25,0,45170
+ 
+ 
+ 
+Row ID shiptime           Quantity           Totle           Unit_Price           DC_price           Margin           ต้นทุน Sales           Discount          Update_Profit           Loss_Profit           Profit   Ship Mode   Category           Sub-Category           Product Name   Product ID           Order ID           Customer ID           Customer Name   Segment           City           Postal Code           State           Region           Country
+1709    6         2           7.42     3.71           3.71           1.855           1.855   7.42           0         3.71           0         3.71           Standard Class    Office Supplies           Paper           "While you Were Out" Message Book, One Form per Page    OFF-PA-10003424        CA-2017-123491   JK-15205  Jamie Kunitz           Consumer           San Francisco           94122           California           West           United States
+3783    3         3           11.13   3.71           2.968           1.113           1.855           8.904   0.2           3.339   0           3.339           Second Class           Office Supplies           Paper           "While you Were Out" Message Book, One Form per Page    OFF-PA-10003424        CA-2017-165204   MN-17935  Michael Nguyen Consumer           Memphis           38109           Tennessee           South           United States
+7322    4         3           11.13   3.71           2.968           1.113           1.855           8.904   0.2           3.339   0           3.339           Standard Class    Office Supplies           Paper           "While you Were Out" Message Book, One Form per Page    OFF-PA-10003424        CA-2017-167626   MY-18295  Muhammed Yedwab           Corporate           Chicago           60623           Illinois           Central           United States
+ 
+SUPT   SULT   SUST           SUCL           SUCU
+ 
+Date,ID1,ID2,StatN,StatC,"SUMIFS(A0slot1, A0ID1, "SU", A0ID2, "CostP", A0StatC, "A",A0Date, ">="&DateFin, A0Date, "<="&DateFin)","SUMIFS(A0slot2, A0ID1, "PS", A0ID2, "CostP", A0StatC, "A",A0Date, ">="&DateFin, A0Date, "<="&DateFin)","SUMIFS(A0slot3, A0ID1, "SK", A0ID2, "CostP", A0StatC, "A",A0Date, ">="&DateFin, A0Date, "<="&DateFin)","SUMIFS(A0slot4, A0ID1, "RE", A0ID2, "CostP", A0StatC, "A",A0Date, ">="&DateFin, A0Date, "<="&DateFin)","SUMIFS(A0slot5, A0ID1, "PG", A0ID2, "CostP", A0StatC, "A",A0Date, ">="&DateFin, A0Date, "<="&DateFin),0,0
+ 
+=SUMIFS(slot1, ID1, "<>SH", ID2, "BYH", StatN, ">=0", StatC, "B", Date, ">="&DateFin, Date, "<="&DateFin)
+ 
+ 
+DateFin OTPKPT           OTPKLT           OTPKST           OTPKCL           OTPKCU           OTSAPT           OTSALT           OTSAST           OTSACL           OTSACU           OTDMPT           OTDMLT           OTDMST           OTDMCL           OTDMCU           OTRTPT           OTRTLT           OTRTST           OTRTCL           OTRTCU           OTCLSH           OTDEPT           OTREDU           OTDEDU           MKPKPT           MKPKLT           MKPKST           MKPKCL           MKPKCU           MKSAPT           MKSALT           MKSAST           MKSACL           MKSACU           MKDMPT           MKDMLT           MKDMST           MKDMCL           MKDMCU           MKRTPT           MKRTLT           MKRTST           MKRTCL           MKRTCU           MKCLSH           MKDEPT           MKREDU           MKDEDU           SHPKPT           SHPKLT           SHPKST           SHPKCL           SHPKCU           SHSAPT           SHSALT           SHSAST           SHSACL           SHSACU           SHDMPT           SHDMLT           SHDMST           SHDMCL           SHDMCU           SHRTPT           SHRTLT           SHRTST           SHRTCL           SHRTCU           SHCLSH           SHDEPT           SHREDU           SHDEDU
+ 
+ 
+ 
+ 
+FN,Revenue
+EX,Expense
+PF,Profit
+LS,Loss
+CF,Cashflow
+AS,Asset
+LB,Liability
+EQ,Equity
+NI,Net Income
+GM,Gross Margin
+IN,Interest
+LN,Loan
+DB,Debt
+IV,Invoice
+PM,Payment
+RF,Refund
+CT,Cost
+BD,Budget
+BL,Balance
+TR,Transaction
+BK,Bank
+TX,Tax
+FY,Fiscal Year
+AU,Audit
+CU,Currency
+JE,Journal
+LG,Ledger
+TB,Trial Balance
+CR,Credit
+DR,Debit
+CO,Chart of Accounts
+PS,Posting
+EN,Entry
+BK,Bookkeeping
+AD,Adjustment
+AC,Accrual
+DP,Depreciation
+AM,Amortization
+CP,Capital
+IV,Inventory Value
+PO,Purchase Order
+IN,Invoice No.
+RC,Receivable
+PY,Payable
+RC,Reconciliation
+ST,Statement
+BC,Billing Cycle
+FP,Fiscal Policy
+AP,Accounting Period
+RE,Retained Earnings
+ID,Product ID
+PN,Product Name
+CC,Category Code
+SI,Supplier ID
+SN,Supplier Name
+PP,Purchase Price
+SP,Selling Price
+QS,Quantity Stock
+RL,Reorder Level
+RD,Restock Date
+BN,Batch Number
+WH,Warehouse
+DL,Delivery
+SL,Storage
+IS,Import Source
+EP,Export
+SK,SKU
+PK,Packaging
+IT,Item
+GD,Goods
+ST,Stock
+RC,Receive
+DC,Dispatch
+PR,Procurement
+UT,Unit
+CU,Customer
+CL,Client
+CT,Contact
+AD,Address
+PH,Phone
+EM,Email
+OR,Order
+CA,Cart
+CH,Checkout
+LY,Loyalty
+RW,Reward
+FB,Feedback
+SU,Support
+TK,Ticket
+RT,Return
+ST,Satisfaction
+SB,Subscription
+PR,Profile
+SG,Segment
+DM,Demographic
+MB,Member
+DS,Discount
+PM,Payment Method
+TX,Tax Code
+IN,Invoice Ref
+ 
+ 
+LG,Logistic
+ 
+SH,Shipment
+ 
+TR,Transport
+ 
+WH,Warehouse
+ 
+DL,Delivery
+ 
+DC,Distribution Center
+ 
+RT,Route
+ 
+VL,Vehicle
+ 
+DR,Driver
+ 
+TK,Tracking
+ 
+PK,Package
+ 
+LD,Load
+ 
+UP,Unload
+ 
+PL,Pallet
+ 
+CN,Container
+ 
+LC,Location
+ 
+DP,Dispatch
+ 
+RC,Receive
+ 
+TI,Transit
+ 
+ST,Stop Point
+ 
+LT,Lead Time
+ 
+CT,Carrier Type
+ 
+FS,Freight Service
+ 
+BP,Breakpoint
+ 
+FL,Fleet
+ 
+ถ้าต้องการรหัสชุดอื่นเพิ่ม บอกมา.
+ 
+ 
+ 
+ 
+ 
+You said:
+พนักงาน 30 คำ 
+ 
+ 
+ChatGPT said:
+จัดให้ — หมวดพนักงาน (Staff / Employee) 30 คำ:
+ 
+EM,Employee
+ 
+ID,Employee ID
+ 
+FN,First Name
+ 
+LN,Last Name
+ 
+PN,Phone Number
+ 
+EM,Email
+ 
+DP,Department
+ 
+PS,Position
+ 
+SL,Salary
+ 
+ST,Status
+ 
+JD,Join Date
+ 
+TL,Termination Date
+ 
+AC,Account
+ 
+PW,Password
+ 
+AC,Access Level
+ 
+SH,Shift
+ 
+AT,Attendance
+ 
+LV,Leave
+ 
+OT,Overtime
+ 
+BK,Bank
+ 
+BN,Bank Number
+ 
+TX,Tax ID
+ 
+SS,Social Security
+ 
+CT,Contract Type
+ 
+PB,Probation
+ 
+PR,Performance
+ 
+TR,Training
+ 
+RL,Role
+ 
+EV,Evaluation
+ 
+HR,HR Code
