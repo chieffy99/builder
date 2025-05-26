@@ -1,3 +1,4 @@
+
 หลักจำแนกอักษร
 
 พยัญชนะ
@@ -294,7 +295,17 @@ def remove_endings(text):
 
     return " ".join(filtered_words)
 
++++++++++++++++++++++++++++++++++++++++++++
 
-
-
+เรื่องที่ต้องทำ 
+Lowercasing ปรับภาษาอังกฤษทุกตัวในเอกสาร (สร้าง rule อื่นที่จำเป็นด้วย)
+Stemming +Lemmatisation การหาคำราก หรือต้นฉบับ (การแยกคำเดี่ยวในไทยก็ได้) 
+Stopword Removal เอาออกก่อน NER
+Normalization แก้คำที่เขียนผิดให้ถูก, แก้คำแสลง คำย่อ
+Noise Removal คลีน
+Text Enrichment / Augmentation
+Text enrichment improves the predictive performance of your original text by adding more semantics to it.
+• Query Expansion:
+• Looking synonym words from wordnet
++++++++++++++++++++++++++++++++++++++++++++
 
