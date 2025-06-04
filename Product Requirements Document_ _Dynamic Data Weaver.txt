@@ -1,0 +1,154 @@
+Okay, this is an ambitious and fascinating project\! Let's craft a Product Requirements Document (PRD) for this platform. I'll incorporate your core ideas about user-defined data systems based on Anti-Normalization, the focus on core business activities, and the ability to integrate/migrate existing data.
+
+\---
+
+\#\# Product Requirements Document: "Dynamic Data Weaver" Platform
+
+\*\*Version:\*\* 1.0  
+\*\*Date:\*\* October 26, 2023  
+\*\*Author:\*\* \[Your Name/Team Name\]  
+\*\*Status:\*\* Draft
+
+\*\*1. Introduction\*\*
+
+Dynamic Data Weaver (DDW) is a novel platform designed to empower users, particularly small to medium-sized businesses (SMBs), to create bespoke data management systems tailored to their specific operational needs. Leveraging an "Anti-Normalization" data philosophy, DDW allows users to define and capture business events as self-describing, logic-embedded data strings. The platform aims to simplify data collection, organization, and analysis by focusing on core business activities (supply chain, inventory, distribution, customer interactions) and financial tracking (income, expenses, accounting-related events), while offering powerful capabilities for migrating from and integrating with other systems.
+
+\*\*2. Goals\*\*
+
+\*   \*\*Empowerment:\*\* Enable users with varying technical expertise to define and implement their own data management systems without requiring deep database design knowledge.  
+\*   \*\*Flexibility:\*\* Adapt to diverse business models and evolving data needs through a configurable Anti-Normalized data structure.  
+\*   \*\*Clarity & Simplicity:\*\* Provide a clear, unified view of business operations by capturing event context and logic within individual data records.  
+\*   \*\*Integration & Migration:\*\* Facilitate the transition from existing data systems and enable interoperability with other business tools.  
+\*   \*\*Insight Generation:\*\* Lay a foundation for users to easily extract meaningful insights and reports from their self-structured data.  
+\*   \*\*Efficiency:\*\* Reduce the complexity and overhead associated with traditional database management and data cleaning.
+
+\*\*3. Target Users\*\*
+
+\*   \*\*Primary:\*\* Small to Medium-sized Business (SMB) owners and managers (e.g., retail shops, cafes, service providers, small e-commerce operators) who need a simple yet powerful way to track their operations and finances.  
+\*   \*\*Secondary:\*\*  
+    \*   Freelancers and consultants managing project-based data.  
+    \*   Data enthusiasts and "citizen developers" looking for flexible data modeling tools.  
+    \*   Educators and students learning about data management principles.
+
+\*\*4. Overall Description\*\*
+
+DDW will guide users through a process of defining their business's key actors (Personas), actions (Verbs), and the critical data points (Slots) associated with them. Based on these inputs, the platform will generate a tailored Anti-Normalization data schema, including standardized status codes (StatN, StatC) and slot definitions. Users can then input data (manually, via CSV upload, or potentially API) conforming to this schema. The platform will also provide tools for basic data viewing, reporting, and intelligent assistance for migrating existing data into the DDW format or exporting DDW data for use in other systems.
+
+\*\*5. Features\*\*
+
+\*\*5.1. User Management & Authentication\*\*  
+    \*   \*\*5.1.1. User Registration:\*\* Secure email/password registration, OAuth (Google, Microsoft) options.  
+    \*   \*\*5.1.2. User Login/Logout:\*\* Standard secure login and session management.  
+    \*   \*\*5.1.3. Password Management:\*\* Secure password storage, "Forgot Password" functionality.  
+    \*   \*\*5.1.4. User Profile:\*\* Basic profile management (name, email, business name).  
+    \*   \*\*5.1.5. (Future) Role-Based Access Control (RBAC):\*\* For multi-user accounts (e.g., Owner, Manager, Data Entry Clerk) with different permissions.  
+    \*   \*\*5.1.6. (Future) Team/Workspace Management:\*\* Allow users to create and manage multiple "data systems" or workspaces under one account.
+
+\*\*5.2. System Definition Wizard (Core Schema Generation)\*\*  
+    \*   \*\*5.2.1. Business Profiling:\*\*  
+        \*   Guided questionnaire to understand the user's business type (e.g., retail, service, restaurant).  
+        \*   Identification of core operational areas (e.g., "I manage inventory," "I track customer sales," "I record expenses").  
+    \*   \*\*5.2.2. Persona (ID1) Definition:\*\*  
+        \*   Suggest common personas based on business type (e.g., CU-Customer, SU-Supplier, EM-Employee, SH-Shop/Warehouse, ST-Store).  
+        \*   Allow users to add, edit, or remove personas and define custom prefixes.  
+    \*   \*\*5.2.3. Action (ID2) Definition:\*\*  
+        \*   Suggest common actions based on business type and personas (e.g., SL-Sale, BY-Buy, PY-Pay, RT-Return, TR-Transfer, INV-InventoryAdjust).  
+        \*   Allow users to add, edit, or remove actions and define custom action codes.  
+    \*   \*\*5.2.4. Status Code (StatN & StatC) Configuration:\*\*  
+        \*   Provide default sets of StatN (e.g., 0-Cash, 1-Credit, 2-DebtSettlement) and StatC (e.g., A-Amount, B-BasicCount, C-Catalog) definitions.  
+        \*   Allow users to customize or add to these definitions (within system limits).  
+    \*   \*\*5.2.5. Slot Definition & Mapping (Contextual):\*\*  
+        \*   For key Persona-Action pairs, guide users to define what each data slot (Slot1 to SlotN) represents.  
+        \*   Suggest standard uses for Slot6 (Discount/Adjustment) and Slot7 (DebtPayment/DebPaid) where relevant.  
+        \*   Allow users to specify the number of active slots for different action types.  
+    \*   \*\*5.2.6. Reference Data Definition:\*\*  
+        \*   Guide users to define structures for reference data (e.g., Customer Catalog, Product Catalog) using StatC \= 'C'.  
+        \*   Facilitate creation of linking short IDs (e.g., \`\[CID\]\`, \`\[PID\]\`).  
+    \*   \*\*5.2.7. Schema Review & Confirmation:\*\*  
+        \*   Display the generated Anti-Normalization schema (ID definitions, Stat code meanings, Slot mappings for key actions) for user review.  
+        \*   Generate a downloadable "Data Dictionary" specific to the user's defined system.
+
+\*\*5.3. Data Input & Management\*\*  
+    \*   \*\*5.3.1. Manual Data Entry Form (Dynamic):\*\*  
+        \*   Generate simple data entry forms based on the user-defined schema for selected actions.  
+        \*   Input validation based on defined types (e.g., numeric, date) and ID code formats.  
+    \*   \*\*5.3.2. CSV Template Generation:\*\*  
+        \*   Provide downloadable CSV templates pre-filled with headers corresponding to the 12-field (or N-field) Anti-Normalized structure for bulk data input.  
+    \*   \*\*5.3.3. CSV Data Import:\*\*  
+        \*   Allow users to upload CSV files.  
+        \*   Basic validation of CSV structure and data types during import.  
+        \*   Error reporting for import failures.  
+    \*   \*\*5.3.4. Data Viewing & Browsing:\*\*  
+        \*   Display imported/entered data in a tabular format.  
+        \*   Basic filtering and sorting capabilities (by Date, ID1, ID2).  
+    \*   \*\*5.3.5. (Future) Data Editing & Deletion:\*\*  
+        \*   Secure and auditable mechanisms for editing or (soft) deleting records, considering the "event sourcing" nature of some data. (Compensating entries might be preferred over direct edits for financial data).
+
+\*\*5.4. Data Migration & Integration Assistant\*\*  
+    \*   \*\*5.4.1. Existing Data Mapping Tool:\*\*  
+        \*   Allow users to upload a sample of their existing data (e.g., from an old spreadsheet).  
+        \*   AI-assisted mapping: The system suggests how columns from the old data might map to the DDW Anti-Normalization schema (ID1, ID2, StatN, StatC, Slots).  
+        \*   User interface for users to review, confirm, or override AI-suggested mappings.  
+    \*   \*\*5.4.2. Data Transformation Script Generation:\*\*  
+        \*   Based on the confirmed mapping, AI generates a downloadable Python (Pandas) script that users can run locally to transform their entire old dataset into the DDW CSV format.  
+        \*   (Future) Direct, in-platform transformation for smaller datasets.  
+    \*   \*\*5.4.3. Data Export:\*\*  
+        \*   Allow users to export their DDW data as a CSV file.  
+        \*   (Future) Export in other formats (JSON) or with custom column structures based on user-defined mappings for integration with other systems.  
+    \*   \*\*5.4.4. (Future) Basic API Access:\*\*  
+        \*   Provide simple API endpoints for programmatic data input and retrieval (e.g., for connecting to a POS system or an e-commerce platform).
+
+\*\*5.5. Basic Reporting & Analytics\*\*  
+    \*   \*\*5.5.1. Pre-defined Report Templates:\*\*  
+        \*   Based on the user-defined schema and business type, offer a set of basic report templates (e.g., Daily Sales Summary, Monthly Expense Report, Customer Purchase History).  
+        \*   AI helps generate the logic (Python/Pandas code or SQL-like queries on the flat data) for these reports dynamically.  
+    \*   \*\*5.5.2. Simple Dashboard View:\*\*  
+        \*   Display key metrics from the pre-defined reports in a simple dashboard (e.g., total sales, top products, profit trends).  
+        \*   AI-generated textual summaries or explanations for charts.  
+    \*   \*\*5.5.3. (Future) Custom Report Builder:\*\*  
+        \*   A simple interface for users to select fields (IDs, Slots) to group by and aggregate, creating custom views of their data.
+
+\*\*5.6. AI-Powered Assistance (Leveraging Google AI Studio / Gemini)\*\*  
+    \*   \*\*5.6.1. Intelligent Schema Suggestions:\*\* (As described in 5.2) During the wizard, AI provides context-aware suggestions for ID codes, actions, and slot mappings.  
+    \*   \*\*5.6.2. Natural Language Query (NLQ) \- Basic:\*\*  
+        \*   (Future) Allow users to ask simple questions about their data in natural language (e.g., "Show me sales for customer C001 last week"). AI translates this into filters on the DDW data.  
+    \*   \*\*5.6.3. Anomaly Detection \- Basic:\*\*  
+        \*   (Future) AI flags potentially inconsistent or unusual data entries based on learned patterns or defined rules.  
+    \*   \*\*5.6.4. Documentation & Help:\*\*  
+        \*   AI-powered contextual help and explanations of DDW concepts and features.  
+        \*   AI can help users interpret their own generated Data Dictionary.
+
+\*\*5.7. Platform Administration (for Super Admins)\*\*  
+    \*   \*\*5.7.1. User Account Management:\*\* View, activate, deactivate user accounts.  
+    \*   \*\*5.7.2. System Monitoring:\*\* Basic logging and monitoring of platform usage and health.  
+    \*   \*\*5.7.3. Template Management:\*\* Manage default templates for business types, ID codes, actions, and reports.
+
+\*\*6. Non-Functional Requirements\*\*
+
+\*   \*\*6.1. Performance:\*\*  
+    \*   Wizard and schema generation should be responsive.  
+    \*   CSV import for up to \[e.g., 50,000\] records should complete within a reasonable timeframe (e.g., \< 5 minutes).  
+    \*   Basic report generation should be performant for typical SMB data volumes.  
+\*   \*\*6.2. Scalability:\*\*  
+    \*   The platform should be designed to handle a growing number of users and their data systems.  
+    \*   Data storage solutions should scale appropriately (e.g., cloud-based databases or object storage for CSVs).  
+\*   \*\*6.3. Security:\*\*  
+    \*   All user data must be encrypted at rest and in transit.  
+    \*   Secure authentication and authorization mechanisms.  
+    \*   Protection against common web vulnerabilities (XSS, CSRF, SQLi \- though SQLi less relevant if not using SQL directly for user data).  
+    \*   Regular security audits.  
+\*   \*\*6.4. Usability:\*\*  
+    \*   Intuitive and user-friendly interface, especially for non-technical users.  
+    \*   Clear guidance and explanations throughout the system definition process.  
+    \*   Responsive design for access on different devices (desktop primarily, mobile-friendly viewing).  
+\*   \*\*6.5. Reliability & Availability:\*\*  
+    \*   Target uptime of \[e.g., 99.5%\].  
+    \*   Regular data backups and disaster recovery plan.  
+\*   \*\*6.6. Maintainability:\*\*  
+    \*   Well-structured, documented codebase.  
+    \*   Modular design to facilitate updates and new feature additions.  
+\*   \*\*6.7. Data Privacy:\*\*  
+    \*   Compliance with relevant data privacy regulations (e.g., GDPR, CCPA, PDPA depending on target regions).  
+    \*   Clear privacy policy.
+
+\*\*7. Future Considerations (  
