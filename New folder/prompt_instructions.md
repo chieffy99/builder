@@ -1,0 +1,37 @@
+# Codex Prompt for Mapping Anti-Normalization Sting Transactions
+
+We are building an application to process transaction data from our Anti-Normalization system. In our design, each row (or "sting") represents a complete transaction. Every field acts as a filter, and formulas (embedded in the data) are used to compute values directly within that row. The core architecture follows the following conceptual mapping:
+
+- **Event:** Narrative/Sting/Sentence – Represents each row (transaction).
+- **Word:** Rule/Field/Data Dictionary – Represents each column (the header), mapping to data dictionaries.
+- **Logic:** Reasoning/Language/Formula – Represents the formulas that process data from the specified fields.
+- **Space:** Dimensions/Position/Slot – Represents the fixed positions (slot1 to slot7) that are required.
+- **Time:** Rotten/Index/Tenses – Represents how data is sequenced (using fields like Date, or custom indexes).
+- **Gravity:** Relation/ID/SOV – Represents the relationships among fields (ID1, ID2, etc.) as expressed in our entity-relationship concepts.
+- **Transform:** Shift/Stat/Germinate – Represents how data is transformed (e.g., applying a B×C formula for product transactions).
+
+Our header file has the following fields:
+- `Date`: Date (YYYY/MM/DD)
+- `ID1`: Main identifier (e.g., the owner of the action)
+- `ID2`: Secondary identifier (action type or target)
+- `StatN`: A single number (0-9) used in combination with StatC to represent rule sets.
+- `StatC`: A single character (A-Z) representing the function or content type.
+- `slot1` ... `slot7`: The remaining fields used for input values. Some fields (e.g., slot6 for "reduce" or slot7 for "deduce") have special meanings.
+
+The formulas that are embedded (using functions like SUMIFS) reference these fields with a prefix (for example, `A0Date`, `A0ID1`, etc.) so that one record maps directly to its computation logic.
+
+**Requirements:**
+1. Build a web application (using HTML/CSS/JavaScript) that loads the CSV file with transaction "sting" data.
+2. The application should process each row as one complete transaction.
+3. For each transaction, use header-field mapping to:
+   - Filter data based on field values.
+   - Compute values using the embedded formula (e.g., a B×C formula that calculates the transaction’s money value, where B is the count and C is the price).
+4. Document that every field works as a filter. Changing the header or data in a row will change the meaning of the transaction, but the underlying structure (the "sting" construction) remains consistent.
+5. Support dynamic transformations when, for example, the transaction shifts from one actor (like "นาย A") to another (such as "ธนาคาร") with corresponding updates in the ID and header, while keeping the narrative effect intact.
+
+**Instructions for Codex:**
+- Generate code that uses PapaParse to load CSV data.
+- Build a mapping layer that translates header names (prefixed with `A0`) into their computed roles.
+- Create functions that apply the filter logic (e.g., conditions like `A0ID1 <> "OT"` and `A0ID2 = "BYT"`).
+- Ensure that the transformation functions are modular so that if, for example, the formula for computing total value changes (B×C becomes something else), it is easy to update.
+- Provide code comments explaining the mapping from each header field to its role in the processing logic.
