@@ -1,0 +1,230 @@
+Concept
+"total_slots": 7/24,
+"reasoning": "Data handing",
+"AI & Humans_friendly": true
+"row_scanning": "2 Eye & my Old",
+"cognitive_load": "Predivtive Desinge"
+
+OntologyCore 
+Event: Narative/Sting/Sentence
+Word: Rule/Field/Data dict
+Logic: Reasoning/Language/Formula 
+Space: Dimensions/Position/Slot 
+Time: Rotten/Index/tenses 
+Gravity: Relation/ID/SOV
+Transform: Shift/Stat/Germinate
+new idea
+Invert: The system that not use '-' in normal. add 'Invert' rule for allow 'turn to opposit' by add '-' in data. ex: -sting, -weight, -meaning
+
+OntologyCore 
+Event: Narative/Sting/Sentence
+Word: Rule/Field/Data dict
+Logic: Reasoning/Language/Formula 
+Space: Dimensions/Position/Slot 
+Time: Rotten/Index/tenses 
+Gravity: Relation/ID/SOV
+Transform: Shift/Stat/Germinate
+
+It can't use the normal Ontology because it maps in the middle. You may not know that it is important enough to use the word that originates the "field name".
+
+
+The Word can't be the Language
+
+The Word can't be a character 
+
+The Word can't cause events 
+
+The Word can't be described 
+
+The Word can't be the sentence
+
+The Word might be subset all of above.
+
+But All of above cant be when no one word
+
+In the real world, we rarely see Word being used to create characters, whether in novels, games, or movies. Even though Voldemort's name is a taboo in the wizarding community, and non-casting spells are an important skill in many stories, we never see Word, the one who can give birth in death.
+
+When I say trading activity, it's in a few words because it's less than the names of the columns, because I use a behavioral structure, it's a description, not a label, and it allows me to predict trading behavior almost instantly.
+
+
+When you look at the behavior of money, the behavior of accounts, the behavior of revenue, the behavior of expenses, the behavior of cash, the behavior of.... it describes all these other things that are interrelated.
+
+Think out lou, how much more the structure in the manual file can be expanded?
+How many columns are there?
+Try to observe the activities of ID
+1. Warehouse 
+2. Supply
+3. Distrbute  
+4. Customers
+The money will travel here. But if you go into details, it is another domain, such as customer data, which is CRM, but it is not a trading. It must be separated to the user history side.
+
+From a customer's transection, just count 0 and 1 directly and you will know liquidity, than Slots 6 and 7 are volume and quantity of products in each slot, it maythe customer churn. That without to look at my clash flow.
+
+How the world manages interest? Date? deb (Stat)? deduce (Slot)? Is it difficult to do?
+For me,  problam in place to put table in sheet. And i am lazy to follow rate by self.
+
+The system that needs to be concerned is the calculation of time and behavior measurement, which behavior is likely to have more problems than data collection. The important thing is that the switch is a tool for Dev to turn off the feature in case the behavior has a problem, and the signal light can be used when the behavior switch is on, to turn on and off the light to tell the tester that the behavior measurement is on or off to trick (I think the system is fair enough to know that there is a UI light, but even if it is not on, it is still useful).
+
+For time, it is also related to interest. สมมุติว่า  10% per day, it is usually counted. first is 10, than 8 left and it continues to be calculated. 
+Which will be counted every day, separating debts. But when paying off debts, it will be subtracted from the last debt first according to fairness, so
+Day 1, 2, 3, 4, 5, 6, 7
+Debt 100, -20, 0, 100, 0, -50, 0
+The result of interest 0, 10, 8, 8, 18, 18, 13
+
+1. c100,BYK,1,B, (1000),0,0 
+2. c100,BYK,1,B, ( 0),0,200 =10 
+3. c100,BYK,1B, (0),0,0 =8
+4. c100,BYK,1,B, (1000),0,0 =8
+5. c100,BYK,1B, (1000),0,0 =18
+6. c100,BYK,1,B, (1000),0,0 = 28
+7. c100,BYK,1,B, (0),0,2000 =38
+8. c100,BYK,1,B, (0),0,0 = 18
+9. c100,BYK,1,B, (1000),0,0 
+10. c100,BYK,1,B, (1000),0,0
+11. c100,BYK,1,B, (1000),0,0
+12. c100,BYK,1,B, (1000),0,0
+
+I don't know how the banking system works. Does it have to be shown every day? How do you separate the details? Separate or combine? If separate, it's a bit of a hassle. If the interest runs every day, how will most systems generate input? In my case, I might leave it for a day and then continue the field.
+
+Data consistency mechanism at the structural level, no need to rely on application-level logic. If the data set has a sting as a formula in the form of an N file, but changes it to fit the slot structure, there is no problem. Including datadic 
+
+Example of searching for customer data customer_record = "11/8/2016, C001, CG-12520, 0, C, Claire Gute, Consumer, United States, Henderson, Kentucky, 42420, South" < The method of finding it can be called like sumif. 
+
+Troubleshooting, processing and searching for data: 
+Can work as csv or convert back to any format in any system. Throw it into excel and it will be a table. 
+If you store files separately by category, it will reduce the burden on the system. Importantly, it can be sorted. 
+And don't forget that it is in someone else's equation or formula, so it is slow. If it has its own, the problem will be gone immediately. 
+Data that has been plotted in a table on various platforms should be in the form of output. You don't have to find it again. 
+
+Users can learn the system in 1 day, using their existing knowledge, translating just the schema, and the formulas can be mapped, just telling them what the in-outs are for each field.
+AI should be able to do everything without training.
+
+Germinate is an additional feature, different from the normal, with Date, ID as the header, but multiple rows are arranged by line (not switched), but the row will have its own independent stat. It can create a mechanism to maintain the row order with slots to store index values, including adding time fields as event values ​​(just data input, not data vandidate).
+Do you understand that when it is in this state, there will be a schema similar to xml or something like that, which is used to manage complex data, there must be rules, a strong schema, like you may use it to store an array of images, for example, suppose that from a general row, all slots need to be dynamic, instead of breaking out, transpose it into a single field and add right out continuously, no need to break out (unless you want a header).
+
+
+
+
+
+#2
+เรามาดูการอ้างอิง Ontology เดิมทีโครงสร้างของฉัน มันยืดหยุ่นกว่า Ontology มาก ดังนั้นไม่ต้องห่วงในการขยาย แต่จะเอา Onto มาเป็นโครงร่างคลุมด้านนอก 
+ฉันจะไม่ใช้ ภาษาของ ontology เพื่อ map กับฟีลด์ แต่ฉันจะเอาโครงสร้าง sting ของฉัน map ก่อน เพื่อแทรกกฏของตัวเองลงไป 
+
+เอาเป็นว่า กฏบางอย่างในไฟล์มันใช้ไม่ได้ ระบบของฉันส่วนใหญ่คือ 
+- ตัวจำแนก ได้แก่ headder หรือ ค่าในฟีลด์ ซึ่งโดยทั่วไปแล้วจะมีความสำคัญเรียงจากซ้ายไปขวาอยู่แล้ว (ตามหลักภาษา) คือ Date, (ID1,ID2), (StatN,StatC), [SlotN]
+- ฟีลด์/ข้อมูล โดยปกติแล้ว สามารถใส่ลงไปใน  ID1, ID2, Slot ได้ แต่จะมีหน้าที่บทบาทต่างกัน 
+ฉันเองใช้มาตั้งนานแต่ไม่เคยได้อธิบายเป็นกรอบแบบนี้ออกมา เลยไม่มีกฏการทำงานทีชัดเจนเขียนไว้ ทีนี้เราจะพบว่าแต่ละชุดของค่าเหล่านี้มีความสัมพันธ์ที่แยกจากกัน 
+แต่เมื่อรวมกันจะกลายเป็นฤติกรรมที่กระทำออกมาเปลี่ยนแปลงไป และสามารถคำนวนหรืออธิบายได้ทั้ง fact (ของคณิต) และ truth (ของภาษา) 
+
+(StatN, StatC) บอกผลลัพธ์หรือสถานะของ Event 
+โดยปกติแล้วจะเป็นการ transfrom หรือควบคุม และช่วยเพิ่มการจำแนก เช่น การเปลี่ยน A B C จะทำให้สามารพสร้างการแปลี่ยนแปลงค่าใน slot ตามฐานข้อมูลที่ header ของ slot นั้นมีอยู่ 
+ในกรณีนี้ B คือปริมาณ C คือราคาสินค้า เมื่อนำามคำนวนกัน จะได้ A ที่เป็นราคาของรายการใน transection น้น 
+การแปลง Stat ไม่ได้แปลงทุกตัวใน row ด้วยวิธีเดียวกัน แต่ Stat เป็นเหมือนรหัส บรรจุ logic ที่ส่งผลต่อ field ของ slot 
+ใน transection ที่ฉันใช้ฉันจะใส่ slot 2 อันหลังเป็นกฏ dreduce และ deduce โดยไม่ถุกเปลี่ยนตาม Stat ที่ใช้บางตัว 
+ทำให้สามารถแทนที่ event จำนวนมากในธุรกรรมทางการค้าได้ หรือจะเรียกได้ว่า stat คือการ เปลี่ยน label เพื่อแสดงความสัมพันธ์ของ slot ใน row นั้น 
+ดังนั้นการออกแบบฟีลด์ต่างๆใน slot เป็นสิ่งสำคัญ ต้องคำนึงถึงเหตุการณ์ที่จะเกิดขึ้น กลายมาเป็นความแตกต่างใน slot ที่มี stat เป็นตัวเลือกก็ว่าได้
+ 
+ดังตัวอย่างเช่น ข้อมูลดังนี้ (เริ่มฟีลด์แรกที่ statN)
+0,B,0,2,3,4,0,0,0 = ลูกค้าซื้อเงินสด
+0,B,0,2,3,4,0,20,0 = ลูกค้าซื้อเงินสด และมีส่วนลด 20
+0,B,0,2,3,4,0,0,500 = ลูกค้าซื้อเงินสด และจ่ายเงินชำระหนี้ (หรือมีเหตุใดๆที่ร้านเพิ่มกับสถานะผูกพันหนี้สินของลูกค้าลดลง หรือการเพิ่มค่าเงินสดสะสมของลูกค้า (เช่นลูกค้าลืมเงินทอน ระบบนี้สุจริตพอที่จะนึกถึงไว้ก่อน)
+
+1,B,0,2,3,4,0,0,0 = ลูกค้าซือเงินเชื่อ 
+1,B,0,2,3,4,0,20,0 = ลูกค้าซื้อเงินเชื่อ และมีส่วนลด 20 
+1,B,0,2,3,4,0,0,500 = ลูกค้าซื้อของแบบเงินเชื่อ และชำระเงินสดส่วนนึง (หรือชำระหนี้เก่า)
+
+0,B,0,0,0,0,0,0,0 = ไม่มีอะไรเกิดขึ้นในรายการ
+0,B,0,0,0,0,0,20,0 = ระบบอาจมีส่วนลด 20 ที่เกิดจากเวลา (เช่นวันเกิด) เมื่ออยู่ในสถานะนี้ สามารถเป็นโบนัสะแนนแทน 
+0,B,0,0,0,0,0,0,500 = ลูกค้าชำระหนี้อย่างเดียว
+
+1,B,0,0,0,0,0,0,0 = บางทีอาจจะ error แต่การที่ค่าเป็น 0 จึงไม่มีผลต่อธุรกรรมใดๆ แต่ควรกำหนดขอบเขตเหตุการณ์ไว้ 
+1,B,0,0,0,0,0,20,0 =เออ คิดเผื่อไว้ก่อนแต่ที่แน่ๆ อะไรที่เกี่ยวกับหนี้แล้วลูกค้าได้รับประโยชน์ก็ต้องมีหละน่า
+1,B,0,0,0,0,0,0,500 =  แบบข้อบน
+
+
+ระบบ transection ฉันจะไม่มีการ compu มาเก็บข้อมูลในตัว ดังตัวอย่าง สมมุติว่า จะคำนวนราคาของ sting
+1,B,0,2,3,4,0,20,500
+
+สมมุติว่าสินค้าแตละ slot เท่ากับ และใช้ C ที่เป็นรหัสอ้างอิงราคา (หรือ การเป็นข้อมููลพื้นฐานสินค้า)
+slot1 = 10,slot2 = 15,slot3 = 20,slot4 = 25,slot5 = 30
+
+1,B,0,2,3,4,0,20,500 = B จำสินค้าใน slot ที่1 2 3 4และ 5 ยังไม่เป็นราคา 
+1,C,10,15,20,25,30,20,500 = การเปลี่ยน C สามารถแสดงถึงการสร้าง sting ใหม่เป็น Input ราคาสินค้า ใน transection ได้ และยังตรวจจสอบได้ในตัวเอง
+1,A,0,30,60,50,0,20,500 = B*C แปลว่า ลูกค้าซือเงินเชื่อ 140 บาท ได้รับส่วนลด 20 บาท ชำระหนี้ 500 บาท เงินสดร้านรับเท่ากับ 140-20+500 = 620 บาท สถานะหนี้ลูกค้า +120-500 = ลดลง 380 บาท
+
+Formula
+เงินสด =Sumifs(SlotI,Relation+Dimentioms+Time+Logic,N=0)
+เงินเชื่อ =Sumifs(SlotI,Relation+Dimentioms+Time+Logic,N=1)
+
+แทนที่ว่าฉันจะต้องมาเก็บ จำนวนสินค้า และราคาขาย ฉันสร้าง logic ที่สัมพันธ์กัน
+ทำให้เกิดการแปลงค่า และเก็บแค่ transection ของ B กับ ฐานข้อมูลคือ  C  (ไม่ต้อง เก็บ A เพราะมี logic compu ให้)
+เห็นได้ว่า event มันเกิดตั้งแต่การกำหนด slot แต่จัดประเภทด้วย stat แล้วระบุตัวตนของ ID ที่เรียงลำดับด้วย SeQ (Date)
+สร้างความสัมพันธ์ด้วยสูตร excel แค่ sumif ออกมาแล้วเอาไปใช้ต่อที่ไหนก็ได้เลยตามตวามสัมพันธ์ของข้อมูลที่อิง
+มันมีความหมายทั้งนั้น นี่ยังไมรวมการใส่ invert ( - ) ที่ตัวเลขนะ  และมีมากกว่านี้ ถ้าจะทำ
+และสิ่งสำคัญคือ ฉันจะให้ความสำคัญกับความเป็นไปได้ของเหตุการณ์ ไม่ใช่เกิดเหตุการณ์แต่ไม่สามารถบันทึกได้ 
+
+
+
+    {
+      "code": { "StatN": 0},
+      "type": "Reasoning","Default"
+      "name": "เงินสด",
+      "usesSlots": ["Slot1",....,"Slot-3"], 
+      "produces": ["Slot1",....,"Slot-3"],
+      "expression": "์Clash",
+      "description": "รายการเงินสด"
+     },
+    {
+      "code": { "StatN": 1},
+      "type": "Reasoning",
+      "name": "เงินเชื่อ",
+      "usesSlots": ["Slot1",....,"Slot-3"], 
+      "produces": ["Slot1",....,"Slot-3"],
+      "expression": "์Deb",
+      "description": "รายการซื้อเชื่อ"
+     },
+    {
+      "code": { "StatC": A},
+      "type": "Logic",
+      "name": "ราคารวม",
+      "usesSlots": ["Slot1",....,"Slot-3"], 
+      "produces": ["Slot1",....,"Slot-3"],
+      "expression": "comput",
+      "description": "ผลของสินค้าที่ถูกคำนวนชอง {"StatC":B,SlotN}*{"StatC":C,SlotN}"
+     },
+    {
+      "code": { "StatC": B},
+      "type": "Reasoning",
+      "name": "จำนวนนับ" ,
+      "usesSlots": ["Slot1",....,"Slot-3"], 
+      "produces": ["Slot1",....,"Slot-3"],
+      "expression": "์amont",
+      "description": "จำนวนนับ"
+     },
+    {
+      "code": { "StatC": C},
+      "type": "Reasoning",
+      "name": "ราคาขาย",
+      "usesSlots": ["Slot1",....,"Slot-3"], 
+      "produces": ["Slot1",....,"Slot-3"],
+      "expression": "์database",
+      "description": "ราคาขาขของสินค้า"
+     },
+    {
+      "code": { "Slot-2"},
+      "type": "Position",
+      "name": "Reduce",
+      "usesSlots": ["Slot-2"], 
+      "produces": ["Slot-2"],
+      "expression": "์Obligation",
+      "description": "สิทธิผูกพันลูกค้าที่ไม่ใช่เงินสด"
+     },
+    {
+      "code": { "Slot-1"},
+      "type": "Position",
+      "name": "Deduce",
+      "usesSlots": ["Slot-1"], 
+      "produces": ["Slot-1"],
+      "expression": "์Obligation",
+      "description": "สิทธิผูกพันลูกค้าที่เป็นเงินสด"
+     },
