@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Normalization Dashboard</title>
+    <!-- เพิ่ม CSS จากตัวอย่างที่ให้ไว้ก่อนหน้านี้ -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&family=Sarabun:wght@300;400;500;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <!-- โครงสร้างหน้าเว็บจากตัวอย่างที่ให้ไว้ก่อนหน้านี้ -->
+    
+    <script>
+        // ฟังก์ชันอ่านไฟล์ CSV
+        function loadCSV(url, callback) {
+            Papa.parse(url, {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    callback(results.data);
+                }
+            });
+        }
+        
+        // โหลดข้อมูลจาก GitHub repository ของคุณ
+        loadCSV('https://raw.githubusercontent.com/chieffy99/File-reader/main/เปลี่ยน%202', function(data) {
+            // ประมวลผลและแสดงข้อมูล
+            console.log(data);
+            // TODO: เพิ่มโค้ดแสดงข้อมูลในแดชบอร์ด
+        });
+    </script>
+</body>
+</html>
