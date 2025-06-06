@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Normalization Dashboard</title>
+    <style>
+        :root {
+            /* โทนสีมืด */
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-card: rgba(40, 40, 40, 0.95);
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #6b8afd;
+            --accent-secondary: #9c5fff;
+            --status-0: #56ab2f;
+            --status-1: #fdcb6e;
+            --border-light: rgba(255, 255, 255, 0.12);
+        }
+        
+        body {
+            font-family: 'Prompt', 'Sarabun', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            line-height: 1.6;
+            letter-spacing: 0.03em;
+        }
+        
+        /* การ์ดรายการข้อมูล - ขอบเส้นขาวบาง */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* ส่วนหัวการ์ด - ช่วยในการนำทางสายตา */
+        .card-header {
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* แสดงสถานะ StatN และ StatC ด้วยสีและไอคอน */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 14px;
+            margin-right: 10px;
+            font-weight: 500;
+        }
+                [กราฟแสดงความสัมพันธ์ StatN/StatC และมูลค่า]
+            </div>
+        </div>
+        
+        <h2>ธุรกรรมล่าสุด</h2>
+        
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <span class="status-indicator status-0">StatN: 0</span>
+                    <span>StatC: B</span>
+                </div>
+                <div>2/1/2025</div>
+            </div>
+            
+            <table class="data-table">
+                <tr>
+                    <th>ID1</th>
+                    <th>ID2</th>
+                    <th>Slot1</th>
+                    <th>Slot2</th>
+                    <th>Slot3</th>
+                    <th>Slot4</th>
+                    <th>Slot5</th>
+                </tr>
+                <tr>
+                    <td>SH04</td>
+                    <td>BYH</td>
+                    <td class="slot-value" data-meaning="จำนวนสินค้า #1">0</td>
+                    <td class="slot-value" data-meaning="จำนวนสินค้า #2">0</td>
+                    <td class="slot-value" data-meaning="จำนวนสินค้า #3">0</td>
+                    <td class="slot-value" data-meaning="จำนวนสินค้า #4">3</td>
+                    <td class="slot-value" data-meaning="จำนวนสินค้า #5">0</td>
+                </tr>
+            </table>
+            
+            <div style="margin-top: 15px;">
+                <strong>ความหมาย:</strong> ลูกค้าซื้อเงินสด สินค้าประเภท #4 จำนวน 3 ชิ้น
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <span class="status-indicator status-1">StatN: 1</span>
+                    <span>StatC: B</span>
+                </div>
+                <div>2/1/2025</div>
+            </div>
+            
+            <table class="data-table">
+                <tr>
+                    <th>ID1</th>
+                    <th>ID2</th>
+                    <th>Slot1</th>
+                    <th>Slot2</th>
+                    <th>Slot3</th>
+                    <th>Slot4</th>
+                    <th>Slot5</th>
+                </tr>
+                <tr>
+                    <td>SH08</td>
+                    <td>BYH</td>
+                    <td class="slot-value" data-meaning="จำนวนสินค้า #1">0</td>
+                    <td class="slot-value" data-meaning="จำนวนสินค้า #2">0</td>
+                    <td class="slot-value" data-meaning="จำนวนสินค้า #3">0</td>
+                    <td class="slot-value" data-meaning="จำนวนสินค้า #4">0</td>
+                    <td class="slot-value" data-meaning="จำนวนสินค้า #5">1</td>
+                </tr>
+            </table>
+            
+            <div style="margin-top: 15px;">
+                <strong>ความหมาย:</strong> ลูกค้าซื้อเงินเชื่อ สินค้าประเภท #5 จำนวน 1 ชิ้น
+            </div>
+        </div>
+        
+        <h2>สรุปข้อมูล</h2>
+        
+        <div class="dashboard-grid">
+            <div class="card summary-card">
+                <h3>ยอดขายรวม</h3>
+                <h2>45,872.50 บาท</h2>
+                <div>เงินสด: 32,450.00 บาท</div>
+                <div>เงินเชื่อ: 13,422.50 บาท</div>
+            </div>
+            
+            <div class="card summary-card">
+                <h3>จำนวนรายการ</h3>
+                <h2>385 รายการ</h2>
+                <div>เงินสด (StatN=0): 289 รายการ</div>
+                <div>เงินเชื่อ (StatN=1): 96 รายการ</div>
+            </div>
+            
+            <div class="card summary-card">
+                <h3>Top ID1</h3>
+                <div>SH (128 รายการ)</div>
+                <div>MK (95 รายการ)</div>
+                <div>OT (45 รายการ)</div>
+            </div>
+            
+            <div class="card summary-card">
+                <h3>Top ID2</h3>
+                <div>BYH (256 รายการ)</div>
+                <div>BYK (76 รายการ)</div>
+                <div>BYT (53 รายการ)</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
