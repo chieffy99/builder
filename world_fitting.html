@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Fitting</title>
-    <h1>Anti-Normalization</h1>
-    <h1>Dashboard</h1>
+    <title>World Fitting - Anti-Normalization Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&family=Sarabun:wght@300;400;500;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
     <style>
         :root {
-            /* โทนสีมืด */
+            /* โทนสีมืด - ปรับให้อ่านง่ายขึ้น */
             --bg-primary: #121212;
             --bg-secondary: #1e1e1e;
             --bg-card: rgba(40, 40, 40, 0.95);
@@ -32,6 +33,44 @@
             letter-spacing: 0.03em;
         }
         
+        /* เพิ่ม Navbar */
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .navbar a {
+            color: var(--text-primary);
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .navbar a:hover {
+            color: var(--accent-primary);
+        }
+        
+        .navbar-brand {
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+        }
+        
         /* การ์ดรายการข้อมูล - ขอบเส้นขาวบาง */
         .card {
             background: var(--bg-card);
@@ -48,7 +87,7 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
         }
         
-        /* ส่วนหัวการ์ด - ช่วยในการนำทางสายตา */
+        /* ส่วนหัวการ์ด */
         .card-header {
             border-bottom: 1px solid var(--border-light);
             padding-bottom: 12px;
@@ -58,7 +97,7 @@
             align-items: center;
         }
         
-        /* แสดงสถานะ StatN และ StatC ด้วยสีและไอคอน */
+        /* แสดงสถานะ StatN และ StatC */
         .status-indicator {
             display: inline-flex;
             align-items: center;
@@ -81,7 +120,7 @@
             border: 1px solid var(--status-1);
         }
         
-        /* ตารางข้อมูลในการ์ด - เน้นความชัดเจน */
+        /* ตารางข้อมูล */
         .data-table {
             width: 100%;
             border-collapse: separate;
@@ -90,7 +129,7 @@
         
         .data-table th {
             text-align: left;
-            padding: 10px;
+            padding: 12px 15px;
             background-color: rgba(255, 255, 255, 0.05);
             border-bottom: 1px solid var(--border-light);
             font-weight: 500;
@@ -98,29 +137,35 @@
         }
         
         .data-table td {
-            padding: 10px;
+            padding: 12px 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .data-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
         }
         
         /* ตัวกรองและการค้นหา */
         .filter-container {
             background: var(--bg-secondary);
-            padding: 15px;
+            padding: 20px;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
         }
         
         .filter-input {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--border-light);
             border-radius: 8px;
-            padding: 10px 15px;
+            padding: 12px 15px;
             color: var(--text-primary);
             outline: none;
             transition: all 0.3s ease;
+            min-width: 150px;
         }
         
         .filter-input:focus {
@@ -128,33 +173,52 @@
             box-shadow: 0 0 0 2px rgba(107, 138, 253, 0.2);
         }
         
-        /* การแสดงผล Slot ที่มีการ map ความหมาย */
+        /* การแสดงผล Slot */
         .slot-value {
             position: relative;
             cursor: pointer;
+            transition: background 0.3s;
+            border-radius: 4px;
+            padding: 2px 8px;
+        }
+        
+        .slot-value:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .slot-value:hover::after {
             content: attr(data-meaning);
             position: absolute;
-            top: -30px;
+            top: -40px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
             white-space: nowrap;
             z-index: 100;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         /* กราฟและการวิเคราะห์ */
         .chart-container {
-            height: 300px;
-            margin-bottom: 20px;
+            background: var(--bg-card);
+            height: 350px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
         
-        /* ปุ่มกระทำการต่างๆ */
+        .chart-title {
+            margin-bottom: 15px;
+            font-weight: 500;
+            color: var(--accent-primary);
+        }
+        
+        /* ปุ่ม */
         .action-button {
             background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
             color: white;
@@ -164,6 +228,9 @@
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .action-button:hover {
@@ -171,11 +238,11 @@
             box-shadow: 0 5px 15px rgba(107, 138, 253, 0.3);
         }
         
-        /* เลย์เอาต์หลัก */
+        /* เลย์เอาต์ */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px;
         }
         
         .dashboard-header {
@@ -183,38 +250,106 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
         }
         
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
         }
         
         /* สรุปข้อมูล */
         .summary-card {
-            background: linear-gradient(45deg, rgba(107, 138, 253, 0.2), rgba(156, 95, 255, 0.2));
+            background: linear-gradient(45deg, rgba(107, 138, 253, 0.15), rgba(156, 95, 255, 0.15));
             border: 1px solid rgba(107, 138, 253, 0.3);
         }
         
-        /* เพิ่มความชัดเจนสำหรับ Dyslexia */
+        .summary-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--accent-primary);
+        }
+        
+        .summary-card h2 {
+            font-size: 1.8rem;
+            margin: 10px 0 20px;
+        }
+        
+        /* รูปแบบข้อความ */
         h1, h2, h3, h4 {
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            margin-bottom: 15px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            margin: 0 0 15px 0;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin: 30px 0 20px;
+            color: var(--text-primary);
+        }
+        
+        h3 {
+            font-size: 1.2rem;
+        }
+        
+        section {
+            margin-bottom: 40px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid var(--border-light);
+            color: var(--text-secondary);
         }
     </style>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&family=Sarabun:wght@300;400;500;700&display=swap">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
 </head>
-<body><a href="index.html">home</a>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a href="index.html">Anti-Normalization</a>
+        </div>
+        <div class="navbar-menu">
+            <a href="index.html">หน้าหลัก</a>
+            <a href="#">ข้อมูลทั้งหมด</a>
+            <a href="#">รายงาน</a>
+            <a href="#">ช่วยเหลือ</a>
+        </div>
+    </nav>
+
     <div class="container">
         <div class="dashboard-header">
-            <h1>Anti-Normalization Dashboard</h1>
+            <h1 class="dashboard-title">Anti-Normalization Dashboard</h1>
             <div>
-                <button class="action-button">นำเข้าข้อมูล</button>
-                <button class="action-button">รายงาน</button>
+                <button class="action-button">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 12l-4-4h8l-4 4z"/>
+                    </svg>
+                    นำเข้าข้อมูล
+                </button>
+                <button class="action-button">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M14 5h-4V1H6v4H2l6 6 6-6zm-8 7v2h4v-2H6z"/>
+                    </svg>
+                    รายงาน
+                </button>
             </div>
         </div>
         
@@ -232,120 +367,136 @@
                 <option value="A">A - ผลลัพธ์คำนวณ</option>
             </select>
             <input type="date" class="filter-input">
+            <button class="action-button">ค้นหา</button>
         </div>
         
         <div class="chart-container">
-            <!-- สถิติภาพรวม: แสดงความสัมพันธ์ระหว่าง StatN และมูลค่าธุรกรรม -->
-            <div style="height: 100%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;">
-                [กราฟแสดงความสัมพันธ์ StatN/StatC และมูลค่า]
-            </div>
+            <h3 class="chart-title">สถิติภาพรวม: ความสัมพันธ์ระหว่าง StatN และมูลค่าธุรกรรม</h3>
+            <canvas id="transactionChart"></canvas>
         </div>
         
-        <h2>ธุรกรรมล่าสุด</h2>
-        
-        <div class="card">
-            <div class="card-header">
-                <div>
-                    <span class="status-indicator status-0">StatN: 0</span>
-                    <span>StatC: B</span>
+        <section>
+            <h2>ธุรกรรมล่าสุด</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <span class="status-indicator status-0">StatN: 0</span>
+                        <span>StatC: B</span>
+                    </div>
+                    <div>2/1/2025</div>
                 </div>
-                <div>2/1/2025</div>
-            </div>
-            
-            <table class="data-table">
-                <tr>
-                    <th>ID1</th>
-                    <th>ID2</th>
-                    <th>Slot1</th>
-                    <th>Slot2</th>
-                    <th>Slot3</th>
-                    <th>Slot4</th>
-                    <th>Slot5</th>
-                </tr>
-                <tr>
-                    <td>SH04</td>
-                    <td>BYH</td>
-                    <td class="slot-value" data-meaning="จำนวนสินค้า #1">0</td>
-                    <td class="slot-value" data-meaning="จำนวนสินค้า #2">0</td>
-                    <td class="slot-value" data-meaning="จำนวนสินค้า #3">0</td>
-                    <td class="slot-value" data-meaning="จำนวนสินค้า #4">3</td>
-                    <td class="slot-value" data-meaning="จำนวนสินค้า #5">0</td>
-                </tr>
-            </table>
-            
-            <div style="margin-top: 15px;">
-                <strong>ความหมาย:</strong> ลูกค้าซื้อเงินสด สินค้าประเภท #4 จำนวน 3 ชิ้น
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-header">
-                <div>
-                    <span class="status-indicator status-1">StatN: 1</span>
-                    <span>StatC: B</span>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID1</th>
+                            <th>ID2</th>
+                            <th>Slot1</th>
+                            <th>Slot2</th>
+                            <th>Slot3</th>
+                            <th>Slot4</th>
+                            <th>Slot5</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SH04</td>
+                            <td>BYH</td>
+                            <td class="slot-value" data-meaning="จำนวนสินค้า #1">0</td>
+                            <td class="slot-value" data-meaning="จำนวนสินค้า #2">0</td>
+                            <td class="slot-value" data-meaning="จำนวนสินค้า #3">0</td>
+                            <td class="slot-value" data-meaning="จำนวนสินค้า #4">3</td>
+                            <td class="slot-value" data-meaning="จำนวนสินค้า #5">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 15px; background: rgba(86, 171, 47, 0.1); padding: 10px; border-radius: 8px;">
+                    <strong>ความหมาย:</strong> ลูกค้าซื้อเงินสด สินค้าประเภท #4 จำนวน 3 ชิ้น
                 </div>
-                <div>2/1/2025</div>
             </div>
             
-            <table class="data-table">
-                <tr>
-                    <th>ID1</th>
-                    <th>ID2</th>
-                    <th>Slot1</th>
-                    <th>Slot2</th>
-                    <th>Slot3</th>
-                    <th>Slot4</th>
-                    <th>Slot5</th>
-                </tr>
-                <tr>
-                    <td>SH08</td>
-                    <td>BYH</td>
-                    <td class="slot-value" data-meaning="จำนวนสินค้า #1">0</td>
-                    <td class="slot-value" data-meaning="จำนวนสินค้า #2">0</td>
-                    <td class="slot-value" data-meaning="จำนวนสินค้า #3">0</td>
-                    <td class="slot-value" data-meaning="จำนวนสินค้า #4">0</td>
-                    <td class="slot-value" data-meaning="จำนวนสินค้า #5">1</td>
-                </tr>
-            </table>
-            
-            <div style="margin-top: 15px;">
-                <strong>ความหมาย:</strong> ลูกค้าซื้อเงินเชื่อ สินค้าประเภท #5 จำนวน 1 ชิ้น
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <span class="status-indicator status-1">StatN: 1</span>
+                        <span>StatC: B</span>
+                    </div>
+                    <div>2/1/2025</div>
+                </div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID1</th>
+                            <th>ID2</th>
+                            <th>Slot1</th>
+                            <th>Slot2</th>
+                            <th>Slot3</th>
+                            <th>Slot4</th>
+                            <th>Slot5</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SH08</td>
+                            <td>BYH</td>
+                            <td class="slot-value" data-meaning="จำนวนสินค้า #1">0</td>
+                            <td class="slot-value" data-meaning="จำนวนสินค้า #2">0</td>
+                            <td class="slot-value" data-meaning="จำนวนสินค้า #3">0</td>
+                            <td class="slot-value" data-meaning="จำนวนสินค้า #4">0</td>
+                            <td class="slot-value" data-meaning="จำนวนสินค้า #5">1</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 15px; background: rgba(253, 203, 110, 0.1); padding: 10px; border-radius: 8px;">
+                    <strong>ความหมาย:</strong> ลูกค้าซื้อเงินเชื่อ สินค้าประเภท #5 จำนวน 1 ชิ้น
+                </div>
             </div>
-        </div>
+        </section>
         
-        <h2>สรุปข้อมูล</h2>
-        
-        <div class="dashboard-grid">
-            <div class="card summary-card">
-                <h3>ยอดขายรวม</h3>
-                <h2>45,872.50 บาท</h2>
-                <div>เงินสด: 32,450.00 บาท</div>
-                <div>เงินเชื่อ: 13,422.50 บาท</div>
-            </div>
+        <section>
+            <h2>สรุปข้อมูล</h2>
             
-            <div class="card summary-card">
-                <h3>จำนวนรายการ</h3>
-                <h2>385 รายการ</h2>
-                <div>เงินสด (StatN=0): 289 รายการ</div>
-                <div>เงินเชื่อ (StatN=1): 96 รายการ</div>
+            <div class="dashboard-grid">
+                <div class="card summary-card">
+                    <h3>ยอดขายรวม</h3>
+                    <h2>45,872.50 บาท</h2>
+                    <div>เงินสด: 32,450.00 บาท</div>
+                    <div>เงินเชื่อ: 13,422.50 บาท</div>
+                </div>
+                
+                <div class="card summary-card">
+                    <h3>จำนวนรายการ</h3>
+                    <h2>385 รายการ</h2>
+                    <div>เงินสด (StatN=0): 289 รายการ</div>
+                    <div>เงินเชื่อ (StatN=1): 96 รายการ</div>
+                </div>
+                
+                <div class="card summary-card">
+                    <h3>Top ID1</h3>
+                    <div>SH (128 รายการ)</div>
+                    <div>MK (95 รายการ)</div>
+                    <div>OT (45 รายการ)</div>
+                </div>
+                
+                <div class="card summary-card">
+                    <h3>Top ID2</h3>
+                    <div>BYH (256 รายการ)</div>
+                    <div>BYK (76 รายการ)</div>
+                    <div>BYT (53 รายการ)</div>
+                </div>
             </div>
-            
-            <div class="card summary-card">
-                <h3>Top ID1</h3>
-                <div>SH (128 รายการ)</div>
-                <div>MK (95 รายการ)</div>
-                <div>OT (45 รายการ)</div>
-            </div>
-            
-            <div class="card summary-card">
-                <h3>Top ID2</h3>
-                <div>BYH (256 รายการ)</div>
-                <div>BYK (76 รายการ)</div>
-                <div>BYT (53 รายการ)</div>
-            </div>
-        </div>
+        </section>
     </div>
-</body>
+
+    <footer>
+        <div>© 2025 Anti-Normalization Dashboard</div>
+        <div>ระบบแมปข้อมูลทั่วไป (Generic Data Mapping System)</div>
+    </footer>
+
     <script>
         // ฟังก์ชันอ่านไฟล์ CSV
         function loadCSV(url, callback) {
@@ -354,15 +505,100 @@
                 header: true,
                 complete: function(results) {
                     callback(results.data);
+                },
+                error: function(error) {
+                    console.error('เกิดข้อผิดพลาดในการโหลดข้อมูล:', error);
+                    document.querySelector('.chart-container').innerHTML = 
+                        '<div style="height: 100%; display: flex; align-items: center; justify-content: center;">' +
+                        '<p>ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง</p></div>';
                 }
             });
         }
         
-        // โหลดข้อมูลจาก GitHub repository ของคุณ
-        loadCSV('https://raw.githubusercontent.com/chieffy99/File-reader/main/เปลี่ยน%202', function(data) {
-            // ประมวลผลและแสดงข้อมูล
-            console.log(data);
-            // TODO: เพิ่มโค้ดแสดงข้อมูลในแดชบอร์ด
+        // สร้างกราฟด้วย Chart.js
+        function createChart(data) {
+            const ctx = document.getElementById('transactionChart').getContext('2d');
+            
+            // สมมติข้อมูลสำหรับกราฟ (ควรแทนที่ด้วยข้อมูลจริง)
+            const chartData = {
+                labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.'],
+                datasets: [
+                    {
+                        label: 'เงินสด (StatN=0)',
+                        data: [12500, 15000, 18200, 20300, 22100, 32450],
+                        borderColor: '#56ab2f',
+                        backgroundColor: 'rgba(86, 171, 47, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'เงินเชื่อ (StatN=1)',
+                        data: [5200, 6300, 8100, 9500, 11200, 13422],
+                        borderColor: '#fdcb6e',
+                        backgroundColor: 'rgba(253, 203, 110, 0.1)',
+                        tension: 0.4
+                    }
+                ]
+            };
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#e0e0e0'
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a0a0a0'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a0a0a0',
+                                callback: function(value) {
+                                    return value.toLocaleString() + ' ฿';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // โหลดข้อมูลและแสดงผล
+        document.addEventListener('DOMContentLoaded', function() {
+            // ลองโหลดข้อมูลจาก API
+            try {
+                loadCSV('https://raw.githubusercontent.com/chieffy99/File-reader/main/เปลี่ยน%202', function(data) {
+                    console.log(data);
+                    // สร้างกราฟด้วยข้อมูลที่โหลดมา (หรือข้อมูลตัวอย่าง)
+                    createChart(data);
+                    
+                    // เพิ่มโค้ดส่วนอื่นๆ ที่ใช้ข้อมูล CSV
+                });
+            } catch (e) {
+                console.error('เกิดข้อผิดพลาด:', e);
+                // สร้างกราฟด้วยข้อมูลตัวอย่าง
+                createChart([]);
+            }
         });
     </script>
 </body>
