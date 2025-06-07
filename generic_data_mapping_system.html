@@ -1,10 +1,214 @@
 +<!DOCTYPE html>
 +<html lang='en'>
-+<head>
-+<meta charset='UTF-8'>
-+<title>Generic Data Mapping System</title>
-+</head>
-+<body><a href="index.html">home</a>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generic Data Mapping System</title>
+    <h1>Anti-Normalization</h1>
+    <h1>Dashboard</h1>
+    <style>
+        :root {
+            /* โทนสีมืด */
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-card: rgba(40, 40, 40, 0.95);
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #6b8afd;
+            --accent-secondary: #9c5fff;
+            --status-0: #56ab2f;
+            --status-1: #fdcb6e;
+            --border-light: rgba(255, 255, 255, 0.12);
+        }
+        
+        body {
+            font-family: 'Prompt', 'Sarabun', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            line-height: 1.6;
+            letter-spacing: 0.03em;
+        }
+        
+        /* การ์ดรายการข้อมูล - ขอบเส้นขาวบาง */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* ส่วนหัวการ์ด - ช่วยในการนำทางสายตา */
+        .card-header {
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* แสดงสถานะ StatN และ StatC ด้วยสีและไอคอน */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 14px;
+            margin-right: 10px;
+            font-weight: 500;
+        }
+        
+        .status-0 {
+            background-color: rgba(86, 171, 47, 0.2);
+            color: var(--status-0);
+            border: 1px solid var(--status-0);
+        }
+        
+        .status-1 {
+            background-color: rgba(253, 203, 110, 0.2);
+            color: var(--status-1);
+            border: 1px solid var(--status-1);
+        }
+        
+        /* ตารางข้อมูลในการ์ด - เน้นความชัดเจน */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-light);
+            font-weight: 500;
+            color: var(--accent-primary);
+        }
+        
+        .data-table td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* ตัวกรองและการค้นหา */
+        .filter-container {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .filter-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(107, 138, 253, 0.2);
+        }
+        
+        /* การแสดงผล Slot ที่มีการ map ความหมาย */
+        .slot-value {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .slot-value:hover::after {
+            content: attr(data-meaning);
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 100;
+        }
+        
+        /* กราฟและการวิเคราะห์ */
+        .chart-container {
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        
+        /* ปุ่มกระทำการต่างๆ */
+        .action-button {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 138, 253, 0.3);
+        }
+        
+        /* เลย์เอาต์หลัก */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        /* สรุปข้อมูล */
+        .summary-card {
+            background: linear-gradient(45deg, rgba(107, 138, 253, 0.2), rgba(156, 95, 255, 0.2));
+            border: 1px solid rgba(107, 138, 253, 0.3);
+        }
+        
+        /* เพิ่มความชัดเจนสำหรับ Dyslexia */
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-bottom: 15px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&family=Sarabun:wght@300;400;500;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+</head>
+<body><a href="index.html">home</a>
 +<h1>ระบบการแมปข้อมูลทั่วไป (Generic Data Mapping System)</h1>
 +<p><strong>ระบบการแมปข้อมูลทั่วไป</strong> คือแนวคิดในการจัดโครงสร้างและประมวลผลข้อมูลทุกประเภทให้อยู่ในรูปแบบมาตรฐานกลางที่ยืดหยุ่น รองรับแหล่งข้อมูลหลากหลาย ไม่ว่าจะเป็นไฟล์ตาราง (.csv, .txt, Excel), JSON, API, หรือแม้กระทั่งข้อมูลจากเซนเซอร์ โดยไม่ต้องยึดติดกับสคีมาฐานข้อมูลตายตัว ระบบนี้ประกอบด้วย <strong>โครงสร้างข้อมูลกลาง</strong> ที่กำหนดฟิลด์หลักไม่กี่ประเภท และ <strong>แก่น OntologyCore</strong> ที่เป็นเหมือนแกนความคิดในการเชื่อมโยงข้อมูลและตรรกะการประมวลผลเข้าด้วยกัน</p>
 +<h2>โครงสร้างข้อมูลกลางและแก่น OntologyCore</h2>
