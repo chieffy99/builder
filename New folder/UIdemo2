@@ -1,1 +1,59 @@
-https://github.com/chieffy99/File-reader/blob/32f991869b226d546f5cd17b214f2e1e8b8982a0/UIdemo2
+Create a modern web interface using the following design specifications:
+
+**Visual Theme:**
+- Glass morphism design with backdrop blur effects
+- Gradient background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)
+- Semi-transparent cards with rgba(255, 255, 255, 0.95) background
+- backdrop-filter: blur(15px) for glass effect
+- Subtle shadows: 0 20px 60px rgba(0, 0, 0, 0.15)
+
+**Color Palette:**
+- Primary gradient: #667eea to #764ba2
+- Success: #56ab2f to #a8e6cf
+- Warning: #fdcb6e to #e17055  
+- Info: #74b9ff to #0984e3
+- Text: #2d3436 (primary), #636e72 (secondary)
+
+**Card Design:**
+- Rounded corners: border-radius: 20-25px
+- Glass morphism effect with backdrop blur
+- Hover animations: translateY(-5px) with enhanced shadows
+- Border: 1px solid rgba(255, 255, 255, 0.3)
+- Gradient header bars for important sections
+
+**Typography:**
+- Font families: 'Noto Sans Thai', 'Prompt', 'Sarabun' for Thai content
+- Font weights: 300-700 range
+- Gradient text for headings using background-clip: text
+
+**Interactive Elements:**
+- Floating input fields with enhanced focus states
+- Rounded buttons (border-radius: 15px) with gradient backgrounds
+- Hover effects: transform: translateY(-2px) with color-matched shadows
+- Tab navigation with active state indicators
+
+**Animations:**
+- slideInUp keyframe animation for cards
+- Staggered animation delays (0.2s, 0.3s) for multiple elements
+- Smooth transitions: all 0.3s ease
+
+**Mobile Responsive:**
+- Adaptive padding and margins
+- Touch-friendly button sizes (minimum 44px)
+- Responsive grid layout
+- Optimized font sizes for mobile
+
+**Component Patterns:**
+- Profile avatars with overlay edit buttons
+- Status indicators with colored circular icons
+- Activity timelines with gradient accent icons
+- Modal dialogs with enhanced styling
+- Form validation with real-time feedback
+
+**Layout Structure:**
+- Full-height gradient background
+- Container-based responsive layout
+- Card-based content organization
+- Sidebar + main content arrangement for desktop
+
+Apply these design principles to create a cohesive, modern interface with Thai language support and glass morphism aesthetic.
