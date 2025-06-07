@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,6 +66,172 @@
             margin-right: 10px;
             font-weight: 500;
         }
+        
+        .status-0 {
+            background-color: rgba(86, 171, 47, 0.2);
+            color: var(--status-0);
+            border: 1px solid var(--status-0);
+        }
+        
+        .status-1 {
+            background-color: rgba(253, 203, 110, 0.2);
+            color: var(--status-1);
+            border: 1px solid var(--status-1);
+        }
+        
+        /* ตารางข้อมูลในการ์ด - เน้นความชัดเจน */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-light);
+            font-weight: 500;
+            color: var(--accent-primary);
+        }
+        
+        .data-table td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* ตัวกรองและการค้นหา */
+        .filter-container {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .filter-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(107, 138, 253, 0.2);
+        }
+        
+        /* การแสดงผล Slot ที่มีการ map ความหมาย */
+        .slot-value {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .slot-value:hover::after {
+            content: attr(data-meaning);
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 100;
+        }
+        
+        /* กราฟและการวิเคราะห์ */
+        .chart-container {
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        
+        /* ปุ่มกระทำการต่างๆ */
+        .action-button {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 138, 253, 0.3);
+        }
+        
+        /* เลย์เอาต์หลัก */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        /* สรุปข้อมูล */
+        .summary-card {
+            background: linear-gradient(45deg, rgba(107, 138, 253, 0.2), rgba(156, 95, 255, 0.2));
+            border: 1px solid rgba(107, 138, 253, 0.3);
+        }
+        
+        /* เพิ่มความชัดเจนสำหรับ Dyslexia */
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Anti-Normalization Dashboard</h1>
+            <div>
+                <button class="action-button">นำเข้าข้อมูล</button>
+                <button class="action-button">รายงาน</button>
+            </div>
+        </div>
+        
+        <div class="filter-container">
+            <input type="text" class="filter-input" placeholder="ค้นหา ID1...">
+            <select class="filter-input">
+                <option value="">เลือก StatN</option>
+                <option value="0">0 - ปกติ</option>
+                <option value="1">1 - เงินเชื่อ</option>
+            </select>
+            <select class="filter-input">
+                <option value="">เลือก StatC</option>
+                <option value="B">B - จำนวนนับ</option>
+                <option value="C">C - ราคา</option>
+                <option value="A">A - ผลลัพธ์คำนวณ</option>
+            </select>
+            <input type="date" class="filter-input">
+        </div>
+        
+        <div class="chart-container">
+            <!-- สถิติภาพรวม: แสดงความสัมพันธ์ระหว่าง StatN และมูลค่าธุรกรรม -->
+            <div style="height: 100%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;">
                 [กราฟแสดงความสัมพันธ์ StatN/StatC และมูลค่า]
             </div>
         </div>
