@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generic Data Mapping System - Anti-Normalization</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&family=Sarabun:wght@300;400;500;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #050a18;
+            --bg-secondary: #0c1325;
+            --bg-card: rgba(25, 30, 45, 0.85);
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #6b8afd;
+            --accent-secondary: #9c5fff;
+            --status-0: #56ab2f;
+            --status-1: #fdcb6e;
+            --border-light: rgba(107, 138, 253, 0.3);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --card-glow: 0 0 15px rgba(107, 138, 253, 0.2);
+        }
+        
+        body {
+            font-family: 'Prompt', 'Sarabun', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* พื้นหลังเส้นและจุด */
+        .background-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .vertical-line {
+            position: absolute;
+            width: 1px;
+            height: 100vh;
+            background: linear-gradient(to bottom, transparent, rgba(107, 138, 253, 0.2), transparent);
+            animation: float 15s infinite linear;
+        }
+        
+        .dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: rgba(107, 138, 253, 0.5);
+            animation: pulse 3s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100%);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: rgba(10, 15, 30, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(107, 138, 253, 0.2);
+            padding: 15px 25px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+        
+        .logo {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(107, 138, 253, 0.5);
+        }
+        
+        .navbar-title {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .navbar-menu a {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .navbar-menu a:hover {
+            background: rgba(107, 138, 253, 0.1);
+            color: var(--accent-primary);
+        }
+        
+        .navbar-menu a.active {
+            background: rgba(107, 138, 253, 0.15);
+            color: var(--accent-primary);
+        }
+        
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 65px);
+        }
+        
+        /* Side Bar / Card Deck */
+        .sidebar {
+            width: 280px;
+            background: rgba(15, 20, 35, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            transition: all 0.3s ease;
+            border-right: 1px solid rgba(107, 138, 253, 0.2);
+            overflow-y: auto;
+            height: calc(100vh - 65px);
+            position: fixed;
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            color: var(--accent-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .card-deck {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        /* Main Area */
+        .content-area {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+            position: relative;
+            min-height: 100%;
+        }
+        
+        /* Dashboard Area - Where cards can be dragged */
+        .dashboard-area {
+            min-height: 600px;
+            background: rgba(20, 25, 40, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-area-title {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: var(--text-primary);
+            text-align: center;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            min-height: 500px;
+        }
+        
+        .grid-cell {
+            background: rgba(30, 35, 50, 0.4);
+            border-radius: 8px;
+            min-height: 200px;
+            border: 1px dashed rgba(107, 138, 253, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .grid-cell.highlight {
+            background: rgba(107, 138, 253, 0.1);
+        }
+        
+        /* Card Styling - Magic Card Style */
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: move;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mini-card {
+            max-width: 100%;
+            margin-bottom: 15px;
+            transform-origin: top center;
+            opacity: 0.9;
+        }
+        
+        .mini-card:hover {
+            transform: scale(1.02);
+            opacity: 1;
+            z-index: 5;
+        }
+        
+        .card-header {
+            background: linear-gradient(45deg, rgba(107, 138, 253, 0.4), rgba(156, 95, 255, 0.4));
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .card-tools {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .card-tool {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .card-tool:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-body {
+            padding: 15px;
+            flex: 1;
+        }
+        
+        .card-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .expanded-card {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            z-index: 1000;
+            animation: cardExpand 0.3s forwards;
+        }
+        
+        @keyframes cardExpand {
+            from {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* Overlay for when a card is expanded */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(3px);
+            z-index: 999;
+            display: none;
+        }
+        
+        /* Card combination area */
+        .combination-area {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(107, 138, 253, 0.1);
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .combination-title {
+            font-size: 1rem;
+            color: var(--accent-primary);
+            margin-bottom: 10px;
+        }
+        
+        .combined-card {
+            border: 2px solid var(--accent-primary);
+            box-shadow: 0 0 15px rgba(107, 138, 253, 0.4);
+        }
+        
+        /* Chart Style */
+        .chart-container {
+            width: 100%;
+            height: 250px;
+            position: relative;
+        }
+        
+        /* Stacked Charts */
+        .stacked-charts {
+            position: relative;
+            height: 300px;
+        }
+        
+        .chart-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+        }
+        
+        .chart-layer:hover {
+            z-index: 10;
+            opacity: 1;
+        }
+        
+        /* Slot Value Styling */
+        .slot-value {
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+            border-radius: 4px;
+            padding: 2px 8px;
+        }
+        
+        .slot-value:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .slot-value:hover::after {
+            content: attr(data-meaning);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            white-space: nowrap;
+            z-index: 100;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 5px;
+        }
+        
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 15px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 12px;
+            background: rgba(107, 138, 253, 0.1);
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+        
+        .data-table td {
+            padding: 10px 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .data-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Button Styles */
+        .btn {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            box-shadow: 0 5px 15px rgba(107, 138, 253, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(107, 138, 253, 0.1);
+        }
+        
+        /* Contextual Menu */
+        .context-menu {
+            position: absolute;
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 10px 0;
+            box-shadow: var(--card-shadow);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .context-menu-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .context-menu-item:hover {
+            background: rgba(107, 138, 253, 0.1);
+            color: var(--accent-primary);
+        }
+        
+        /* Footer */
+        .footer {
+            background: rgba(15, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Animation classes */
+        .fadeIn {
+            animation: fadeIn 0.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .slideIn {
+            animation: slideIn 0.3s forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Card Glow Effects */
+        .data-card {
+            box-shadow: 0 0 10px rgba(86, 171, 47, 0.3);
+        }
+        
+        .analytics-card {
+            box-shadow: 0 0 10px rgba(107, 138, 253, 0.3);
+        }
+        
+        .summary-card {
+            box-shadow: 0 0 10px rgba(156, 95, 255, 0.3);
+        }
+        
+        /* Responsive Design */
+        @media screen and (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            
+            .content-area {
+                margin-left: 240px;
+                padding: 20px;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 999;
+                width: 280px;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .content-area {
+                margin-left: 0;
+            }
+            
+            .navbar {
+                padding: 10px 15px;
+            }
+            
+            .navbar-menu {
+                display: none;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- พื้นหลังเส้นและจุด -->
+    <div class="background-effect" id="backgroundEffect"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">
+            <div class="logo">AN</div>
+            <div class="navbar-title">Generic Data Mapping System</div>
+        </a>
+        <div class="navbar-menu">
+            <a href="index.html">หน้าหลัก</a>
+            <a href="world_fitting.html">World Fitting</a>
+            <a href="#" class="active">Generic Data</a>
+            <a href="#">OntologyCore</a>
+            <a href="#">รายงาน</a>
+        </div>
+    </nav>
+    
+    <div class="main-container">
+        <!-- Side Bar / Card Deck -->
+        <div class="sidebar">
+            <div class="sidebar-title">
+                <span>การ์ดข้อมูล</span>
+                <button class="card-tool" id="collapseAll" title="ย่อทั้งหมด">⊟</button>
+            </div>
+            
+            <div class="card-deck" id="cardDeck">
+                <!-- Data Cards will be added here by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Main Area -->
+        <div class="content-area">
+            <h1>ระบบการแมปข้อมูลทั่วไป</h1>
+            <p class="intro-text">
+                ระบบการแมปข้อมูลทั่วไป (Generic Data Mapping System) คือแนวคิดในการจัดโครงสร้างและประมวลผลข้อมูลที่มีความยืดหยุ่นสูง สามารถรองรับข้อมูลได้หลากหลายรูปแบบโดยไม่จำกัดโดเมน
+            </p>
+            
+            <div class="dashboard-area">
+                <h2 class="dashboard-area-title">แดชบอร์ดแบบโต้ตอบ</h2>
+                <p class="dashboard-instructions">ลากการ์ดจากเมนูด้านซ้ายมาวางในพื้นที่นี้เพื่อสร้างแดชบอร์ดของคุณ</p>
+                
+                <div class="dashboard-grid" id="dashboardGrid">
+                    <div class="grid-cell" data-position="0"></div>
+                    <div class="grid-cell" data-position="1"></div>
+                    <div class="grid-cell" data-position="2"></div>
+                    <div class="grid-cell" data-position="3"></div>
+                    <div class="grid-cell" data-position="4"></div>
+                    <div class="grid-cell" data-position="5"></div>
+                </div>
+            </div>
+            
+            <div class="combination-area" id="combinationArea">
+                <div class="combination-title">การวิเคราะห์ร่วม</div>
+                <div class="stacked-charts" id="stackedCharts">
+                    <!-- Stacked charts will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Overlay for expanded card -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" data-action="expand">ขยาย</div>
+        <div class="context-menu-item" data-action="combine">รวมข้อมูล</div>
+        <div class="context-menu-item" data-action="stack">ซ้อนกราฟ</div>
+        <div class="context-menu-item" data-action="remove">ลบออก</div>
+    </div>
+    
+    <footer class="footer">
+        <div>© 2025 Anti-Normalization - Generic Data Mapping System</div>
+        <div>ระบบแมปข้อมูลทั่วไป - สำหรับข้อมูลทุกโดเมน</div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // สร้างเส้นและจุดในพื้นหลัง
+            const background = document.getElementById('backgroundEffect');
+            
+            // สร้างเส้นตั้ง
+            for (let i = 0; i < 10; i++) {
+                const line = document.createElement('div');
+                line.className = 'vertical-line';
+                line.style.left = `${5 + i * 10}%`;
+                line.style.animationDelay = `${i * 0.5}s`;
+                background.appendChild(line);
+            }
+            
+            // สร้างจุด
+            for (let i = 0; i < 50; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.style.left = `${Math.random() * 100}%`;
+                dot.style.top = `${Math.random() * 100}%`;
+                dot.style.animationDelay = `${Math.random() * 3}s`;
+                dot.style.opacity = Math.random() * 0.5 + 0.1;
+                background.appendChild(dot);
+            }
+            
+            // ข้อมูลการ์ด
+            const cardData = [
+                {
+                    id: 'card1',
+                    title: 'ธุรกรรมล่าสุด',
+                    type: 'data',
+                    content: `
+                        <div class="card-description">แสดงรายการธุรกรรมล่าสุดในระบบ ข้อมูลจัดเก็บในรูปแบบ OntologyCore</div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID1</th>
+                                    <th>ID2</th>
+                                    <th>StatN</th>
+                                    <th>StatC</th>
+                                    <th>Slot1</th>
+                                    <th>Slot2</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>SH04</td>
+                                    <td>BYH</td>
+                                    <td>0</td>
+                                    <td>B</td>
+                                    <td class="slot-value" data-meaning="จำนวนสินค้า">3</td>
+                                    <td class="slot-value" data-meaning="ส่วนลด">0</td>
+                                </tr>
+                                <tr>
+                                    <td>SH08</td>
+                                    <td>BYH</td>
+                                    <td>1</td>
+                                    <td>B</td>
+                                    <td class="slot-value" data-meaning="จำนวนสินค้า">1</td>
+                                    <td class="slot-value" data-meaning="ส่วนลด">0</td>
+                                </tr>
+                                <tr>
+                                    <td>MK02</td>
+                                    <td>BYK</td>
+                                    <td>0</td>
+                                    <td>C</td>
+                                    <td class="slot-value" data-meaning="มูลค่าสินค้า">5800</td>
+                                    <td class="slot-value" data-meaning="ส่วนลด">200</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `,
+                    chartType: null
+                },
+                {
+                    id: 'card2',
+                    title: 'กราฟยอดขายตามประเภท',
+                    type: 'analytics',
+                    content: `<div class="card-description">แสดงยอดขายแบ่งตามประเภท StatN (เงินสด/เงินเชื่อ) และเปรียบเทียบกันในรูปแบบกราฟ</div>
+                             <div class="chart-container"><canvas id="salesChart"></canvas></div>`,
+                    chartType: 'bar',
+                    chartData: {
+                        labels: ['ม.ค', 'ก.พ', 'มี.ค', 'เม.ย', 'พ.ค', 'มิ.ย'],
+                        datasets: [
+                            {
+                                label: 'เงินสด (StatN=0)',
+                                data: [12500, 15000, 18200, 20300, 22100, 32450],
+                                backgroundColor: 'rgba(86, 171, 47, 0.6)',
+                                borderColor: '#56ab2f',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'เงินเชื่อ (StatN=1)',
+                                data: [5200, 6300, 8100, 9500, 11200, 13422],
+                                backgroundColor: 'rgba(253, 203, 110, 0.6)',
+                                borderColor: '#fdcb6e',
+                                borderWidth: 1
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 'card3',
+                    title: 'แนวโน้มมูลค่าธุรกรรม',
+                    type: 'analytics',
+                    content: `<div class="card-description">แสดงแนวโน้มของมูลค่าธุรกรรมในรูปแบบกราฟเส้น</div>
+                             <div class="chart-container"><canvas id="trendChart"></canvas></div>`,
+                    chartType: 'line',
+                    chartData: {
+                        labels: ['ม.ค', 'ก.พ', 'มี.ค', 'เม.ย', 'พ.ค', 'มิ.ย'],
+                        datasets: [
+                            {
+                                label: 'มูลค่าธุรกรรมรวม',
+                                data: [17700, 21300, 26300, 29800, 33300, 45872],
+                                borderColor: '#6b8afd',
+                                backgroundColor: 'rgba(107, 138, 253, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 'card4',
+                    title: 'สัดส่วนประเภทธุรกรรม',
+                    type: 'analytics',
+                    content: `<div class="card-description">แสดงสัดส่วนประเภทธุรกรรมโดยแบ่งตาม StatC (B-จำนวนนับ, C-ราคา, A-คำนวณ)</div>
+                             <div class="chart-container"><canvas id="pieChart"></canvas></div>`,
+                    chartType: 'pie',
+                    chartData: {
+                        labels: ['จำนวนนับ (B)', 'ราคา (C)', 'ผลลัพธ์คำนวณ (A)'],
+                        datasets: [
+                            {
+                                data: [289, 96, 45],
+                                backgroundColor: [
+                                    'rgba(86, 171, 47, 0.7)',
+                                    'rgba(253, 203, 110, 0.7)',
+                                    'rgba(107, 138, 253, 0.7)'
+                                ],
+                                borderColor: [
+                                    '#56ab2f',
+                                    '#fdcb6e',
+                                    '#6b8afd'
+                                ],
+                                borderWidth: 1
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 'card5',
+                    title: 'Top ID1',
+                    type: 'summary',
+                    content: `
+                        <div class="card-description">แสดงรายการ ID1 ที่มีจำนวนธุรกรรมมากที่สุด</div>
+                        <div class="chart-container"><canvas id="topID1Chart"></canvas></div>
+                    `,
+                    chartType: 'horizontalBar',
+                    chartData: {
+                        labels: ['SH', 'MK', 'OT'],
+                        datasets: [
+                            {
+                                label: 'จำนวนรายการ',
+                                data: [128, 95, 45],
+                                backgroundColor: [
+                                    'rgba(107, 138, 253, 0.7)',
+                                    'rgba(156, 95, 255, 0.7)',
+                                    'rgba(86, 171, 47, 0.7)'
+                                ],
+                                borderColor: [
+                                    '#6b8afd',
+                                    '#9c5fff',
+                                    '#56ab2f'
+                                ],
+                                borderWidth: 1
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 'card6',
+                    title: 'Top ID2',
+                    type: 'summary',
+                    content: `
+                        <div class="card-description">แสดงรายการ ID2 ที่มีจำนวนธุรกรรมมากที่สุด</div>
+                        <div class="chart-container"><canvas id="topID2Chart"></canvas></div>
+                    `,
+                    chartType: 'horizontalBar',
+                    chartData: {
+                        labels: ['BYH', 'BYK', 'BYT'],
+                        datasets: [
+                            {
+                                label: 'จำนวนรายการ',
+                                data: [256, 76, 53],
+                                backgroundColor: [
+                                    'rgba(156, 95, 255, 0.7)',
+                                    'rgba(107, 138, 253, 0.7)',
+                                    'rgba(86, 171, 47, 0.7)'
+                                ],
+                                borderColor: [
+                                    '#9c5fff',
+                                    '#6b8afd',
+                                    '#56ab2f'
+                                ],
+                                borderWidth: 1
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 'card7',
+                    title: 'สรุปยอดขายรวม',
+                    type: 'summary',
+                    content: `
+                        <div class="card-description">สรุปยอดขายรวมแบ่งตามประเภท StatN</div>
+                        <div style="text-align:center; padding:15px 0;">
+                            <h3 style="font-size:1.8rem; margin:5px 0;">45,872.50 บาท</h3>
+                            <div style="margin:10px 0;">เงินสด (StatN=0): 32,450.00 บาท</div>
+                            <div>เงินเชื่อ (StatN=1): 13,422.50 บาท</div>
+                        </div>
+                        <div class="chart-container" style="height:150px"><canvas id="summaryChart"></canvas></div>
+                    `,
+                    chartType: 'doughnut',
+                    chartData: {
+                        labels: ['เงินสด (StatN=0)', 'เงินเชื่อ (StatN=1)'],
+                        datasets: [
+                            {
+                                data: [32450, 13422.5],
+                                backgroundColor: [
+                                    'rgba(86, 171, 47, 0.7)',
+                                    'rgba(253, 203, 110, 0.7)'
+                                ],
+                                borderColor: [
+                                    '#56ab2f',
+                                    '#fdcb6e'
+                                ],
+                                borderWidth: 1
+                            }
+                        ]
+                    }
+                },
+                {
+                    id: 'card8',
+                    title: 'จำนวนรายการ',
+                    type: 'summary',
+                    content: `
+                        <div class="card-description">สรุปจำนวนรายการธุรกรรมในระบบ</div>
+                        <div style="text-align:center; padding:15px 0;">
+                            <h3 style="font-size:1.8rem; margin:5px 0;">385 รายการ</h3>
+                            <div style="margin:10px 0;">เงินสด (StatN=0): 289 รายการ</div>
+                            <div>เงินเชื่อ (StatN=1): 96 รายการ</div>
+                        </div>
+                        <div class="progress-bar" style="height:20px; margin:15px 0; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
+                            <div style="height:100%; width:75%; background:linear-gradient(to right, #56ab2f, #a8e063);"></div>
+                        </div>
+                    `,
+                    chartType: null
+                }
+            ];
+            
+            // แสดงการ์ดในแถบด้านข้าง
+            const cardDeck = document.getElementById('cardDeck');
+            
+            cardData.forEach(card => {
+                // สร้างการ์ดขนาดย่อ
+                const miniCard = document.createElement('div');
+                miniCard.className = `card mini-card ${card.type}-card`;
+                miniCard.setAttribute('data-id', card.id);
+                miniCard.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-title">${card.title}</div>
+                        <div class="card-tools">
+                            <button class="card-tool drag-handle" title="ลากวาง">↕</button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding:5px; text-align:center;">
+                        <div style="font-size:0.8rem; color:var(--text-secondary);">${
+                            card.type === 'data' ? 'ข้อมูล' : 
+                            card.type === 'analytics' ? 'กราฟวิเคราะห์' : 'สรุป'
+                        }</div>
+                    </div>
+                `;
+                cardDeck.appendChild(miniCard);
+                
+                // ทำให้การ์ดลากได้
+                $(miniCard).draggable({
+                    helper: 'clone',
+                    opacity: 0.7,
+                    zIndex: 100,
+                    containment: 'document',
+                    revert: 'invalid',
+                    start: function(event, ui) {
+                        $(ui.helper).addClass('dragging-card').css('width', $(this).width() + 'px');
+                    }
+                });
+            });
+            
+            // ทำให้ grid cells รับการวางได้
+            $('.grid-cell').droppable({
+                accept: '.mini-card',
+                hoverClass: 'highlight',
+                drop: function(event, ui) {
+                    const cardId = ui.draggable.attr('data-id');
+                    const position = $(this).attr('data-position');
+                    const cardInfo = cardData.find(card => card.id === cardId);
+                    
+                    // ตรวจสอบว่ามีการ์ดอยู่ใน cell นี้แล้วหรือไม่
+                    if ($(this).children('.card').length > 0) {
+                        alert('มีการ์ดอยู่ในตำแหน่งนี้แล้ว กรุณาเลือกตำแหน่งอื่น');
+                        return;
+                    }
+                    
+                    // สร้างการ์ดจริง
+                    const card = document.createElement('div');
+                    card.className = `card ${cardInfo.type}-card`;
+                    card.setAttribute('data-id', cardInfo.id);
+                    card.setAttribute('data-position', position);
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <div class="card-title">${cardInfo.title}</div>
+                            <div class="card-tools">
+                                <button class="card-tool combine-btn" title="รวมข้อมูล">⨁</button>
+                                <button class="card-tool expand-btn" title="ขยาย">⛶</button>
+                                <button class="card-tool close-btn" title="ปิด">✕</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            ${cardInfo.content}
+                        </div>
+                    `;
+                    
+                    // เพิ่มการ์ดไปที่ cell
+                    $(this).empty().append(card);
+                    
+                    // สร้างกราฟ (ถ้ามี)
+                    if (cardInfo.chartType) {
+                        setTimeout(() => {
+                            createChart(cardInfo);
+                        }, 100);
+                    }
+                    
+                    // ทำให้การ์ดสามารถขยับภายใน dashboard ได้
+                    $(card).draggable({
+                        handle: '.card-header',
+                        containment: '.dashboard-area',
+                        zIndex: 10,
+                        stack: '.card'
+                    });
+                    
+                    // เพิ่มเหตุการณ์คลิกขวา
+                    $(card).on('contextmenu', function(e) {
+                        e.preventDefault();
+                        const contextMenu = $('#contextMenu');
+                        contextMenu.css({
+                            top: e.pageY + 'px',
+                            left: e.pageX + 'px'
+                        }).data('card', this).fadeIn(200);
+                    });
+                }
+            });
+            
+            // จัดการเมนูขวาคลิก
+            $(document).on('click', function() {
+                $('#contextMenu').hide();
+            });
+            
+            $('.context-menu-item').on('click', function() {
+                const action = $(this).data('action');
+                const card = $('#contextMenu').data('card');
+                
+                switch(action) {
+                    case 'expand':
+                        expandCard(card);
+                        break;
+                    case 'combine':
+                        combineCards();
+                        break;
+                    case 'stack':
+                        stackCharts();
+                        break;
+                    case 'remove':
+                        $(card).parent().empty();
+                        break;
+                }
+                
+                $('#contextMenu').hide();
+            });
+            
+            // จัดการการคลิกที่ปุ่มในการ์ด
+            $(document).on('click', '.expand-btn', function() {
+                expandCard($(this).closest('.card')[0]);
+            });
+            
+            $(document).on('click', '.close-btn', function() {
+                $(this).closest('.card').parent().empty();
+            });
+            
+            $(document).on('click', '.combine-btn', function() {
+                combineCards();
+            });
+            
+            // จัดการการปิด overlay
+            $('#overlay').on('click', function() {
+                $('.expanded-card').remove();
+                $(this).fadeOut(200);
+            });
+            
+            // ฟังก์ชันสร้างกราฟ
+            function createChart(cardInfo) {
+                const chartId = cardInfo.id + 'Chart';
+                let chartType = cardInfo.chartType;
+                
+                // แก้ไขชื่อ type ที่ไม่ตรงกับ Chart.js
+                if (chartType === 'horizontalBar') {
+                    chartType = 'bar';
+                }
+                
+                const chartElement = document.getElementById(chartId);
+                if (!chartElement) return;
+                
+                const chartOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#e0e0e0',
+                                font: {
+                                    family: 'Prompt'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            titleFont: {
+                                family: 'Prompt'
+                            },
+                            bodyFont: {
+                                family: 'Prompt'
+                            }
+                        }
+                    },
+                    scales: chartType !== 'pie' && chartType !== 'doughnut' ? {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a0a0a0'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a0a0a0'
+                            }
+                        }
+                    } : undefined
+                };
+                
+                // เพิ่ม options เฉพาะสำหรับแต่ละประเภทกราฟ
+                if (chartType === 'bar' && cardInfo.chartType === 'horizontalBar') {
+                    chartOptions.indexAxis = 'y';
+                }
+                
+                new Chart(chartElement, {
+                    type: chartType,
+                    data: cardInfo.chartData,
+                    options: chartOptions
+                });
+            }
+            
+            // ฟังก์ชันขยายการ์ด
+            function expandCard(card) {
+                const cardId = $(card).data('id');
+                const cardInfo = cardData.find(c => c.id === cardId);
+                
+                // สร้างการ์ดขยาย
+                const expandedCard = document.createElement('div');
+                expandedCard.className = `card expanded-card ${cardInfo.type}-card`;
+                expandedCard.setAttribute('data-id', cardInfo.id);
+                expandedCard.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-title">${cardInfo.title}</div>
+                        <div class="card-tools">
+                            <button class="card-tool close-expanded-btn" title="ปิด">✕</button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="max-height:70vh; overflow-y:auto;">
+                        ${cardInfo.content}
+                    </div>
+                `;
+                
+                // แสดงการ์ดขยาย
+                document.body.appendChild(expandedCard);
+                $('#overlay').fadeIn(200);
+                
+                // สร้างกราฟใหม่ (ถ้ามี)
+                if (cardInfo.chartType) {
+                    setTimeout(() => {
+                        createChart(cardInfo);
+                    }, 100);
+                }
+                
+                // ปิดการ์ดขยาย
+                $('.close-expanded-btn').on('click', function() {
+                    $(expandedCard).remove();
+                    $('#overlay').fadeOut(200);
+                });
+            }
+            
+            // ฟังก์ชันรวมการ์ด
+            function combineCards() {
+                // ตรวจสอบว่ามีการ์ดอย่างน้อย 2 ใบในแดชบอร์ด
+                const cardsInDashboard = $('.dashboard-grid .card');
+                if (cardsInDashboard.length < 2) {
+                    alert('ต้องมีการ์ดอย่างน้อย 2 ใบเพื่อทำการรวมข้อมูล');
+                    return;
+                }
+                
+                // แสดงพื้นที่รวมข้อมูล
+                $('#combinationArea').slideDown();
+                $('#stackedCharts').empty();
+                
+                // สร้างกราฟซ้อนกัน
+                let chartIndex = 0;
+                cardsInDashboard.each(function() {
+                    const cardId = $(this).data('id');
+                    const cardInfo = cardData.find(card => card.id === cardId);
+                    
+                    if (cardInfo.chartType && (cardInfo.chartType === 'line' || cardInfo.chartType === 'bar')) {
+                        // สร้าง layer สำหรับกราฟ
+                        const chartLayer = document.createElement('div');
+                        chartLayer.className = 'chart-layer';
+                        chartLayer.style.zIndex = 5 + chartIndex;
+                        chartLayer.innerHTML = `<canvas id="stackedChart${chartIndex}"></canvas>`;
+                        $('#stackedCharts').append(chartLayer);
+                        
+                        // สำเนาข้อมูลกราฟ
+                        const chartDataCopy = JSON.parse(JSON.stringify(cardInfo.chartData));
+                        
+                        // ปรับความโปร่งใสของกราฟ
+                        chartDataCopy.datasets.forEach(dataset => {
+                            if (dataset.backgroundColor && !Array.isArray(dataset.backgroundColor)) {
+                                dataset.backgroundColor = dataset.backgroundColor.replace(/[\d\.]+\)$/, '0.2)');
+                            }
+                            dataset.borderWidth = 2;
+                        });
+                        
+                        // สร้างกราฟใหม่
+                        setTimeout(() => {
+                            const chartElement = document.getElementById(`stackedChart${chartIndex}`);
+                            new Chart(chartElement, {
+                                type: cardInfo.chartType,
+                                data: chartDataCopy,
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: {
+                                            position: 'top',
+                                            labels: {
+                                                color: '#e0e0e0'
+                                            }
+                                        },
+                                        tooltip: {
+                                            mode: 'index',
+                                            intersect: false
+                                        }
+                                    },
+                                    scales: {
+                                        x: {
+                                            grid: {
+                                                display: chartIndex === 0,
+                                                color: 'rgba(255, 255, 255, 0.1)'
+                                            },
+                                            ticks: {
+                                                color: '#a0a0a0',
+                                                display: chartIndex === 0
+                                            }
+                                        },
+                                        y: {
+                                            position: chartIndex % 2 === 0 ? 'left' : 'right',
+                                            grid: {
+                                                display: chartIndex === 0,
+                                                color: 'rgba(255, 255, 255, 0.1)'
+                                            },
+                                            ticks: {
+                                                color: '#a0a0a0'
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }, 100);
+                        
+                        chartIndex++;
+                    }
+                });
+                
+                // ถ้าไม่มีกราฟเส้นหรือกราฟแท่ง
+                if (chartIndex === 0) {
+                    $('#stackedCharts').html('<div style="padding:20px; text-align:center;">ไม่พบกราฟที่สามารถซ้อนทับกันได้ กรุณาใช้การ์ดที่มีกราฟเส้นหรือกราฟแท่ง</div>');
+                }
+            }
+            
+            // ฟังก์ชันซ้อนกราฟ
+            function stackCharts() {
+                combineCards();
+            }
+            
+            // จัดการการย่อ/ขยายทั้งหมด
+            $('#collapseAll').on('click', function() {
+                const isCollapsed = $(this).attr('data-collapsed') === 'true';
+                if (isCollapsed) {
+                    $('.mini-card').slideDown();
+                    $(this).attr('data-collapsed', 'false').text('⊟').attr('title', 'ย่อทั้งหมด');
+                } else {
+                    $('.mini-card').slideUp();
+                    $(this).attr('data-collapsed', 'true').text('⊞').attr('title', 'ขยายทั้งหมด');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
