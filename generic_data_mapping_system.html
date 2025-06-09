@@ -1534,7 +1534,6 @@
             }
             
             // Fix for side panel z-index issue and improved toggle functionality
-document.addEventListener('DOMContentLoaded', function() {
     const sidePanel = document.getElementById('sidePanel');
     const workspace = document.getElementById('dashboardWorkspace');
     
@@ -1767,8 +1766,9 @@ document.addEventListener('DOMContentLoaded', function() {
     addResizeHandlesToCards();
     improveCardSelection();
     fixCardStacking();
-     });
-        });
-    </script>
+        // สร้างอินสแตนซ์ของ DashboardManager
+    window.dashboardManager = new DashboardManager();
+});
+</script>
 </body>
 </html>
