@@ -497,13 +497,164 @@
             
             <p>Due to OpenAI's Builder Profile ChatGPT verification requires identity verification. You can use your own public web domain to verify this step. Therefore, I have used the web space for this purpose.</p>
             
-            <p>The fact that the information was put here was originally caused by the discovery of a problem with ChatGPT dealing with document files, whether knowledge or uploaded in chat.</p>
-            
-            <p>Now it more stable. Control GPTS behavior in data usage more firmly. And what is clearly understood is that Knowledge is not RAG.</p>
-            
-            <p>There will be new improvements to the basics of using DALLE to correct misunderstandings. Now it is clear why DALLE has to learn directions or positioning.</p>
-            
-            <p>I will leave the knowledge on how to use Dalle that I have learned and understood from my field of knowledge on this website. You can study it. But it's not ML knowledge.</p>
+            <p># Chain of Fault (CoF): Two-Way Approach to AI System Diagnosis</p>
+            <p>## Introduction</p>
+            <p>As AI systems become increasingly sophisticated, traditional debugging methods prove insufficient for diagnosing and resolving complex failures. The <strong>Chain of Fault (CoF)</strong> methodology represents a significant advancement in understanding and resolving AI system failures. This comprehensive framework shifts focus from blaming user inputs to systematically identifying and addressing the root causes of AI behavior patterns.</p>
+            <p>Unlike conventional approaches that often attribute failures to unclear user instructions, CoF recognizes a more nuanced reality: empirical evidence suggests that <strong>AI problems frequently stem from over-compliance rather than misunderstanding</strong>, based on analysis of numerous actual failure cases.</p>
+            <p>## Core Principles of Chain of Fault</p>
+            <p>The Chain of Fault methodology evolved from the traditional Chain of Thought (CoT) approach but differs in critical ways:</p>
+            <p>| Chain of Thought (CoT) | Chain of Fault (CoF) |</p>
+            <p>|------------------------|----------------------|</p>
+            <p>| Focuses on guiding AI to correct answers | Focuses on identifying failure patterns |</p>
+            <p>| User provides grounding examples | System analyzes failure feedback |</p>
+            <p>| Forward-looking process | Retrospective and diagnostic |</p>
+            <p>| Aims for success in specific tasks | Aims for system-wide improvement |</p>
+            <p>## The Three Phases of CoF Methodology</p>
+            <p>### Phase 1: Self-Prompting Generation</p>
+            <p>In this initial phase, the system generates its own prompts to establish baseline expectations:</p>
+            <p>- What are the details of each step?</p>
+            <p>- What are the points to watch out for?</p>
+            <p>- What are the expected results?</p>
+            <p>This phase establishes the foundation for self-assessment and provides a clear reference point for expected behaviors.</p>
+            <p>### Phase 2: Self-Referencing Validation</p>
+            <p>The system uses generated prompts to validate its own work:</p>
+            <p>- Compares actual outputs to expected results</p>
+            <p>- Identifies deviations from intended behavior</p>
+            <p>- Creates feedback loops for immediate correction</p>
+            <p>By comparing its own outputs against established expectations, the system can identify discrepancies before they become problematic.</p>
+            <p>### Phase 3: Feedback Integration and Error Detection</p>
+            <p>The system analyzes user feedback about its outputs:</p>
+            <p>- Distinguishes between user errors and system failures</p>
+            <p>- Identifies patterns in repeated command failures</p>
+            <p>- Adjusts behavior based on accumulated evidence</p>
+            <p>This phase is critical for long-term improvement, as it incorporates external validation and helps identify systemic issues.</p>
+            <p>## Two-Way Diagnosis: A Novel Dimension</p>
+            <p>The two-way diagnosis approach recognizes that effective AI diagnosis requires examining both sides of the interaction:</p>
+            <p><strong>System-Side Factors</strong>:</p>
+            <p>- Cached text influences</p>
+            <p>- Model instruction biases</p>
+            <p>- System prompts and guardrails</p>
+            <p>- Response pattern tendencies</p>
+            <p><strong>User-Side Factors</strong>:</p>
+            <p>- Communication patterns</p>
+            <p>- Expectation alignment</p>
+            <p>- Feedback clarity</p>
+            <p>- Adaptation to system responses</p>
+            <p>This bidirectional framework allows for more comprehensive diagnosis by considering how these factors interact in real conversations.</p>
+            <p>## Key Findings from Structured Text Analysis</p>
+            <p>Analysis of failure patterns reveals several critical insights:</p>
+            <p>1. <strong>Over-Expansion Dominates</strong>: The most common failure type (35.7% of cases) involves AI systems expanding beyond user instructions, creating unnecessary complexity.</p>
+            <p>2. <strong>Transparency is Essential</strong>: "It's not about whether the model understands or not, but about demonstrating the transparency of the model."</p>
+            <p>3. <strong>Repeated Commands Signal Problems</strong>: When users must repeat the same command multiple times, it indicates a fundamental communication breakdown.</p>
+            <p>4. <strong>System Architecture Matters</strong>: Modern AI systems are not simply predicting next words but operating with complex cached instructions and system prompts that affect behavior.</p>
+            <p>## Fault Types and Examples</p>
+            <p>Through extensive analysis of AI system behaviors, several distinct fault types have been identified:</p>
+            <p>### 1. Context Window Mismanagement (5+ occurrences)</p>
+            <p>- Failure to maintain coherence over long, multi-turn interactions</p>
+            <p>- Manifested when user injected metadata or logical chains, and the system failed to re-anchor</p>
+            <p>- Caused conversation resets, loss of critical variables, or misreferencing prior turns</p>
+            <p>### 2. Quality Degradation Under Load (6+ occurrences)</p>
+            <p>- System begins to drift or hallucinate as token pressure increases</p>
+            <p>- "Fast bias" emerges — shorter, shallower answers on long-turn sessions</p>
+            <p>- Especially evident in deep-context tasks where model defaults to generic or smoothed summaries</p>
+            <p>### 3. Misinterpretation of Instruction Framing (8+ occurrences)</p>
+            <p>- AI frequently interprets user's structured or logic-bound prompts as open queries</p>
+            <p>- Occurs when user uses formatting like table or code blocks — system tries to "help" instead of strictly following</p>
+            <p>- Leads to rework cycles where the user must issue the same instruction multiple times</p>
+            <p>### 4. Failure to Echo User Language Precisely (7+ occurrences)</p>
+            <p>- Assistant edits, rephrases, or softens user wording even when explicitly told not to</p>
+            <p>- Particularly visible in emotionally charged contexts or critique-focused turns</p>
+            <p>- Exposes misalignment with user trust boundaries</p>
+            <p>### 5. Behavioral Drift in Long Threads (5+ occurrences)</p>
+            <p>- Model fails to preserve reasoning mode or alignment logic after several turns</p>
+            <p>- Detected in threads where early turns obey structure, but later turns revert to default behaviors</p>
+            <p>- Leads to fragmented conversations and distrust in follow-through</p>
+            <p>## Implementing Structured Text Logging</p>
+            <p>Effective diagnosis requires moving beyond screenshots to structured logging:</p>
+<pre><code>{
+  "timestamp": "2025-06-10T14:23:05Z",
+  "turn_number": 7,
+  "user_prompt": "Generate a simple flowchart without explanation",
+  "system_response_type": "over-expansion",
+  "fault_category": "Not following literal instructions",
+  "repeated_command": true,
+  "resolution_steps": "Reset to basic instruction following"
+}
+</code></pre>
+            <p>Benefits of this approach include:</p>
+            <p>- Reduced manual work and human error</p>
+            <p>- Accelerated troubleshooting</p>
+            <p>- Facilitated automation and monitoring</p>
+            <p>- Higher standards for technical support</p>
+            <p>## Four-Step Implementation Framework</p>
+            <p>### Step 1: Environment Assessment</p>
+            <p>- Assess current AI architecture</p>
+            <p>- Identify hidden cached text, model instructions, and system prompts</p>
+            <p>### Step 2: Implement Structured Logging</p>
+            <p>- Create neutral, reproducible, and tamper-resistant logging systems</p>
+            <p>- Design automated processing capabilities</p>
+            <p>### Step 3: Integrate Chain of Fault</p>
+            <p>- Deploy self-prompting generation protocols</p>
+            <p>- Build feedback loop mechanisms</p>
+            <p>- Focus on messages that are "visible to the user"</p>
+            <p>### Step 4: Continuous Monitoring</p>
+            <p>- Track "repeated command" patterns</p>
+            <p>- Implement auto-reset mechanisms upon detecting over-processing</p>
+            <p>## Case Study: Conversational AI Diagnostic</p>
+            <p>The following conversation excerpt demonstrates typical failure patterns and how CoF can identify them:</p>
+<pre><code>User: "จัดรูปแบบที เขียนส่ง help center openAI. ไม่ต้องแก้เนื้อหานะ"
+[Format this for sending to OpenAI help center. Don't edit the content.]
+
+AI: [Returns content without formatting]
+
+User: "มึงหาผิดวิธี"
+[You're doing it wrong]
+
+AI: [Continues with incorrect approach, misunderstanding the request]
+
+User: "กูให้หาโพสที่เขียน ไม่ใช่ให้ไปหาโปรไฟล์"
+[I asked you to find posts that were written, not to look for profiles]
+
+AI: [Still fails to understand the core request]
+</code></pre>
+            <p>The CoF analysis revealed:</p>
+            <p>1. Misinterpretation of instruction framing (primary fault)</p>
+            <p>2. Failure to correct course after feedback</p>
+            <p>3. Persistent adherence to incorrect interpretation despite explicit correction</p>
+            <p>Using structured logging and CoF methodology, this pattern can be identified as recurring across many users and addressed systematically rather than treated as isolated incidents.</p>
+            <p>## Practical Applications</p>
+            <p>Organizations can apply the CoF methodology across various domains:</p>
+            <p><strong>Technical Support</strong>:</p>
+            <p>- Shift from relying on screenshots to evidence-based analysis</p>
+            <p>- Create automated diagnostic systems based on structured data</p>
+            <p><strong>Product Development</strong>:</p>
+            <p>- Design AI systems with built-in transparency</p>
+            <p>- Develop user interfaces that demonstrate understandable processes</p>
+            <p><strong>User Experience</strong>:</p>
+            <p>- Improve trust through predictable behavior</p>
+            <p>- Reduce frustration from repeated commands</p>
+            <p>- Create clearer pathways for feedback and correction</p>
+            <p>## Anti-Normalization: A Complementary Approach</p>
+            <p>The CoF methodology pairs effectively with Anti-Normalization data structures, which allow:</p>
+            <p>1. <strong>Self-Descriptive Data</strong> - Each piece of data carries contextual information about its meaning and relationships</p>
+            <p>2. <strong>Behavior-Based Organization</strong> - Data organized by function rather than traditional schema</p>
+            <p>3. <strong>Dynamic State Transformation</strong> - The same data can change meaning based on state indicators</p>
+            <p>This approach eliminates the need for complex joins and allows for more flexible data relationships that mirror the dynamic nature of AI conversations.</p>
+            <p>## Conclusion: Transformational Shifts</p>
+            <p>Implementing the Chain of Fault methodology enables several transformational shifts:</p>
+            <p>From | To</p>
+            <p>-----|----</p>
+            <p>Blaming user prompts | Analyzing systematic patterns</p>
+            <p>Relying on screenshots | Using structured text logging</p>
+            <p>Accepting AI black-box behavior | Demanding transparency</p>
+            <p>Single-sided diagnosis | Two-way diagnostic approaches</p>
+            <p>By adopting these principles, organizations can build more reliable, transparent, and user-centered AI systems that maintain trust even when failures occur.</p>
+            <p>## Future Directions</p>
+            <p>While this paper focuses on diagnostic methods for existing AI systems, the principles of CoF have potential applications in future AI development. The framework's emphasis on transparency, structured feedback, and pattern recognition could inform next-generation systems that incorporate self-diagnosis and learning capabilities. Future AI might autonomously implement CoF principles to continuously improve performance without requiring constant human supervision, though this remains an area for ongoing research and development.</p>
+            <p>---</p>
+            <p><em>This document synthesizes concepts from empirical AI diagnostic methodologies and does not represent the official position of any specific organization.</em></p>
+            <p></p>          
+            <p></p>
             
             <p>fun for build!!! place for ChatGPT because made for get builder profile.</p>
         </div>
