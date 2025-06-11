@@ -1,16 +1,21 @@
-name: CI
-on: [push]
-jobs:
-  test-deploy:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-    - run: pip install fastapi uvicorn
-    - run: echo "Tests passed"
-    - uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./frontend
+ name: CI
+ on: [push]
+ jobs:
+   test-deploy:
+     runs-on: ubuntu-latest
+     steps:
+     - uses: actions/checkout@v3
+     - uses: actions/setup-python@v4
+       with:
+         python-version: '3.11'
+     - run: pip install fastapi uvicorn
+     - run: echo "Tests passed"
+     - run: pip install -r requirements.txt
+     - run: flake8 .
+     - run: black --check .
+     - run: pyright
+     - run: pytest
+     - uses: peaceiris/actions-gh-pages@v3
+       with:
+         github_token: ${{ secrets.GITHUB_TOKEN }}
+         publish_dir: ./frontend
