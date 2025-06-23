@@ -97,59 +97,56 @@ Do you understand that when it is in this state, there will be a schema similar 
 
 
 #2
-เรามาดูการอ้างอิง Ontology เดิมทีโครงสร้างของฉัน มันยืดหยุ่นกว่า Ontology มาก ดังนั้นไม่ต้องห่วงในการขยาย แต่จะเอา Onto มาเป็นโครงร่างคลุมด้านนอก 
-ฉันจะไม่ใช้ ภาษาของ ontology เพื่อ map กับฟีลด์ แต่ฉันจะเอาโครงสร้าง sting ของฉัน map ก่อน เพื่อแทรกกฏของตัวเองลงไป 
+Let's look at referencing Ontology. Initially, my structure was more flexible than Ontology.
+I will not use the language of ontology to map with the field, but I will use my string structure to map instead.
 
-เอาเป็นว่า กฏบางอย่างในไฟล์มันใช้ไม่ได้ ระบบของฉันส่วนใหญ่คือ 
-- ตัวจำแนก ได้แก่ headder หรือ ค่าในฟีลด์ ซึ่งโดยทั่วไปแล้วจะมีความสำคัญเรียงจากซ้ายไปขวาอยู่แล้ว (ตามหลักภาษา) คือ Date, (ID1,ID2), (StatN,StatC), [SlotN]
-- ฟีลด์/ข้อมูล โดยปกติแล้ว สามารถใส่ลงไปใน  ID1, ID2, Slot ได้ แต่จะมีหน้าที่บทบาทต่างกัน 
-ฉันเองใช้มาตั้งนานแต่ไม่เคยได้อธิบายเป็นกรอบแบบนี้ออกมา เลยไม่มีกฏการทำงานทีชัดเจนเขียนไว้ ทีนี้เราจะพบว่าแต่ละชุดของค่าเหล่านี้มีความสัมพันธ์ที่แยกจากกัน 
-แต่เมื่อรวมกันจะกลายเป็นฤติกรรมที่กระทำออกมาเปลี่ยนแปลงไป และสามารถคำนวนหรืออธิบายได้ทั้ง fact (ของคณิต) และ truth (ของภาษา) 
+Let’s say that some rules in the file can't be used. Most of my system is:
 
-(StatN, StatC) บอกผลลัพธ์หรือสถานะของ Event 
-โดยปกติแล้วจะเป็นการ transfrom หรือควบคุม และช่วยเพิ่มการจำแนก เช่น การเปลี่ยน A B C จะทำให้สามารพสร้างการแปลี่ยนแปลงค่าใน slot ตามฐานข้อมูลที่ header ของ slot นั้นมีอยู่ 
-ในกรณีนี้ B คือปริมาณ C คือราคาสินค้า เมื่อนำามคำนวนกัน จะได้ A ที่เป็นราคาของรายการใน transection น้น 
-การแปลง Stat ไม่ได้แปลงทุกตัวใน row ด้วยวิธีเดียวกัน แต่ Stat เป็นเหมือนรหัส บรรจุ logic ที่ส่งผลต่อ field ของ slot 
-ใน transection ที่ฉันใช้ฉันจะใส่ slot 2 อันหลังเป็นกฏ dreduce และ deduce โดยไม่ถุกเปลี่ยนตาม Stat ที่ใช้บางตัว 
-ทำให้สามารถแทนที่ event จำนวนมากในธุรกรรมทางการค้าได้ หรือจะเรียกได้ว่า stat คือการ เปลี่ยน label เพื่อแสดงความสัมพันธ์ของ slot ใน row นั้น 
-ดังนั้นการออกแบบฟีลด์ต่างๆใน slot เป็นสิ่งสำคัญ ต้องคำนึงถึงเหตุการณ์ที่จะเกิดขึ้น กลายมาเป็นความแตกต่างใน slot ที่มี stat เป็นตัวเลือกก็ว่าได้
- 
-ดังตัวอย่างเช่น ข้อมูลดังนี้ (เริ่มฟีลด์แรกที่ statN)
-0,B,0,2,3,4,0,0,0 = ลูกค้าซื้อเงินสด
-0,B,0,2,3,4,0,20,0 = ลูกค้าซื้อเงินสด และมีส่วนลด 20
-0,B,0,2,3,4,0,0,500 = ลูกค้าซื้อเงินสด และจ่ายเงินชำระหนี้ (หรือมีเหตุใดๆที่ร้านเพิ่มกับสถานะผูกพันหนี้สินของลูกค้าลดลง หรือการเพิ่มค่าเงินสดสะสมของลูกค้า (เช่นลูกค้าลืมเงินทอน ระบบนี้สุจริตพอที่จะนึกถึงไว้ก่อน)
+Identifiers: such as header or field values, which are generally important.
+Field/data: usually can be put in ID1, ID2, Slot, but will have roles and functions depending on context.
+I have used it for a long time but never explained it like this, so there are no clear rules.
+But when combined, it becomes a behavior that changes and can be used to classify events.
+(StatN, StatC) indicate the result or status of the Event.
+Normally, it is a transform or control and helps increase classification, such as changing the price or type of transaction.
+In this case, B is the quantity, C is the price of the product. When calculated together, A is the total price.
+The transformation of Stat does not transform every item in the row the same way, but Stat is like a code to control the event.
+In transactions I use, I put the last 2 slots as dreduce and deduce rules, not changed by the transaction, so they can represent many events in commercial transactions, or can be called stat rules.
+Therefore, designing various fields in slots is important, must consider the events to be represented.
 
-1,B,0,2,3,4,0,0,0 = ลูกค้าซือเงินเชื่อ 
-1,B,0,2,3,4,0,20,0 = ลูกค้าซื้อเงินเชื่อ และมีส่วนลด 20 
-1,B,0,2,3,4,0,0,500 = ลูกค้าซื้อของแบบเงินเชื่อ และชำระเงินสดส่วนนึง (หรือชำระหนี้เก่า)
+For example, the following data (starting with the first field as statN):
+0,B,0,2,3,4,0,0,0 = Customer buys with cash
+0,B,0,2,3,4,0,20,0 = Customer buys with cash and has a discount of 20
+0,B,0,2,3,4,0,0,500 = Customer buys with cash and pays debt (or other events specified by the shop)
 
-0,B,0,0,0,0,0,0,0 = ไม่มีอะไรเกิดขึ้นในรายการ
-0,B,0,0,0,0,0,20,0 = ระบบอาจมีส่วนลด 20 ที่เกิดจากเวลา (เช่นวันเกิด) เมื่ออยู่ในสถานะนี้ สามารถเป็นโบนัสะแนนแทน 
-0,B,0,0,0,0,0,0,500 = ลูกค้าชำระหนี้อย่างเดียว
+1,B,0,2,3,4,0,0,0 = Customer buys on credit
+1,B,0,2,3,4,0,20,0 = Customer buys on credit and has a discount of 20
+1,B,0,2,3,4,0,0,500 = Customer buys on credit and pays part of the debt with cash (or pays debt directly)
 
-1,B,0,0,0,0,0,0,0 = บางทีอาจจะ error แต่การที่ค่าเป็น 0 จึงไม่มีผลต่อธุรกรรมใดๆ แต่ควรกำหนดขอบเขตเหตุการณ์ไว้ 
-1,B,0,0,0,0,0,20,0 =เออ คิดเผื่อไว้ก่อนแต่ที่แน่ๆ อะไรที่เกี่ยวกับหนี้แล้วลูกค้าได้รับประโยชน์ก็ต้องมีหละน่า
-1,B,0,0,0,0,0,0,500 =  แบบข้อบน
+0,B,0,0,0,0,0,0,0 = Nothing happens in this transaction
+0,B,0,0,0,0,0,20,0 = The system may have a discount of 20 due to time (e.g., birthday) when in this status
+0,B,0,0,0,0,0,0,500 = Customer only pays debt
 
+1,B,0,0,0,0,0,0,0 = Maybe an error, but a value of 0 has no effect on any transactions but should be checked
+1,B,0,0,0,0,0,20,0 = Just in case, but anything about debt and the customer receives it should be checked
+1,B,0,0,0,0,0,0,500 = Same as above
 
-ระบบ transection ฉันจะไม่มีการ compu มาเก็บข้อมูลในตัว ดังตัวอย่าง สมมุติว่า จะคำนวนราคาของ sting
+In my transaction system, there is no compu stored in the data. For example, suppose
 1,B,0,2,3,4,0,20,500
 
-สมมุติว่าสินค้าแตละ slot เท่ากับ และใช้ C ที่เป็นรหัสอ้างอิงราคา (หรือ การเป็นข้อมููลพื้นฐานสินค้า)
-slot1 = 10,slot2 = 15,slot3 = 20,slot4 = 25,slot5 = 30
+Suppose each slot of product is equal to and uses C as a reference code for the price (or referenced price):
+slot1 = 10, slot2 = 15, slot3 = 20, slot4 = 25, slot5 = 30
 
-1,B,0,2,3,4,0,20,500 = B จำสินค้าใน slot ที่1 2 3 4และ 5 ยังไม่เป็นราคา 
-1,C,10,15,20,25,30,20,500 = การเปลี่ยน C สามารถแสดงถึงการสร้าง sting ใหม่เป็น Input ราคาสินค้า ใน transection ได้ และยังตรวจจสอบได้ในตัวเอง
-1,A,0,30,60,50,0,20,500 = B*C แปลว่า ลูกค้าซือเงินเชื่อ 140 บาท ได้รับส่วนลด 20 บาท ชำระหนี้ 500 บาท เงินสดร้านรับเท่ากับ 140-20+500 = 620 บาท สถานะหนี้ลูกค้า +120-500 = ลดลง 380 บาท
+1,B,0,2,3,4,0,20,500 = B remembers the products in slots 1, 2, 3, 4, and 5, not yet priced
+1,C,10,15,20,25,30,20,500 = Changing C can create a new string as an input price for the products in these slots
+1,A,0,30,60,50,0,20,500 = B*C means the customer buys on credit for 140 baht, gets a discount of 20 baht, pays 500 baht
 
 Formula
-เงินสด =Sumifs(SlotI,Relation+Dimentioms+Time+Logic,N=0)
-เงินเชื่อ =Sumifs(SlotI,Relation+Dimentioms+Time+Logic,N=1)
+Cash = Sumifs(SlotI,Relation+Dimensions+Time+Logic,N=0)
+Credit = Sumifs(SlotI,Relation+Dimensions+Time+Logic,N=1)
 
-แทนที่ว่าฉันจะต้องมาเก็บ จำนวนสินค้า และราคาขาย ฉันสร้าง logic ที่สัมพันธ์กัน
-ทำให้เกิดการแปลงค่า และเก็บแค่ transection ของ B กับ ฐานข้อมูลคือ  C  (ไม่ต้อง เก็บ A เพราะมี logic compu ให้)
-เห็นได้ว่า event มันเกิดตั้งแต่การกำหนด slot แต่จัดประเภทด้วย stat แล้วระบุตัวตนของ ID ที่เรียงลำดับด้วย SeQ (Date)
-สร้างความสัมพันธ์ด้วยสูตร excel แค่ sumif ออกมาแล้วเอาไปใช้ต่อที่ไหนก็ได้เลยตามตวามสัมพันธ์ของข้อมูลที่อิง
-มันมีความหมายทั้งนั้น นี่ยังไมรวมการใส่ invert ( - ) ที่ตัวเลขนะ  และมีมากกว่านี้ ถ้าจะทำ
-และสิ่งสำคัญคือ ฉันจะให้ความสำคัญกับความเป็นไปได้ของเหตุการณ์ ไม่ใช่เกิดเหตุการณ์แต่ไม่สามารถบันทึกได้ 
+Instead of having to store the quantity of products and the selling price, I create logic that relates, causing value transformation and only storing the transaction of B with the database being C (no need to store separately).
+
+You can see that events occur from slot assignment but are classified by stat, then specify the relationship with excel formulas like sumif and use it anywhere.
+It all means something, not to mention the use of invert (-) with numbers, and more than that.
+And the important thing is, I will focus on the possibilities of events, not just the data.
 
