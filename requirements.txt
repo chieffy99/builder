@@ -1,1 +1,5 @@
-streamlit\npandas\n
+streamlit
+pandas
+fastapi
+pydantic
+uvicorn
