@@ -53,6 +53,7 @@ if not app_py.exists():
     """).strip()+"\n")
 
 # ── logic_engine stubs ────────────────────────────────────
+(root / "backend/__init__.py").touch()
 (root / "backend/logic_engine/__init__.py").touch()
 
 (root / "backend/logic_engine/parser.py").write_text(
