@@ -200,13 +200,19 @@
         /*ทำหน้าที่เป็น รายการการ์ด*/
         /*แต่เปลี่ยนรูปร่าง และย้ายที่วาง*/
         .card-list-item {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--accent-primary);
-            border-radius: 6px;
-            padding: 8px;
-            margin: 4px 0;
-            cursor: pointer;
-            transition: background .2s;
+            width: 80px;
+            height: 80px;
+            background: rgba(150, 235, 13, 0.85);
+            border-radius: 10px;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            cursor: grab;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(234, 235, 242, 0.943);
+            text-align: center;
         }
         
         .card-list-item:hover {
@@ -377,6 +383,8 @@
             color: var(--accent-primary);
         }
         
+
+        
         
         /* Context Menu */
         .context-menu {
@@ -431,17 +439,33 @@
 
         /*ควรให้มีขอบเขตรอบการ์*/
         /* Resize handle */
-        .resize-handle{position:absolute;width:16px;height:16px;background:transparent;border:2px solid transparent;border-radius:50%;z-index:2;opacity:0;transition:opacity .2s;}
-        .card:hover .resize-handle{opacity:1;border-color:#304ffe40;cursor:grab;}
-        .resize-handle.nw{top:-8px;left:-8px;cursor:nwse-resize;}
-        .resize-handle.ne{top:-8px;right:-8px;cursor:nesw-resize;}
-        .resize-handle.sw{bottom:-8px;left:-8px;cursor:nesw-resize;}
-        .resize-handle.se{bottom:-8px;right:-8px;cursor:nwse-resize;}
-        .resize-handle.n{top:-8px;left:calc(50% - 8px);cursor:ns-resize;}
-        .resize-handle.s{bottom:-8px;left:calc(50% - 8px);cursor:ns-resize;}
-        .resize-handle.w{left:-8px;top:calc(50% - 8px);cursor:ew-resize;}
-        .resize-handle.e{right:-8px;top:calc(50% - 8px);cursor:ew-resize;}
-
+        .resize-handle {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: transparent;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity .2s;
+        }
+        .dashboard-card.active .resize-handle {
+            opacity: 1;
+            border-color: #304ffe40;
+            cursor: grab;
+        }
+        .resize-handle.nw{top:-8px;left:-8px;cursor:nwse-resize}
+        .resize-handle.ne{top:-8px;right:-8px;cursor:nesw-resize}
+        .resize-handle.sw{bottom:-8px;left:-8px;cursor:nesw-resize}
+        .resize-handle.se{bottom:-8px;right:-8px;cursor:nwse-resize}
+        .resize-handle.n{top:-8px;left:calc(50% - 8px);cursor:ns-resize}
+        .resize-handle.s{bottom:-8px;left:calc(50% - 8px);cursor:ns-resize}
+        .resize-handle.w{left:-8px;top:calc(50% - 8px);cursor:ew-resize}
+        .resize-handle.e{right:-8px;top:calc(50% - 8px);cursor:ew-resize}
+        
+        /* Animations */
+        @keyframes fadeIn {
             from {
                 opacity: 0;
             }
@@ -491,7 +515,7 @@
     <!-- Main Dashboard Container -->
     <div class="dashboard-container">
         <!-- Side Panel with Card List -->
-        <div class="card-socket" id="cardSocket">
+        <div class="card-socket" id="sidePanel">
             <div class="card-socket-header">
                 <h3 class="card-socket-title">รายการการ์ด</h3>
                 <button class="toggle-panel" id="togglePanel">◀</button>
@@ -538,12 +562,48 @@
     
 
     /*มาจาก card-list-ite*/
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // สร้างเส้นและจุดในพื้นหลัง
+            const background = document.getElementById('backgroundEffect');
+            
+            // สร้างเส้นตั้ง
+            for (let i = 0; i < 10; i++) {
+                const line = document.createElement('div');
+                line.className = 'vertical-line';
+                line.style.left = `${5 + i * 10}%`;
+                line.style.animationDelay = `${i * 0.5}s`;
+                background.appendChild(line);
+            }
+            
+            // สร้างจุด
+            for (let i = 0; i < 50; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.style.left = `${Math.random() * 100}%`;
+                dot.style.top = `${Math.random() * 100}%`;
+                dot.style.animationDelay = `${Math.random() * 3}s`;
+                dot.style.opacity = Math.random() * 0.5 + 0.1;
+                background.appendChild(dot);
+            }
+            
+            // คลาสจัดการการ์ด Dashboard
+            class DashboardManager {
+                constructor() {
+                    this.cards = [];
+                    this.nextId = 1;
+                    this.topZ = 1;
+                    this.stackingMode = false;
+                    this.sourceCardForStack = null;
+                    this.targetCardForStack = null;
+                    
                     // DOM elements
                     this.workspace = document.getElementById('dashboardWorkspace');
                     this.cardList = document.getElementById('cardList');
                     this.contextMenu = document.getElementById('contextMenu');
                     this.stackOverlay = document.getElementById('stackOverlay');
                     
+
                     
                     // Initialize events
                     this.initEvents();
@@ -567,19 +627,7 @@
                         const panel = document.getElementById('shortcutPanel');
                         panel.classList.toggle('open');
                     });
-document.querySelectorAll('.shot-item[data-type]').forEach(it=>{
-    it.addEventListener('click',function(){
-        const t=this.getAttribute('data-type');
-        self.createNewCard(t);
-        document.getElementById('shortcutPanel').classList.remove('open');
-    });
-});
-const socketBtn=document.querySelector('.shot-item[data-action="socket"]');
-if(socketBtn){
-    socketBtn.addEventListener('click',()=>{
-        document.getElementById('cardSocket').classList.toggle('collapsed');
-    });
-}
+                    
                     
                     // จัดการคลิกขวาบนพื้นที่ทำงาน
                     this.workspace.addEventListener('contextmenu', function(e) {
@@ -653,6 +701,16 @@ if(socketBtn){
                     });
                 }
                 
+                openStackModal() {
+                    const list = this.cards.map(c => `<li data-id="${c.id}">${c.title}</li>`).join('');
+                    this.stackOverlay.innerHTML = `<div class="overlay-content"><ul>${list}</ul></div>`;
+                    const rect = this.workspace.getBoundingClientRect();
+                    this.stackOverlay.style.left = '0px';
+                    this.stackOverlay.style.top = '0px';
+                    this.stackOverlay.style.width = rect.width + 'px';
+                    this.stackOverlay.style.height = rect.height + 'px';
+                    this.stackOverlay.style.display = 'flex';
+                }
                 
                 showContextMenu(x, y, cardId) {
                     this.contextMenu.style.left = `${x}px`;
@@ -784,6 +842,14 @@ bringToFront(el){
                         <div class="card-body">
                             ${content}
                         </div>
+                        <div class="resize-handle nw"></div>
+                        <div class="resize-handle ne"></div>
+                        <div class="resize-handle sw"></div>
+                        <div class="resize-handle se"></div>
+                        <div class="resize-handle n"></div>
+                        <div class="resize-handle s"></div>
+                        <div class="resize-handle w"></div>
+                        <div class="resize-handle e"></div>
                     `;
                     
                     // เพิ่มการ์ดลงในพื้นที่ทำงาน
@@ -807,9 +873,11 @@ bringToFront(el){
                     
                     // ทำให้การ์ดเลื่อนได้
                     this.makeCardDraggable(card);
-                    
+
                     // ทำให้การ์ดปรับขนาดได้
                     this.makeCardResizable(card);
+
+                    card.addEventListener('mousedown', () => this.bringToFront(card));
                     
                     // เพิ่ม event listeners สำหรับปุ่มบนการ์ด
                     const closeBtn = card.querySelector('.card-tool-close');
@@ -841,6 +909,7 @@ bringToFront(el){
                     header.addEventListener('mousedown', function(e) {
                         self.bringToFront(card);
                         isDragging = true;
+                        self.bringToFront(card);
                         startX = e.clientX;
                         startY = e.clientY;
                         startLeft = parseInt(card.style.left) || 0;
@@ -875,6 +944,78 @@ bringToFront(el){
                     }
                 }
                 
+                makeCardResizable(card) {
+                    const self = this;
+                    const handles = card.querySelectorAll('.resize-handle');
+                    handles.forEach(h => {
+                        h.addEventListener('mousedown', e => {
+                            e.stopPropagation();
+                            const dir = Array.from(h.classList).find(c => c !== 'resize-handle');
+                            startResize(e, dir);
+                        });
+                    });
+
+                    function startResize(e, dir) {
+                        self.bringToFront(card);
+                        const startX = e.clientX;
+                        const startY = e.clientY;
+                        const startW = card.offsetWidth;
+                        const startH = card.offsetHeight;
+                        const startL = card.offsetLeft;
+                        const startT = card.offsetTop;
+                        const aspect = startW / startH;
+                        const free = e.shiftKey;
+
+                        function move(ev) {
+                            let dx = ev.clientX - startX;
+                            let dy = ev.clientY - startY;
+                            let newW = startW;
+                            let newH = startH;
+                            let newL = startL;
+                            let newT = startT;
+
+                            if (dir.includes('e')) newW = startW + dx;
+                            if (dir.includes('s')) newH = startH + dy;
+                            if (dir.includes('w')) { newW = startW - dx; newL = startL + dx; }
+                            if (dir.includes('n')) { newH = startH - dy; newT = startT + dy; }
+
+                            if (!free) {
+                                if (dir.match(/[ns]/)) newW = newH * aspect;
+                                else newH = newW / aspect;
+                            }
+
+                            newW = Math.max(150, newW);
+                            newH = Math.max(100, newH);
+                            card.style.width = newW + 'px';
+                            card.style.height = newH + 'px';
+                            card.style.left = newL + 'px';
+                            card.style.top = newT + 'px';
+
+                            const cardId = card.id;
+                            const cardInfo = self.cards.find(c => c.id === cardId);
+                            if (cardInfo && cardInfo.chartType) {
+                                setTimeout(() => self.createChart(cardInfo), 100);
+                            }
+                        }
+
+                        function up() {
+                            window.removeEventListener('mousemove', move);
+                            window.removeEventListener('mouseup', up);
+                        }
+
+                    window.addEventListener('mousemove', move);
+                    window.addEventListener('mouseup', up);
+                }
+                
+                bringToFront(card) {
+                    this.topZ += 1;
+                    card.style.zIndex = this.topZ;
+                    card.classList.add('active');
+                    this.cards.forEach(c => {
+                        if (c.element !== card) c.element.classList.remove('active');
+                    });
+                }
+                }
                 
 makeCardResizable(card) {
     const self = this;
@@ -1055,6 +1196,14 @@ makeCardResizable(card) {
                         <div class="card-body">
                             <div class="chart-container"><canvas id="chart-${stackedCardId}"></canvas></div>
                         </div>
+                        <div class="resize-handle nw"></div>
+                        <div class="resize-handle ne"></div>
+                        <div class="resize-handle sw"></div>
+                        <div class="resize-handle se"></div>
+                        <div class="resize-handle n"></div>
+                        <div class="resize-handle s"></div>
+                        <div class="resize-handle w"></div>
+                        <div class="resize-handle e"></div>
                     `;
                     
                     // เพิ่มการ์ดลงในพื้นที่ทำงาน
@@ -1084,9 +1233,11 @@ makeCardResizable(card) {
                     
                     // ทำให้การ์ดเลื่อนได้
                     this.makeCardDraggable(stackedCard);
-                    
+
                     // ทำให้การ์ดปรับขนาดได้
                     this.makeCardResizable(stackedCard);
+
+                    stackedCard.addEventListener('mousedown', () => this.bringToFront(stackedCard));
                     
                     // เพิ่ม event listeners สำหรับปุ่มบนการ์ด
                     const closeBtn = stackedCard.querySelector('.card-tool-close');
