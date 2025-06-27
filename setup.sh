@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
+<<<<<<< ours
 
+=======
+>>>>>>> theirs
 # 1. Install main packages
 pip install -r requirements.txt
 

@@ -340,6 +340,55 @@
 
         /* Shortcut panel similar to elements in Dffftled-2.html */
         .shortcut-panel {
+<<<<<<< ours
+=======
+            position: fixed;
+            right: 20px;
+            bottom: 100px;
+            display: none;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 20px;
+            z-index: 1200;
+        }
+
+        .shortcut-panel.open {
+            display: flex;
+        }
+
+        .shortcut-vertical,
+        .shortcut-horizontal {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--accent-primary);
+            border-radius: 50px;
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .shortcut-vertical {
+            flex-direction: column;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .shot-item {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--accent-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--accent-primary);
+        }
+        
+        /* โมดัล */
+        .modal {
+            display: none;
+>>>>>>> theirs
             position: fixed;
             right: 20px;
             bottom: 100px;
@@ -539,6 +588,24 @@
     
     <!-- Stack Overlay -->
     <div class="stack-overlay" id="stackOverlay"></div>
+<<<<<<< ours
+=======
+
+    <!-- Shortcut Panel -->
+    <div class="shortcut-panel" id="shortcutPanel">
+        <div class="shortcut-vertical">
+            <div class="shot-item">A1</div>
+            <div class="shot-item">A2</div>
+            <div class="shot-item">A3</div>
+        </div>
+        <div class="shortcut-horizontal">
+            <div class="shot-item">B1</div>
+            <div class="shot-item">B2</div>
+            <div class="shot-item">B3</div>
+        </div>
+    </div>
+    
+>>>>>>> theirs
 
     <!-- Shortcut Panel -->
     <div class="shortcut-panel" id="shortcutPanel">
@@ -621,6 +688,33 @@
                     document.getElementById('addCardButton').addEventListener('click', function() {
                         const panel = document.getElementById('shortcutPanel');
                         panel.classList.toggle('open');
+<<<<<<< ours
+=======
+                    });
+                    
+                    // ปิดโมดัลเลือกการ์ด
+                    document.getElementById('closeCardSelectionModal').addEventListener('click', function() {
+                        self.cardSelectionModal.style.display = 'none';
+                    });
+                    
+                    // เลือกประเภทการ์ด
+                    document.querySelectorAll('.modal-body .card-list-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const type = this.getAttribute('data-type');
+                            self.createNewCard(type);
+                            self.cardSelectionModal.style.display = 'none';
+                        });
+                    });
+                    
+                    // ปิดโมดัลซ้อนการ์ด
+                    document.getElementById('closeStackModal').addEventListener('click', function() {
+                        self.stackModal.style.display = 'none';
+                    });
+                    
+                    // ยกเลิกการซ้อนการ์ด
+                    document.getElementById('cancelStackBtn').addEventListener('click', function() {
+                        self.stackModal.style.display = 'none';
+>>>>>>> theirs
                     });
                     
                     
