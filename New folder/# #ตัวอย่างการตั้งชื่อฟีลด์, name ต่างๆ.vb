@@ -3,68 +3,69 @@
 
 
 PK: เบิกสินค้าแยกประเภทของ Dist = sumif(slot1,Dist_ID,PK,condition)
-OTPKPT OTPKLT OTPKST OTPKCL OTPKCU
 MKPKPT MKPKLT MKPKST MKPKCL MKPKCU
 SHPKPT SHPKLT SHPKST SHPKCL SHPKCU
 
-=SUMIFS(slot1, ID1, "OT", ID2, "PK", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot2, ID1, "OT", ID2, "PK", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot3, ID1, "OT", ID2, "PK", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot4, ID1, "OT", ID2, "PK", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot5, ID1, "OT", ID2, "PK", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTPKPT =SUMIFS(slot1, ID1, "OT", ID2, "PK", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTPKLT =SUMIFS(slot2, ID1, "OT", ID2, "PK", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTPKST =SUMIFS(slot3, ID1, "OT", ID2, "PK", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTPKCL =SUMIFS(slot4, ID1, "OT", ID2, "PK", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTPKCU =SUMIFS(slot5, ID1, "OT", ID2, "PK", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
 
 
 SA: ยอดขายแยกประเภทสินค้าของ Dist = Sum(sumif(slot1,Cust_ID,BY#,condition)) 
-OTSAPT OTSALT OTSAST OTSACL OTSACU
 MKSAPT MKSALT MKSAST MKSACL MKSACU
 SHSAPT SHSALT SHSAST SHSACL SHSACU
 
-=SUMIFS(slot1, ID1, "OT", ID2, "SA", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot2, ID1, "OT", ID2, "SA", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot3, ID1, "OT", ID2, "SA", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot4, ID1, "OT", ID2, "SA", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot5, ID1, "OT", ID2, "SA", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTSAPT =SUMIFS(slot1, ID1, "OT", ID2, "SA", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTSALT =SUMIFS(slot2, ID1, "OT", ID2, "SA", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTSAST =SUMIFS(slot3, ID1, "OT", ID2, "SA", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTSACL =SUMIFS(slot4, ID1, "OT", ID2, "SA", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTSACU =SUMIFS(slot5, ID1, "OT", ID2, "SA", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
 
 
 DM: สินค้าเสื่อมสภาพแยกประเภท ของ Dist = sumif(slot1,Dist_ID,MK,condition) 
-OTDMPT OTDMLT OTDMST OTDMCL OTDMCU
 MKDMPT MKDMLT MKDMST MKDMCL MKDMCU
 SHDMPT SHDMLT SHDMST SHDMCL SHDMCU
 
-=SUMIFS(slot1, ID1, "OT", ID2, "DM", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot2, ID1, "OT", ID2, "DM", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot3, ID1, "OT", ID2, "DM", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot4, ID1, "OT", ID2, "DM", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot5, ID1, "OT", ID2, "DM", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTDMPT =SUMIFS(slot1, ID1, "OT", ID2, "DM", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTDMLT =SUMIFS(slot2, ID1, "OT", ID2, "DM", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTDMST =SUMIFS(slot3, ID1, "OT", ID2, "DM", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTDMCL =SUMIFS(slot4, ID1, "OT", ID2, "DM", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTDMCU =SUMIFS(slot5, ID1, "OT", ID2, "DM", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
 
 RT: สินค้าเหลือส่งกลับแยกประเภท ของ Dist = sumif(slot1,Dist_ID,RT,condition) 
-OTRTPT OTRTLT OTRTST OTRTCL OTRTCU 
 MKRTPT MKRTLT MKRTST MKRTCL MKRTCU
 SHRTPT SHRTLT SHRTST SHRTCL SHRTCU
 
-=SUMIFS(slot1, ID1, "OT", ID2, "RT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot2, ID1, "OT", ID2, "RT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot3, ID1, "OT", ID2, "RT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot4, ID1, "OT", ID2, "RT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot5, ID1, "OT", ID2, "RT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTRTPT =SUMIFS(slot1, ID1, "OT", ID2, "RT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTRTLT =SUMIFS(slot2, ID1, "OT", ID2, "RT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTRTST =SUMIFS(slot3, ID1, "OT", ID2, "RT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTRTCL =SUMIFS(slot4, ID1, "OT", ID2, "RT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+OTRTCU =SUMIFS(slot5, ID1, "OT", ID2, "RT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
 
 
 
-RU: Reduce = sum(sumif(slot6,Cust_ID,BY#,condition))
-OTSARU,MKSARU,SHSARU
+RU: ส่วนลดจากการขาย ของ Dist = sum(sumif(slot6,Cust_ID,BY#,condition))
+OTSARU, MKSARU, SHSARU
 =SUMIFS(slot6, ID1, "OT", ID2, "SA", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
 
 
-DU = ชำระหนี้ (ในกรณีนี้คือเงินสดรับการชำระหนี้ที่เกิดจากการขายสินค้า)
-OTSADU,MKSADU, SHSADU
+DU: รับเงินลูกหนี้การค้า (ในกรณีนี้คือเงินสดรับการชำระหนี้ที่เกิดจากการขายสินค้า) ของ Dist = sum(sumif(slot7,Cust_ID,BY#,condition))
+OTSADU, MKSADU, SHSADU
 =SUMIFS(slot7, ID1, "OT", ID2, "SA", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
 
+BL: ยอดคงเหลือของ Store
+(ในกรณีนี้คือการรวมกันของยอดสินค้าเข้า (PO สั่งจาก Sup) ออก (PK เบิกจาก Dist) ของรอบวันของ store)
+STBLPT, STBLLT, STBLST, STBLCL, STBLCU
+=SUMIFS(slot1, ID1, "ST", ID2, "BL", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
 
+RF: ยอดโอนย้ายของ ST เป็นยอดเริ่มต้น (กรณีที่ปิดรอบ หรือเปิดรอบใหม่ โดยทั่วไปแล้วรายวันจะเป็น BL ต่อเนื่องกัน)
+STRFPT, STRFLT, STRFST, STRFCL, STRFCU
+=SUMIFS(slot1, ID1, "ST", ID2, "RF", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
 
-
-
-
-TT = Totle: ยอดรวม (sum Slot)
+รอแก้ไข
+TT: Totle ยอดรวม (sum Slot)
 ตัวอย่าง: OTTTLT,MKTTLT,SHTTLT
 =SUMIFS(slot1, ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)*If(and(ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot1,"0")
 =SUMIFS(slot2, ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)*If(and(ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot2,"0")
@@ -72,7 +73,7 @@ TT = Totle: ยอดรวม (sum Slot)
 =SUMIFS(slot4, ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)*If(and(ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot4,"0")
 =SUMIFS(slot5, ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)*If(and(ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot5,"0")
 
-
+รอแก้ไข
 OTCLSH,MKCLSH,SHCLSH
 =SUMIFS(slot1, ID1, "<>OT", ID2, "BYT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)*If(and(ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot1,"0")
 =SUMIFS(slot2, ID1, "<>OT", ID2, "BYT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)*If(and(ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot2,"0")
@@ -80,7 +81,7 @@ OTCLSH,MKCLSH,SHCLSH
 =SUMIFS(slot4, ID1, "<>OT", ID2, "BYT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)*If(and(ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot4,"0")
 =SUMIFS(slot5, ID1, "<>OT", ID2, "BYT", StatN, "0", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)*If(and(ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot5,"0")
 
-
+รอแก้ไข
 OTDEPT,MKDEPT,SHDEPT 
 =SUMIFS(slot1, ID1, "<>OT", ID2, "BYT", StatN, "1", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)*If(and(ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot1,"0")
 =SUMIFS(slot2, ID1, "<>OT", ID2, "BYT", StatN, "1", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)*If(and(ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot2,"0")
@@ -89,21 +90,25 @@ OTDEPT,MKDEPT,SHDEPT
 =SUMIFS(slot5, ID1, "<>OT", ID2, "BYT", StatN, "1", StatC, "B", DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)*If(and(ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot5,"0")
 
 
-statC=C
+statC=C: ตัวแปร(ราคาตั้งต้นเช่น)
+OTSAPT
 =If(and(ID1, "<>OT", ID2, "BYT", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot1,"0")
-=If(and(ID1=" ",ID2="BYT",StatC="C",DaTiX"<="&DaTiXFin),slot1,"0")
-=If(and(ID1=" ",ID2="PR",StatC="C",DaTiX"<="&DaTiXFin),slot1,"0")
+=If(and(ID1, "OT", ID2, "SA", StatN, ">=0", StatC="C",DaTiX"<="&DaTiXFin),slot1,"0")
+
+SUPOPT
+=If(and(ID1="SU",ID2="PO",StatC="C",DaTiX"<="&DaTiXFin),slot1,"0")
+
+=If(and(ID1="Name",ID2="Name",StatC="C",DaTiX"<="&DaTiXFin),slot1,"0")
 
 
-PO: ราคาสินค้าเข้าแยกประเภทของ Sup
-CO: ราคาสินค้าทุนแยกประเภทของ Sup
-SUPOPT,SUCOLT,SUCOST,SUCOCL,SUCOCU
+PO: สินค้าเข้าแยกประเภทของ Sup
+SUPOPT,SUPOLT,SUPOST,SUPOCL,SUPOCU
 
-=SUMIFS(slot1, ID1, "SU", ID2, "PO", StatN, ">=0", StatC, "C",DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot2, ID1, "PS", ID2, "CO", StatN, ">=0", StatC, "C",DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot3, ID1, "SK", ID2, "CO", StatN, ">=0", StatC, "C",DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot4, ID1, "RE", ID2, "CO", StatN, ">=0", StatC, "C",DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
-=SUMIFS(slot5, ID1, "PG", ID2, "CO", StatN, ">=0", StatC, "C",DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+=SUMIFS(slot1, ID1, "SU", ID2, "PO", StatN, ">=0", StatC, "B",DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+=SUMIFS(slot2, ID1, "PS", ID2, "PO", StatN, ">=0", StatC, "B",DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+=SUMIFS(slot3, ID1, "SK", ID2, "PO", StatN, ">=0", StatC, "B",DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+=SUMIFS(slot4, ID1, "RE", ID2, "PO", StatN, ">=0", StatC, "B",DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
+=SUMIFS(slot5, ID1, "Name", ID2, "PO", StatN, ">=0", StatC, "B",DaTiX, ">="&DaTiXFin, DaTiX, "<="&DaTiXFin)
 
 12/31/2023,SU,PO,0,C,4.25,27,27,28,13.33,0,45170
 12/31/2023,PS,PO,0,C,0,0,27,27,0,0,45170
@@ -143,7 +148,7 @@ SHRTPT,SHRTLT,SHRTST,SHRTCL,SHRTCU
 * Customer\ ID: Customer ID
 * Item\ ID: Product/service code
 * Channel: Sales channel (Online, Offline, etc.)
-* Date: Transaction date and time
+* DaTiX: Transaction date and time
 * Event\ Type: Activity type (Sale, Return, Exchange, etc.)
 * TID (Transaction ID): Bill/event code (can use grouping per bill)
 * Quantity: Quantity
@@ -172,7 +177,7 @@ Row_ID,shiptime,Quantity,Totle,Unit_Price,DC_price,Margin,ต้นทุน,Sal
 # ตัวอย่างการตั้งชื่อฟีลด์, name และการใช้งานในรูปแบบต่างๆ 
 +++++++++++++++++++++++++++++++++
 Index, Field Name, Data Type, Description
-1, Date, Date (YYYY/MM/DD), Date of data
+1, DaTiX, Date (YYYY/MM/DD), Date of data
 2, ID1, Text, ID from the original database key or newly created used with ID2 to define the location and behavior of the added input. Can contain both letters and numbers
 3, ID2, Text, ID from the original database key or newly created used with ID1 to define the location and behavior of the added input. Can contain both letters and numbers
 4, StatN, Single Number (0:9), used with StatC to represent the rules of the data system used. This number does not need to be entered as an input
@@ -239,7 +244,7 @@ SH, วัดพันท้าย, 6.50, 55, 55, 55, 25, 75, 100
 Cust_id, Cust_name, Cust_status, Dist_ID, Dep
 ++++++++++++++++++++++++++++++
 
-Pro_id, Pro_name, Pro_cost,,WS_price, RS_price, SU0cost, PS0cost, SK0cost, RE0cost, Cate_id, Shelf_no, Pro_status, Record_date
+Pro_id, Pro_name, Pro_cost,,WS_price, RS_price, SU0cost, PS0cost, SK0cost, RE0cost, Cate_id, Shelf_no, Pro_status, Record_DaTiX
 PT, แพค, 4.25, 6.5, 7, 4.25, 0, 4, 5, ice, shf, 1, 1/9/2023
 LT, ล.ใหญ่, 27, 55, 60, 27, 0, 27, 40, ice, shl, 1, 1/9/2023
 ST, ล.เล็ก, 27, 55, 60, 27, 27, 27, 40, ice, shl, 1, 1/9/2023
