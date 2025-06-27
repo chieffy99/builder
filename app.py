@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 
@@ -6,8 +5,10 @@ st.set_page_config(page_title="Logic‑String Dashboard", layout="wide")
 
 st.title("📊 Logic‑String Event Dashboard")
 st.markdown(
-    "Upload a CSV containing your event logs (columns: DaTiX, idx, subj, obj, stat, "
-    "slot1…slot5). The app will compute running **balance** and **interest** for each row."
+    (
+        "Upload a CSV containing your event logs (columns: DaTiX, idx, subj, obj, stat, "
+        "slot1…slot5). The app will compute running **balance** and **interest** for each row."
+    )
 )
 
 uploaded = st.file_uploader("Choose a CSV file", type=["csv"])
@@ -24,8 +25,8 @@ if uploaded:
         return b, i
 
     FORMULA = {
-        "cash":    lambda r, b, i: (b, i),
-        "credit":  lambda r, b, i: (b + r.slot1 * r.slot2 - r.slot3, i),
+        "cash": lambda r, b, i: (b, i),
+        "credit": lambda r, b, i: (b + r.slot1 * r.slot2 - r.slot3, i),
         "accrual": lambda r, b, i: (b, i + b * r.slot2 * r.slot1 / 100),
         "payment": _payment,
     }
@@ -33,7 +34,9 @@ if uploaded:
     def run_pipeline(frame: pd.DataFrame) -> pd.DataFrame:
         bal, intr, out = 0.0, 0.0, []
         for r in frame.itertuples(index=False):
-            bal, intr = FORMULA.get(r.stat, lambda r, b, i: (b, i))(r, bal, intr)
+            bal, intr = FORMULA.get(getattr(r, "stat"), lambda r, b, i: (b, i))(
+                r, bal, intr
+            )
             out.append((bal, intr))
         frame = frame.copy()
         frame[["balance", "interest"]] = out
