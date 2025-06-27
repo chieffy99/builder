@@ -1,7 +1,6 @@
- from .stat_slot_map import MAP
+from .stat_slot_map import MAP
  
- 
- def interpret(rec: str):
+def interpret(rec: str):
      p = [x.strip() for x in rec.split(',')]
      date,id1,id2,statn,statc,*slots = p
      p = [x.strip() for x in rec.split(",")]
@@ -13,6 +12,4 @@
          "stat": {"n": statn, "c": statc},
          "slots": slots,
          "meaning": MAP.get(statc, {}).get("desc","unknown")
-         "meaning": MAP.get(statc, {}).get("desc", "unknown"),
-     }
-
+    }
