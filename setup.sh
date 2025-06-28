@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # 1. Install main packages
 pip install -r requirements.txt
 
