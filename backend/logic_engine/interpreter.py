@@ -2,10 +2,8 @@ from .stat_slot_map import MAP
 
 
 def interpret(rec: str):
-    p = [x.strip() for x in rec.split(",")]
-    date, id1, id2, statn, statc, *slots = p
-    p = [x.strip() for x in rec.split(",")]
-    date, id1, id2, statn, statc, *slots = p
+    parts = [x.strip() for x in rec.split(",")]
+    date, id1, id2, statn, statc, *slots = parts
     return {
         "date": date,
         "persona": id1,
