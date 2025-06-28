@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Cards - Anti-Normalization</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&family=Sarabun:wght@300;400;500;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #ef55d80a;
+            --bg-card: rgba(224, 219, 231, 0.158);
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #6b8afd;
+            --accent-secondary: #34e515;
+            --status-0: #e91919;
+            --status-1: #fdcb6e;
+            --border-light: rgba(107, 138, 253, 0.3);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --card-glow: 0 0 15px rgba(107, 138, 253, 0.2);
+        }
+        
+        body {
+            font-family: 'Prompt', 'Sarabun', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* พื้นหลังเส้นและจุด */
+        .background-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .vertical-line {
+            position: absolute;
+            width: 1px;
+            height: 100vh;
+            background: linear-gradient(to bottom, transparent, rgba(107, 138, 253, 0.2), transparent);
+            animation: float 15s infinite linear;
+        }
+        
+        .dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: rgba(107, 138, 253, 0.5);
+            animation: pulse 3s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100%);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(240, 72, 15, 0.892);
+            padding: 15px 25px;
+            position: sticky;
+            top: 0;
+            z-index: -1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+        
+        .logo {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(4, 0, 32, 0.91);
+        }
+        
+        .navbar-title {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .navbar-menu a {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .navbar-menu a:hover {
+            background: rgba(9, 9, 91, 0.036);
+            color: var(--accent-primary);
+        }
+        
+        .navbar-menu a.active {
+            background: rgba(54, 1, 113, 0.602);
+            color: var(--accent-primary);
+        }
+        
+        /* Main Layout */
+        .dashboard-container {
+            display: flex;
+            height: calc(100vh - 70px);
+            position: relative;
+        }
+        
+        /*เปลี่ยนเป็น Card Socket*/
+       /*มีคราสเป็น card เรืยกจากวิธีเดียวกันกับการดอื่น */
+        .side-panel {
+            width: 250px;
+            background: rgba(245, 7, 7, 0.957);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(107, 139, 253, 0.914);
+            height: 100%;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+       
+        .side-panel.collapsed {
+            width: 50px;
+        }
+        
+        .side-panel-header {
+            padding: 15px;
+            border-bottom: 1px solid rgba(107, 138, 253, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .side-panel-title {
+            font-size: 1.1rem;
+            color: var(--accent-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .toggle-panel {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+        }
+        
+        .card-list {
+            padding: 15px;
+        }
+        /*ทำหน้าที่เป็น รายการการ์ด*/
+        /*แต่เปลี่ยนรูปร่าง และย้ายที่วาง*/
+        .card-list-item {
+            background: rgba(150, 235, 13, 0.85);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: grab;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(234, 235, 242, 0.943);
+        }
+        
+        .card-list-item:hover {
+            background: rgba(253, 107, 190, 0.782);
+            transform: translateY(-2px);
+        }
+        
+        .card-list-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 0.9rem;
+            color: var(--accent-primary);
+        }
+        
+        .card-list-item p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .collapsed .card-list,
+        .collapsed .side-panel-title {
+            display: none;
+        }
+        
+        /* Dashboard Workspace */
+        .dashboard-workspace {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            position: relative;
+            background: rgba(4, 0, 9, 0.025);
+        }
+        
+        /* Dashboard Card */
+        .dashboard-card {
+            position: absolute;
+            width: 400px;
+            height: 300px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+        
+        .card-header {
+            background: linear-gradient(45deg, rgba(107, 138, 253, 0.4), rgba(156, 95, 255, 0.4));
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+        }
+        
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .card-tools {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .card-tool {
+            background: rgba(232, 233, 232, 0.851);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .card-tool:hover {
+            background: rgba(214, 6, 6, 0.824);
+        }
+        
+        .card-body {
+            padding: 15px;
+            height: calc(100% - 44px);
+            overflow: auto;
+        }
+        
+        .chart-container {
+            width: 120%;
+            height:120%;
+        }
+        /*รับหน้าที่เปิดปิด modal*/
+        /*คล้ายกับการเรียกพาแนลบาวๆมาในแนวนอนและตั้ง*/
+        /* ปุ่มกระทำการ */
+        .action-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(27, 7, 7, 0.409);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(213, 228, 44, 0.942);
+        }
+        
+        .pill {
+            display: inline-block;
+            width: 300px;
+            height: 60px;
+            position: fixed;
+            bottom: 20px;
+            right: 100px;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(27, 7, 7, 0.409);
+            z-index: 100;
+            transition: all 0.3s ease;
+            border-radius: 20px; /* height ÷ 2 */
+        }
+        
+        /* โมดัล */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(254, 9, 9, 0.073);
+            z-index: 1;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: auto;
+            box-shadow: 0 10px 40px rgba(4, 115, 234, 0.915);
+            border: 1px solid var(--border-light);
+        }
+        
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: rgb(3, 166, 241);
+            border: none;
+        }
+        
+        .btn-secondary {
+            background: rgb(228, 239, 6);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Context Menu */
+        .context-menu {
+            display: none;
+            position: absolute;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 5px 20px rgba(123, 227, 156, 0.914);
+            z-index: 1500;
+            padding: 5px 0;
+            min-width: 180px;
+        }
+        
+        .context-menu-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .context-menu-item:hover {
+            background: rgba(12, 16, 223, 0.879);
+        }
+        /*เปลี่ยนแปลงรูปร่างและก็การเกิดที่ได้ออกแบบไว้*/
+        /* Overlay for stacking cards */
+        .stack-overlay {
+            position: absolute;
+            background: rgba(23, 2, 1, 0.889);
+            border: 2px dashed var(--accent-primary);
+            border-radius: 12px;
+            z-index: 50;
+            pointer-events: none;
+            display: none;
+        }
+        
+        /* กลุ่มกราฟซ้อน */
+        .stacked-card {
+            border: 2px solid var(--accent-primary);
+            box-shadow: 0 0 20px rgba(107, 138, 253, 0.3);
+        }
+        
+        /* เพิ่มความสว่างให้กับการ์ดที่กำลังลาก */
+        .card-dragging {
+            opacity: 0.8;
+            box-shadow: 0 0 30px rgba(107, 138, 253, 0.5);
+        }
+
+        /*ควรให้มีขอบเขตรอบการ์*/
+        /* Resize handle */
+        .resize-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-primary);
+            border-radius: 50%;
+            right: 5px;
+            bottom: 5px;
+            cursor: se-resize;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .fadeIn {
+            animation: fadeIn 0.3s forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .slideIn {
+            animation: slideIn 0.3s forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- พื้นหลังเส้นและจุด -->
+    <div class="background-effect" id="backgroundEffect"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <div class="logo">AN</div>
+            <div class="navbar-title">Dashboard Cards</div>
+        </a>
+        <div class="navbar-menu">
+            <a href="index.html">หน้าหลัก</a>
+            <a href="world_fitting.html">World Fitting</a>
+            <a href="generic_data_mapping_system.html">Generic Data</a>
+            <a href="dashboard_cards.html" class="active">Dashboard Cards</a>
+        </div>
+    </nav>
+    
+    <!-- Main Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Side Panel with Card List -->
+        <div class="side-panel" id="sidePanel">
+            <div class="side-panel-header">
+                <h3 class="side-panel-title">รายการการ์ด</h3>
+                <button class="toggle-panel" id="togglePanel">◀</button>
+            </div>
+            <div class="card-list" id="cardList">
+                <!-- จะถูกเติมโดย JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Dashboard Workspace -->
+        <div class="dashboard-workspace" id="dashboardWorkspace">
+            <!-- การ์ดจะถูกเพิ่มโดย JavaScript -->
+        </div>
+    </div>
+    
+    <!-- ปุ่มเพิ่มการ์ด -->
+    <button class="action-button" id="addCardButton">+</button>
+    
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" data-action="edit">แก้ไข</div>
+        <div class="context-menu-item" data-action="stack">วางซ้อน</div>
+        <div class="context-menu-item" data-action="duplicate">คัดลอก</div>
+        <div class="context-menu-item" data-action="delete">ลบ</div>
+    </div>
+    
+    <!-- Stack Overlay -->
+    <div class="stack-overlay" id="stackOverlay"></div>
+    
+
+    /*มาจาก card-list-ite*/
+    <!-- โมดัลเลือกการ์ด -->
+    <div class="modal" id="cardSelectionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">เลือกประเภทการ์ด</h2>
+                <button class="modal-close" id="closeCardSelectionModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div class="card-list-item" data-type="line-chart">
+                        <h4>กราฟเส้น</h4>
+                        <p>แสดงข้อมูลในรูปแบบกราฟเส้น</p>
+                    </div>
+                    <div class="card-list-item" data-type="bar-chart">
+                        <h4>กราฟแท่ง</h4>
+                        <p>แสดงข้อมูลในรูปแบบกราฟแท่ง</p>
+                    </div>
+                    <div class="card-list-item" data-type="pie-chart">
+                        <h4>กราฟวงกลม</h4>
+                        <p>แสดงข้อมูลในรูปแบบกราฟวงกลม</p>
+                    </div>
+                    <div class="card-list-item" data-type="table">
+                        <h4>ตารางข้อมูล</h4>
+                        <p>แสดงข้อมูลในรูปแบบตาราง</p>
+                    </div>
+                    <div class="card-list-item" data-type="summary">
+                        <h4>สรุปข้อมูล</h4>
+                        <p>แสดงสรุปข้อมูลสำคัญ</p>
+                    </div>
+                    <div class="card-list-item" data-type="custom">
+                        <h4>กำหนดเอง</h4>
+                        <p>สร้างการ์ดแบบกำหนดเอง</p>
+                    </div>
+                    <div class="card-list-item" data-type="custom">
+                        <h4>Card Socket</h4>
+                        <p>บัญทึกการ์ดที่สำคัญ</p>
+                    </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- โมดัลซ้อนการ์ด -->
+    <div class="modal" id="stackModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">เลือกการ์ดที่ต้องการซ้อน</h2>
+                <button class="modal-close" id="closeStackModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>เลือกการ์ดที่ต้องการนำมาซ้อนกัน (ต้องเป็นประเภทกราฟเดียวกัน)</p>
+                <div id="stackCardList" style="margin-top: 15px;">
+                    <!-- จะถูกเติมโดย JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelStackBtn">ยกเลิก</button>
+                <button class="btn btn-primary" id="confirmStackBtn">ซ้อนการ์ด</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // สร้างเส้นและจุดในพื้นหลัง
+            const background = document.getElementById('backgroundEffect');
+            
+            // สร้างเส้นตั้ง
+            for (let i = 0; i < 10; i++) {
+                const line = document.createElement('div');
+                line.className = 'vertical-line';
+                line.style.left = `${5 + i * 10}%`;
+                line.style.animationDelay = `${i * 0.5}s`;
+                background.appendChild(line);
+            }
+            
+            // สร้างจุด
+            for (let i = 0; i < 50; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.style.left = `${Math.random() * 100}%`;
+                dot.style.top = `${Math.random() * 100}%`;
+                dot.style.animationDelay = `${Math.random() * 3}s`;
+                dot.style.opacity = Math.random() * 0.5 + 0.1;
+                background.appendChild(dot);
+            }
+            
+            // คลาสจัดการการ์ด Dashboard
+            class DashboardManager {
+                constructor() {
+                    this.cards = [];
+                    this.nextId = 1;
+                    this.stackingMode = false;
+                    this.sourceCardForStack = null;
+                    this.targetCardForStack = null;
+                    
+                    // DOM elements
+                    this.workspace = document.getElementById('dashboardWorkspace');
+                    this.cardList = document.getElementById('cardList');
+                    this.contextMenu = document.getElementById('contextMenu');
+                    this.stackOverlay = document.getElementById('stackOverlay');
+                    
+                    // Modals
+                    this.cardSelectionModal = document.getElementById('cardSelectionModal');
+                    this.stackModal = document.getElementById('stackModal');
+                    
+                    // Initialize events
+                    this.initEvents();
+                    
+                    // สร้างตัวอย่างการ์ดเริ่มต้น
+                    this.createSampleCards();
+                }
+                
+                initEvents() {
+                    const self = this;
+                    
+                    // เปิด/ปิดแพนเนล
+                    document.getElementById('togglePanel').addEventListener('click', function() {
+                        const panel = document.getElementById('sidePanel');
+                        panel.classList.toggle('collapsed');
+                        this.textContent = panel.classList.contains('collapsed') ? '▶' : '◀';
+                    });
+                    
+                    // ปุ่มเพิ่มการ์ด
+                    document.getElementById('addCardButton').addEventListener('click', function() {
+                        self.openCardSelectionModal();
+                    });
+                    
+                    // ปิดโมดัลเลือกการ์ด
+                    document.getElementById('closeCardSelectionModal').addEventListener('click', function() {
+                        self.cardSelectionModal.style.display = 'none';
+                    });
+                    
+                    // เลือกประเภทการ์ด
+                    document.querySelectorAll('.modal-body .card-list-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const type = this.getAttribute('data-type');
+                            self.createNewCard(type);
+                            self.cardSelectionModal.style.display = 'none';
+                        });
+                    });
+                    
+                    // ปิดโมดัลซ้อนการ์ด
+                    document.getElementById('closeStackModal').addEventListener('click', function() {
+                        self.stackModal.style.display = 'none';
+                    });
+                    
+                    // ยกเลิกการซ้อนการ์ด
+                    document.getElementById('cancelStackBtn').addEventListener('click', function() {
+                        self.stackModal.style.display = 'none';
+                    });
+                    
+                    // ยืนยันการซ้อนการ์ด
+                    document.getElementById('confirmStackBtn').addEventListener('click', function() {
+                        const selectedCards = [];
+                        document.querySelectorAll('#stackCardList input:checked').forEach(checkbox => {
+                            selectedCards.push(checkbox.value);
+                        });
+                        
+                        if (selectedCards.length > 1) {
+                            self.stackCards(selectedCards);
+                            self.stackModal.style.display = 'none';
+                        } else {
+                            alert('กรุณาเลือกการ์ดอย่างน้อย 2 การ์ด');
+                        }
+                    });
+                    
+                    // จัดการคลิกขวาบนพื้นที่ทำงาน
+                    this.workspace.addEventListener('contextmenu', function(e) {
+                        e.preventDefault();
+                        
+                        // ตรวจสอบว่าคลิกที่การ์ดหรือไม่
+                        let targetCard = null;
+                        let element = e.target;
+                        
+                        while (element && element !== this) {
+                            if (element.classList.contains('dashboard-card')) {
+                                targetCard = element;
+                                break;
+                            }
+                            element = element.parentElement;
+                        }
+                        
+                        if (targetCard) {
+                            // แสดง context menu สำหรับการ์ด
+                            self.showContextMenu(e.pageX, e.pageY, targetCard.id);
+                        }
+                    });
+                    
+                    // จัดการคลิกที่ context menu
+                    this.contextMenu.querySelectorAll('.context-menu-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const action = this.getAttribute('data-action');
+                            const cardId = self.contextMenu.getAttribute('data-card-id');
+                            
+                            switch (action) {
+                                case 'edit':
+                                    // TODO: เพิ่มการแก้ไขการ์ด
+                                    alert('ฟีเจอร์การแก้ไขกำลังพัฒนา');
+                                    break;
+                                case 'stack':
+                                    self.openStackModal();
+                                    break;
+                                case 'duplicate':
+                                    self.duplicateCard(cardId);
+                                    break;
+                                case 'delete':
+                                    self.removeCard(cardId);
+                                    break;
+                            }
+                            
+                            self.contextMenu.style.display = 'none';
+                        });
+                    });
+                    
+                    // ซ่อน context menu เมื่อคลิกที่อื่น
+                    document.addEventListener('click', function() {
+                        self.contextMenu.style.display = 'none';
+                    });
+                    
+                    // เพิ่ม event listeners สำหรับการลากการ์ดใหม่
+                    this.workspace.addEventListener('dragover', function(e) {
+                        e.preventDefault();
+                    });
+                    
+                    this.workspace.addEventListener('drop', function(e) {
+                        e.preventDefault();
+                        
+                        const cardType = e.dataTransfer.getData('card-type');
+                        if (cardType) {
+                            const rect = this.getBoundingClientRect();
+                            const x = e.clientX - rect.left;
+                            const y = e.clientY - rect.top;
+                            
+                            self.createNewCard(cardType, x, y);
+                        }
+                    });
+                }
+                
+                openCardSelectionModal() {
+                    this.cardSelectionModal.style.display = 'flex';
+                }
+                
+                openStackModal() {
+                    // สร้างรายการการ์ดที่สามารถซ้อนได้
+                    const stackCardList = document.getElementById('stackCardList');
+                    stackCardList.innerHTML = '';
+                    
+                    // สร้างรายการ checkboxes
+                    this.cards.forEach(card => {
+                        if (card.type && card.type.includes('chart')) {
+                            const div = document.createElement('div');
+                            div.style.margin = '5px 0';
+                            
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.value = card.id;
+                            checkbox.id = `stack-card-${card.id}`;
+                            
+                            const label = document.createElement('label');
+                            label.htmlFor = `stack-card-${card.id}`;
+                            label.textContent = card.title;
+                            label.style.marginLeft = '8px';
+                            
+                            div.appendChild(checkbox);
+                            div.appendChild(label);
+                            stackCardList.appendChild(div);
+                        }
+                    });
+                    
+                    this.stackModal.style.display = 'flex';
+                }
+                
+                showContextMenu(x, y, cardId) {
+                    this.contextMenu.style.left = `${x}px`;
+                    this.contextMenu.style.top = `${y}px`;
+                    this.contextMenu.setAttribute('data-card-id', cardId);
+                    this.contextMenu.style.display = 'block';
+                }
+                
+                createNewCard(type, x = 100, y = 100) {
+                    const id = `card-${this.nextId++}`;
+                    let title, content, chartType;
+                    
+                    switch (type) {
+                        case 'line-chart':
+                            title = 'กราฟเส้น';
+                            content = '<div class="chart-container"><canvas id="chart-' + id + '"></canvas></div>';
+                            chartType = 'line';
+                            break;
+                        case 'bar-chart':
+                            title = 'กราฟแท่ง';
+                            content = '<div class="chart-container"><canvas id="chart-' + id + '"></canvas></div>';
+                            chartType = 'bar';
+                            break;
+                        case 'pie-chart':
+                            title = 'กราฟวงกลม';
+                            content = '<div class="chart-container"><canvas id="chart-' + id + '"></canvas></div>';
+                            chartType = 'pie';
+                            break;
+                        case 'table':
+                            title = 'ตารางข้อมูล';
+                            content = `
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr>
+                                            <th style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: left;">ID</th>
+                                            <th style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: left;">รายการ</th>
+                                            <th style="padding: 8px; border-bottom: 1px solid var(--border-light); text-align: left;">มูลค่า</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">1</td>
+                                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">รายการ 1</td>
+                                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">10,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">2</td>
+                                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">รายการ 2</td>
+                                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">15,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">3</td>
+                                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">รายการ 3</td>
+                                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">8,000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            `;
+                            break;
+                        case 'summary':
+                            title = 'สรุปข้อมูล';
+                            content = `
+                                <div style="text-align: center; padding: 20px 0;">
+                                    <h2 style="font-size: 2.5rem; margin: 0; color: var(--accent-primary);">45,872.50 ฿</h2>
+                                    <p style="margin: 10px 0 0;">ยอดขายรวมทั้งหมด</p>
+                                </div>
+                                <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+                                    <div style="text-align: center;">
+                                        <h3 style="font-size: 1.5rem; margin: 0; color: var(--status-0);">32,450.00 ฿</h3>
+                                        <p style="margin: 5px 0 0; font-size: 0.9rem;">เงินสด</p>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <h3 style="font-size: 1.5rem; margin: 0; color: var(--status-1);">13,422.50 ฿</h3>
+                                        <p style="margin: 5px 0 0; font-size: 0.9rem;">เงินเชื่อ</p>
+                                    </div>
+                                </div>
+                            `;
+                            break;
+                        case 'custom':
+                            title = 'การ์ดกำหนดเอง';
+                            content = '<div style="padding: 20px; text-align: center;">เนื้อหากำหนดเอง</div>';
+                            break;
+                        default:
+                            title = 'การ์ดใหม่';
+                            content = '<div style="padding: 20px; text-align: center;">เนื้อหาการ์ด</div>';
+                    }
+                    
+                    // สร้าง Element การ์ด
+                    const card = document.createElement('div');
+                    card.className = 'dashboard-card';
+                    card.id = id;
+                    card.style.left = `${x}px`;
+                    card.style.top = `${y}px`;
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <h3 class="card-title">${title}</h3>
+                            <div class="card-tools">
+                                <button class="card-tool card-tool-stack" title="ซ้อนการ์ด">⊞</button>
+                                <button class="card-tool card-tool-close" title="ปิด">✕</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            ${content}
+                        </div>
+                        <div class="resize-handle"></div>
+                    `;
+                    
+                    // เพิ่มการ์ดลงในพื้นที่ทำงาน
+                    this.workspace.appendChild(card);
+                    
+                    // เพิ่มการ์ดลงในรายการ
+                    const cardInfo = {
+                        id: id,
+                        element: card,
+                        title: title,
+                        type: type,
+                        chartType: chartType,
+                        data: this.generateRandomData(type)
+                    };
+                    
+                    this.cards.push(cardInfo);
+                    
+                    // สร้างรายการในแพนเนลด้านข้าง
+                    this.addCardToList(cardInfo);
+                    
+                    // ทำให้การ์ดเลื่อนได้
+                    this.makeCardDraggable(card);
+                    
+                    // ทำให้การ์ดปรับขนาดได้
+                    this.makeCardResizable(card);
+                    
+                    // เพิ่ม event listeners สำหรับปุ่มบนการ์ด
+                    const closeBtn = card.querySelector('.card-tool-close');
+                    closeBtn.addEventListener('click', () => this.removeCard(id));
+                    
+                    const stackBtn = card.querySelector('.card-tool-stack');
+                    if (stackBtn) {
+                        stackBtn.addEventListener('click', () => {
+                            this.contextMenu.setAttribute('data-card-id', id);
+                            this.openStackModal();
+                        });
+                    }
+                    
+                    // สร้างกราฟ (ถ้ามี)
+                    if (chartType) {
+                        this.createChart(cardInfo);
+                    }
+                    
+                    return cardInfo;
+                }
+                
+                makeCardDraggable(card) {
+                    const self = this;
+                    let isDragging = false;
+                    let startX, startY, startLeft, startTop;
+                    
+                    const header = card.querySelector('.card-header');
+                    
+                    header.addEventListener('mousedown', function(e) {
+                        isDragging = true;
+                        startX = e.clientX;
+                        startY = e.clientY;
+                        startLeft = parseInt(card.style.left) || 0;
+                        startTop = parseInt(card.style.top) || 0;
+                        
+                        card.classList.add('card-dragging');
+                        
+                        // เพิ่ม event listeners ชั่วคราว
+                        document.addEventListener('mousemove', dragMove);
+                        document.addEventListener('mouseup', dragEnd);
+                        
+                        e.preventDefault();
+                    });
+                    
+                    function dragMove(e) {
+                        if (!isDragging) return;
+                        
+                        const dx = e.clientX - startX;
+                        const dy = e.clientY - startY;
+                        
+                        card.style.left = `${startLeft + dx}px`;
+                        card.style.top = `${startTop + dy}px`;
+                    }
+                    
+                    function dragEnd() {
+                        isDragging = false;
+                        card.classList.remove('card-dragging');
+                        
+                        // ลบ event listeners ชั่วคราว
+                        document.removeEventListener('mousemove', dragMove);
+                        document.removeEventListener('mouseup', dragEnd);
+                    }
+                }
+                
+                makeCardResizable(card) {
+                    const self = this;
+                    const handle = card.querySelector('.resize-handle');
+                    let isResizing = false;
+                    let startX, startY, startWidth, startHeight;
+                    
+                    handle.addEventListener('mousedown', function(e) {
+                        isResizing = true;
+                        startX = e.clientX;
+                        startY = e.clientY;
+                        startWidth = parseInt(window.getComputedStyle(card).width);
+                        startHeight = parseInt(window.getComputedStyle(card).height);
+                        
+                        // เพิ่ม event listeners ชั่วคราว
+                        document.addEventListener('mousemove', resizeMove);
+                        document.addEventListener('mouseup', resizeEnd);
+                        
+                        e.preventDefault();
+                    });
+                    
+                    function resizeMove(e) {
+                        if (!isResizing) return;
+                        
+                        const dx = e.clientX - startX;
+                        const dy = e.clientY - startY;
+                        
+                        const newWidth = Math.max(300, startWidth + dx);
+                        const newHeight = Math.max(200, startHeight + dy);
+                        
+                        card.style.width = `${newWidth}px`;
+                        card.style.height = `${newHeight}px`;
+                        
+                        // หากเป็นการ์ดที่มีกราฟ ให้อัปเดตขนาดกราฟด้วย
+                        const cardId = card.id;
+                        const cardInfo = self.cards.find(c => c.id === cardId);
+                        
+                        if (cardInfo && cardInfo.chartType) {
+                            // หน่วงเวลาเล็กน้อยเพื่อให้การ์ดปรับขนาดเสร็จก่อน
+                            setTimeout(() => {
+                                self.createChart(cardInfo);
+                            }, 100);
+                        }
+                    }
+                    
+                    function resizeEnd() {
+                        isResizing = false;
+                        
+                        // ลบ event listeners ชั่วคราว
+                        document.removeEventListener('mousemove', resizeMove);
+                        document.removeEventListener('mouseup', resizeEnd);
+                    }
+                }
+                
+                addCardToList(cardInfo) {
+                    const listItem = document.createElement('div');
+                    listItem.className = 'card-list-item';
+                    listItem.setAttribute('draggable', 'true');
+                    listItem.setAttribute('data-card-id', cardInfo.id);
+                    listItem.innerHTML = `
+                        <h4>${cardInfo.title}</h4>
+                        <p>${this.getCardTypeDescription(cardInfo.type)}</p>
+                    `;
+                    
+                    this.cardList.appendChild(listItem);
+                    
+                    // เพิ่ม event listener สำหรับการลาก
+                    listItem.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('card-type', cardInfo.type);
+                    });
+                    
+                    // เพิ่ม event listener สำหรับการคลิก
+                    listItem.addEventListener('click', () => {
+                        const card = document.getElementById(cardInfo.id);
+                        if (card) {
+                            // เลื่อนไปที่การ์ด
+                            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            
+                            // เน้นการ์ด
+                            card.classList.add('stacked-card');
+                            setTimeout(() => {
+                                card.classList.remove('stacked-card');
+                            }, 1000);
+                        }
+                    });
+                }
+                
+                getCardTypeDescription(type) {
+                    switch (type) {
+                        case 'line-chart': return 'กราฟเส้น';
+                        case 'bar-chart': return 'กราฟแท่ง';
+                        case 'pie-chart': return 'กราฟวงกลม';
+                        case 'table': return 'ตารางข้อมูล';
+                        case 'summary': return 'สรุปข้อมูล';
+                        case 'custom': return 'กำหนดเอง';
+                        default: return 'ไม่ระบุ';
+                    }
+                }
+                
+                removeCard(cardId) {
+                    // ลบการ์ดออกจาก DOM
+                    const card = document.getElementById(cardId);
+                    if (card) {
+                        card.remove();
+                    }
+                    
+                    // ลบการ์ดออกจากรายการ
+                    const index = this.cards.findIndex(c => c.id === cardId);
+                    if (index !== -1) {
+                        this.cards.splice(index, 1);
+                    }
+                    
+                    // ลบรายการออกจากแพนเนลด้านข้าง
+                    const listItem = this.cardList.querySelector(`[data-card-id="${cardId}"]`);
+                    if (listItem) {
+                        listItem.remove();
+                    }
+                }
+                
+                duplicateCard(cardId) {
+                    const originalCard = this.cards.find(c => c.id === cardId);
+                    if (originalCard) {
+                        const cardElement = document.getElementById(cardId);
+                        const rect = cardElement.getBoundingClientRect();
+                        const workspaceRect = this.workspace.getBoundingClientRect();
+                        
+                        const x = parseInt(cardElement.style.left) + 20;
+                        const y = parseInt(cardElement.style.top) + 20;
+                        
+                        this.createNewCard(originalCard.type, x, y);
+                    }
+                }
+                
+                stackCards(cardIds) {
+                    // ตรวจสอบว่าการ์ดที่เลือกเป็นประเภทเดียวกันหรือไม่
+                    const selectedCards = cardIds.map(id => this.cards.find(c => c.id === id)).filter(Boolean);
+                    
+                    if (selectedCards.length < 2) {
+                        alert('ต้องเลือกการ์ดอย่างน้อย 2 การ์ด');
+                        return;
+                    }
+                    
+                    // ตรวจสอบประเภทกราฟ
+                    const firstCardType = selectedCards[0].chartType;
+                    const allSameType = selectedCards.every(card => card.chartType === firstCardType);
+                    
+                    if (!allSameType) {
+                        alert('ไม่สามารถซ้อนการ์ดที่มีประเภทกราฟต่างกันได้');
+                        return;
+                    }
+                    
+                    // สร้างการ์ดใหม่ที่ซ้อนกัน
+                    const firstCard = document.getElementById(selectedCards[0].id);
+                    const x = parseInt(firstCard.style.left);
+                    const y = parseInt(firstCard.style.top);
+                    const width = parseInt(window.getComputedStyle(firstCard).width);
+                    const height = parseInt(window.getComputedStyle(firstCard).height);
+                    
+                    // สร้างการ์ดใหม่
+                    const stackedCardId = `card-${this.nextId++}`;
+                    const stackedCard = document.createElement('div');
+                    stackedCard.className = 'dashboard-card stacked-card';
+                    stackedCard.id = stackedCardId;
+                    stackedCard.style.left = `${x}px`;
+                    stackedCard.style.top = `${y}px`;
+                    stackedCard.style.width = `${width}px`;
+                    stackedCard.style.height = `${height}px`;
+                    
+                    const chartType = selectedCards[0].chartType;
+                    let title;
+                    
+                    switch (chartType) {
+                        case 'line': title = 'กราฟเส้นซ้อน'; break;
+                        case 'bar': title = 'กราฟแท่งซ้อน'; break;
+                        case 'pie': title = 'กราฟวงกลมซ้อน'; break;
+                        default: title = 'กราฟซ้อน';
+                    }
+                    
+                    stackedCard.innerHTML = `
+                        <div class="card-header">
+                            <h3 class="card-title">${title}</h3>
+                            <div class="card-tools">
+                                <button class="card-tool card-tool-close" title="ปิด">✕</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container"><canvas id="chart-${stackedCardId}"></canvas></div>
+                        </div>
+                        <div class="resize-handle"></div>
+                    `;
+                    
+                    // เพิ่มการ์ดลงในพื้นที่ทำงาน
+                    this.workspace.appendChild(stackedCard);
+                    
+                    // ลบการ์ดเดิมที่ถูกเลือก
+                    selectedCards.forEach(card => {
+                        this.removeCard(card.id);
+                    });
+                    
+                    // สร้างข้อมูลการ์ดใหม่
+                    const stackedCardInfo = {
+                        id: stackedCardId,
+                        element: stackedCard,
+                        title: title,
+                        type: selectedCards[0].type,
+                        chartType: chartType,
+                        isStacked: true,
+                        sourceCards: selectedCards,
+                        data: this.combineDataForStackedChart(selectedCards, chartType)
+                    };
+                    
+                    this.cards.push(stackedCardInfo);
+                    
+                    // เพิ่มรายการในแพนเนลด้านข้าง
+                    this.addCardToList(stackedCardInfo);
+                    
+                    // ทำให้การ์ดเลื่อนได้
+                    this.makeCardDraggable(stackedCard);
+                    
+                    // ทำให้การ์ดปรับขนาดได้
+                    this.makeCardResizable(stackedCard);
+                    
+                    // เพิ่ม event listeners สำหรับปุ่มบนการ์ด
+                    const closeBtn = stackedCard.querySelector('.card-tool-close');
+                    closeBtn.addEventListener('click', () => this.removeCard(stackedCardId));
+                    
+                    // สร้างกราฟซ้อน
+                    this.createStackedChart(stackedCardInfo);
+                }
+                
+                combineDataForStackedChart(cards, chartType) {
+                    // สร้างข้อมูลรวมสำหรับกราฟซ้อน
+                    if (chartType === 'line' || chartType === 'bar') {
+                        // สำหรับกราฟเส้นหรือกราฟแท่ง
+                        return {
+                            labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.'],
+                            datasets: cards.map((card, index) => {
+                                return {
+                                    label: card.title,
+                                    data: card.data.datasets[0].data,
+                                    borderColor: this.getChartColor(index),
+                                    backgroundColor: this.getChartColor(index, 0.2),
+                                    borderWidth: 2
+                                };
+                            })
+                        };
+                    } else if (chartType === 'pie') {
+                        // สำหรับกราฟวงกลม
+                        // รวมข้อมูลแบบง่ายๆ - ในกรณีจริงควรมีการรวมที่ซับซ้อนกว่านี้
+                        return {
+                            labels: cards[0].data.labels,
+                            datasets: [{
+                                data: cards.map(card => card.data.datasets[0].data.reduce((a, b) => a + b, 0)),
+                                backgroundColor: cards.map((_, index) => this.getChartColor(index)),
+                                borderWidth: 1
+                            }]
+                        };
+                    }
+                    
+                    return null;
+                }
+                
+                createSampleCards() {
+                    // สร้างการ์ดตัวอย่างเมื่อเริ่มต้น
+                    this.createNewCard('line-chart', 50, 50);
+                    this.createNewCard('bar-chart', 500, 50);
+                    this.createNewCard('summary', 50, 400);
+                }
+                
+                generateRandomData(type) {
+                    // สร้างข้อมูลสุ่มสำหรับกราฟ
+                    switch (type) {
+                        case 'line-chart':
+                            return {
+                                labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.'],
+                                datasets: [{
+                                    label: 'ยอดขาย',
+                                    data: [
+                                        Math.floor(Math.random() * 10000) + 5000,
+                                        Math.floor(Math.random() * 10000) + 5000,
+                                        Math.floor(Math.random() * 10000) + 5000,
+                                        Math.floor(Math.random() * 10000) + 5000,
+                                        Math.floor(Math.random() * 10000) + 5000,
+                                        Math.floor(Math.random() * 10000) + 5000
+                                    ],
+                                    borderColor: this.getChartColor(0),
+                                    backgroundColor: this.getChartColor(0, 0.1),
+                                    tension: 0.4,
+                                    fill: true
+                                }]
+                            };
+                        case 'bar-chart':
+                            return {
+                                labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.'],
+                                datasets: [{
+                                    label: 'ยอดขาย',
+                                    data: [
+                                        Math.floor(Math.random() * 10000) + 5000,
+                                        Math.floor(Math.random() * 10000) + 5000,
+                                        Math.floor(Math.random() * 10000) + 5000,
+                                        Math.floor(Math.random() * 10000) + 5000,
+                                        Math.floor(Math.random() * 10000) + 5000,
+                                        Math.floor(Math.random() * 10000) + 5000
+                                    ],
+                                    backgroundColor: this.getChartColor(1, 0.7),
+                                    borderColor: this.getChartColor(1),
+                                    borderWidth: 1
+                                }]
+                            };
+                        case 'pie-chart':
+                            return {
+                                labels: ['เงินสด', 'เงินเชื่อ', 'โอนเงิน', 'บัตรเครดิต'],
+                                datasets: [{
+                                    data: [
+                                        Math.floor(Math.random() * 5000) + 5000,
+                                        Math.floor(Math.random() * 3000) + 2000,
+                                        Math.floor(Math.random() * 2000) + 1000,
+                                        Math.floor(Math.random() * 1000) + 500
+                                    ],
+                                    backgroundColor: [
+                                        this.getChartColor(0),
+                                        this.getChartColor(1),
+                                        this.getChartColor(2),
+                                        this.getChartColor(3)
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            };
+                        default:
+                            return null;
+                    }
+                }
+                
+                getChartColor(index, alpha = 1) {
+                    const colors = [
+                        `rgba(107, 138, 253, ${alpha})`,
+                        `rgba(253, 203, 110, ${alpha})`,
+                        `rgba(86, 171, 47, ${alpha})`,
+                        `rgba(156, 95, 255, ${alpha})`,
+                        `rgba(255, 108, 108, ${alpha})`,
+                        `rgba(59, 178, 191, ${alpha})`
+                    ];
+                    
+                    return colors[index % colors.length];
+                }
+                
+                createChart(cardInfo) {
+                    if (!cardInfo.chartType || !cardInfo.data) return;
+                    
+                    const chartId = `chart-${cardInfo.id}`;
+                    const chartElement = document.getElementById(chartId);
+                    
+                    if (!chartElement) return;
+                    
+                    // ลบกราฟเดิมถ้ามี
+                    if (cardInfo.chartInstance) {
+                        cardInfo.chartInstance.destroy();
+                    }
+                    
+                    // สร้างกราฟใหม่
+                    const chartOptions = {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: '#e0e0e0',
+                                    font: {
+                                        family: 'Prompt'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                titleFont: {
+                                    family: 'Prompt'
+                                },
+                                bodyFont: {
+                                    family: 'Prompt'
+                                }
+                            }
+                        }
+                    };
+                    
+                    // เพิ่ม options เฉพาะสำหรับกราฟเส้นและกราฟแท่ง
+                    if (cardInfo.chartType === 'line' || cardInfo.chartType === 'bar') {
+                        chartOptions.scales = {
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a0a0a0'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a0a0a0',
+                                    callback: function(value) {
+                                        return value.toLocaleString() + ' ฿';
+                                    }
+                                }
+                            }
+                        };
+                    }
+                    
+                    // สร้างกราฟ
+                    cardInfo.chartInstance = new Chart(chartElement, {
+                        type: cardInfo.chartType,
+                        data: cardInfo.data,
+                        options: chartOptions
+                    });
+                }
+                
+                createStackedChart(cardInfo) {
+                    if (!cardInfo.isStacked || !cardInfo.chartType || !cardInfo.data) return;
+                    
+                    const chartId = `chart-${cardInfo.id}`;
+                    const chartElement = document.getElementById(chartId);
+                    
+                    if (!chartElement) return;
+                    
+                    // ลบกราฟเดิมถ้ามี
+                    if (cardInfo.chartInstance) {
+                        cardInfo.chartInstance.destroy();
+                    }
+                    
+                                     // สร้างกราฟใหม่ต่อจากเดิม
+                    const chartOptions = {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: '#e0e0e0',
+                                    font: {
+                                        family: 'Prompt'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                titleFont: {
+                                    family: 'Prompt'
+                                },
+                                bodyFont: {
+                                    family: 'Prompt'
+                                }
+                            }
+                        }
+                    };
+                    
+                    // เพิ่ม options เฉพาะสำหรับกราฟเส้นและกราฟแท่ง
+                    if (cardInfo.chartType === 'line' || cardInfo.chartType === 'bar') {
+                        chartOptions.scales = {
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a0a0a0'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#a0a0a0',
+                                    callback: function(value) {
+                                        return value.toLocaleString() + ' ฿';
+                                    }
+                                }
+                            }
+                        };
+                    }
+                    
+                    // ปรับการซ้อนกราฟ
+                    if (cardInfo.isStacked && cardInfo.chartType === 'line') {
+                        cardInfo.data.datasets.forEach((dataset, index) => {
+                            // เพิ่มเสกลที่สองสำหรับกราฟเส้นที่ซ้อนกัน
+                            if (index > 0) {
+                                const additionalAxisId = `y-axis-${index}`;
+                                dataset.yAxisID = additionalAxisId;
+                                
+                                if (!chartOptions.scales) chartOptions.scales = {};
+                                chartOptions.scales[additionalAxisId] = {
+                                    position: index % 2 === 1 ? 'right' : 'left',
+                                    beginAtZero: true,
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        color: dataset.borderColor,
+                                        callback: function(value) {
+                                            return value.toLocaleString() + ' ฿';
+                                        }
+                                    }
+                                };
+                            }
+                        });
+                    }
+                    
+                    // สร้างกราฟ
+                    cardInfo.chartInstance = new Chart(chartElement, {
+                        type: cardInfo.chartType,
+                        data: cardInfo.data,
+                        options: chartOptions
+                    });
+                }
+            }
+            
+            // สร้างอินสแตนซ์ของ DashboardManager
+            const dashboardManager = new DashboardManager();
+        });
+    </script>
+    <script src="dashboard-improvements.js"></script>
+</body>
+</html>

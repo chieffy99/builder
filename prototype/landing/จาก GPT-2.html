@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Cards - Anti-Normalization</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&family=Sarabun:wght@300;400;500;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-card: rgba(224,219,231,0.16);
+            --accent-0: #6b8afd;
+            --accent-1: #34e515;
+            --accent-2: #fdcb6e;
+            --accent-3: #ec53de;
+            --card-shadow: 0 8px 22px rgba(0,0,0,0.42);
+            --border-light: rgba(107,138,253,0.2);
+        }
+        body {
+            font-family: 'Prompt', 'Sarabun', sans-serif;
+            background: var(--bg-primary);
+            color: #e0e0e0;
+            margin: 0; padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .dashboard-container {
+            display: flex; height: 100vh;
+        }
+        /* Card Socket (side-panel) */
+        .side-panel {
+            width: 220px;
+            background: #181a2a;
+            border-right: 1px solid var(--accent-0);
+            display: flex;
+            flex-direction: column;
+            transition: width 0.2s;
+            z-index: 1;
+        }
+        .side-panel-header {
+            padding: 14px 18px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--accent-2);
+            color: var(--accent-0);
+            display: flex; align-items: center; gap: 1em;
+        }
+        .side-panel.collapsed { width: 50px; }
+        .side-panel.collapsed .side-panel-header span { display: none; }
+        .side-panel.collapsed .card-list-item { min-width: 0px; }
+        .card-list {
+            flex: 1; overflow-y: auto; min-width: 0;
+            padding: 7px 9px;
+            background: transparent;
+        }
+        .card-list-item {
+            background: linear-gradient(90deg,var(--accent-0) 0%,var(--accent-3) 70%);
+            color: #fff;
+            border-radius: 14px;
+            padding: 16px 16px 10px 16px;
+            margin: 7px 0;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1em;
+            box-shadow: 0 2px 10px #0002;
+            border: 2px solid transparent;
+            transition: background .15s,border .2s;
+            user-select: none;
+        }
+        .card-list-item:hover, .card-list-item:focus {
+            background: linear-gradient(90deg,var(--accent-1),var(--accent-2) 70%);
+            border: 2px solid #fff8;
+        }
+        .dashboard-workspace {
+            flex: 1;
+            position: relative;
+            overflow: auto;
+            background: linear-gradient(120deg,rgba(32,40,80,.2) 0,transparent 100%);
+        }
+        /* FAB (action button) + Horizontal shortcut menu (pill) */
+        .action-button {
+            position: fixed;
+            bottom: 25px; right: 23px;
+            z-index: 15;
+            background: linear-gradient(50deg, var(--accent-0), var(--accent-1));
+            color: #fff;
+            box-shadow: 0 2px 10px #0006;
+            border: none; outline: none;
+            border-radius: 100px;
+            width: 64px; height: 64px;
+            font-size: 2.3em;
+            display: flex;
+            align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: box-shadow .18s, background .17s;
+        }
+        .action-button:active { box-shadow: 0 3px 34px var(--accent-1);}
+        /* Horizontal pill shortcut sticker */
+        .fab-shortcuts {
+            position: fixed;
+            right: 100px; bottom: 27px;
+            display: none;
+            flex-direction: row;
+            gap: 19px;
+            z-index: 20;
+            animation: fadeIn .24s;
+        }
+        .fab-shortcut-btn {
+            background: linear-gradient(70deg, var(--accent-2), var(--accent-3) 70%);
+            color: #fff;
+            border: 2px solid var(--accent-1);
+            border-radius: 20px;
+            padding: 10px 28px;
+            min-width: 90px;
+            font-size: 1.02em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background .13s, border .18s;
+            box-shadow: 0 2px 15px #0003;
+        }
+        .fab-shortcut-btn:hover {
+            background: linear-gradient(90deg,var(--accent-1),var(--accent-3) 70%);
+            border-color: #fff7;
+        }
+        /* Dashboard Card, with resizing-repaint-friendly chart */
+        .dashboard-card {
+            position: absolute;
+            box-shadow: var(--card-shadow);
+            width: 390px; height: 270px;
+            min-width: 180px; min-height: 120px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1.8px solid var(--border-light);
+            z-index: 100;
+            transition: box-shadow .19s;
+        }
+        .dashboard-card.active { box-shadow: 0 0 40px 0 #8e9fff; }
+        .card-header {
+            background: linear-gradient(90deg, var(--accent-2) 0%, var(--accent-3) 90%);
+            padding: 11px 17px 10px;
+            display: flex; align-items: center; justify-content: space-between;
+            cursor: move;
+        }
+        .card-title { font-size: 1em; font-weight: 600; }
+        .card-tools {
+            display: flex; gap: 6px;
+        }
+        .card-tool {
+            background: #18152bee;
+            color: var(--accent-2);
+            border: none;
+            border-radius: 4px;
+            width: 27px; height:27px;
+            font-size: 1em;
+            display: flex;
+            align-items: center; justify-content: center;
+            cursor: pointer;
+        }
+        .card-tool:hover { background: var(--accent-1); color: #fff; }
+        .card-body { height: calc(100% - 44px); padding: 15px; }
+        .chart-container { width:100%; height:99%; min-height: 125px; min-width:170px; }
+        /* Resize handles 8 points */
+        .resize-handle {
+            position: absolute;
+            width: 14px; height: 14px;
+            background: #fff6;
+            border: 2px solid var(--accent-0);
+            border-radius: 50%;
+            opacity: 0.6;
+            z-index: 4000;
+        }
+        .resize-handle.nw { left: -7px; top: -7px; cursor: nwse-resize;}
+        .resize-handle.ne { right: -7px; top: -7px; cursor: nesw-resize;}
+        .resize-handle.sw { left: -7px; bottom: -7px; cursor: nesw-resize;}
+        .resize-handle.se { right: -7px; bottom: -7px; cursor: nwse-resize;}
+        .resize-handle.n  { top: -7px; left:calc(50% - 7px); cursor: ns-resize;}
+        .resize-handle.s  { bottom: -7px; left:calc(50% - 7px); cursor: ns-resize;}
+        .resize-handle.e  { right: -7px; top:calc(50% - 7px); cursor: ew-resize;}
+        .resize-handle.w  { left: -7px; top:calc(50% - 7px); cursor: ew-resize;}
+        /* .stack-overlay overlay */
+        .stack-overlay {
+            position: absolute;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            pointer-events: auto;
+            border: 2.2px dashed var(--accent-1);
+            background: rgba(25,40,80,.14);
+            border-radius:12px;
+            z-index: 5000;
+            min-width: 150px; min-height:120px;
+        }
+        .stack-overlay-content {
+            margin-top: 12px;
+            color: #262;
+            background: #fffdeeea;
+            border-radius: 12px;
+            padding: 18px 22px;
+            min-width: 200px;
+        }
+        .stack-overlay-content h4 { margin-bottom: 7px; }
+        .stack-overlay-content label { cursor: pointer; margin: 2px 0; }
+        /* Animations, fadeIn */
+        @keyframes fadeIn { from{ opacity: 0;} to { opacity: 1;} }
+        .fadeIn { animation: fadeIn 0.22s forwards; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="side-panel" id="sidePanel">
+            <div class="side-panel-header" tabindex="1"> <span>Card Socket / รายการ</span> <button id="togglePanel" style="margin-left:auto;">◀</button></div>
+            <div class="card-list" id="cardList"></div>
+        </div>
+        <div class="dashboard-workspace" id="dashboardWorkspace"></div>
+    </div>
+    <button class="action-button" id="fabBtn" aria-label="เรียกเมนู">+</button>
+    <div class="fab-shortcuts" id="fabShortcuts">
+        <button class="fab-shortcut-btn" data-type="line-chart">เส้น</button>
+        <button class="fab-shortcut-btn" data-type="bar-chart">แท่ง</button>
+        <button class="fab-shortcut-btn" data-type="pie-chart">วงกลม</button>
+        <button class="fab-shortcut-btn" data-type="summary">สรุป</button>
+        <button class="fab-shortcut-btn" data-type="custom">กำหนดเอง</button>
+    </div>
+    <div class="stack-overlay" id="stackOverlay"></div>
+    <script>
+        // Utility
+        function getRandom(start, range) { return Math.floor(start + Math.random()*range);}
+        // Card Types template
+        const cardTypes = {
+            "line-chart": { title:"กราฟเส้น", chart:"line" },
+            "bar-chart": { title:"กราฟแท่ง", chart:"bar" },
+            "pie-chart": { title:"กราฟวงกลม", chart:"pie" },
+            "summary": { title:"สรุป", chart:null },
+            "custom": { title:"Custom", chart:null }
+        };
+        // -- Core state
+        let zRange = {min: 1600, max: 2000};
+        let cards = [];
+        let zTop = zRange.max;
+        let workspace = document.getElementById("dashboardWorkspace");
+        let cardList = document.getElementById("cardList");
+        let fabBtn = document.getElementById("fabBtn");
+        let fabShortcuts = document.getElementById("fabShortcuts");
+        let sidePanel = document.getElementById("sidePanel");
+        let overlay = document.getElementById("stackOverlay");
+
+        // -- FAB and shortcut menu handler
+        fabBtn.addEventListener('click', ()=>{
+            if(fabShortcuts.style.display!=="flex") {
+                fabShortcuts.style.display="flex";
+            } else {
+                fabShortcuts.style.display="none";
+            }
+        });
+        document.body.addEventListener('click', function(e){
+            if(!fabShortcuts.contains(e.target) && !fabBtn.contains(e.target)) fabShortcuts.style.display="none";
+        }, true);
+
+        // ---- Card add/create via .card-list-item and .fab-shortcut-btn
+        function addCard(type, x=110, y=80) {
+            let ct = cardTypes[type] || cardTypes["custom"];
+            let id = "card-"+Date.now()+"-"+getRandom(0,5000);
+            let html = `<div class="card-header"><span class="card-title">${ct.title || "การ์ด"}</span>
+                <div class="card-tools">
+                    <button class="card-tool card-tool-stack" title="ซ้อน">⊞</button>
+                    <button class="card-tool card-tool-close" title="ปิด">✕</button>
+                </div>
+            </div>
+            <div class="card-body">${ct.chart?`<div class="chart-container"><canvas id="chart-${id}"></canvas></div>`
+            : type==="summary"?`<div style="text-align:center"><h2>รายงานสรุปยอด</h2><div>${getRandom(40000,40000)} ฿</div></div>`:"<div>ข้อมูลใหม่</div>"}
+            </div>
+            <div class="resize-handle nw"></div><div class="resize-handle ne"></div>
+            <div class="resize-handle sw"></div><div class="resize-handle se"></div>
+            <div class="resize-handle n"></div><div class="resize-handle s"></div>
+            <div class="resize-handle e"></div><div class="resize-handle w"></div>
+            `;
+            let card = document.createElement('div');
+            card.className = 'dashboard-card fadeIn';
+            card.id = id;
+            card.style.left = x+'px';
+            card.style.top = y+'px';
+            card.tabIndex = 1;
+            card.dataset.type = type;
+            card.dataset.zIndex = zTop--;
+            card.style.zIndex = card.dataset.zIndex;
+            card.innerHTML = html;
+            workspace.appendChild(card);
+
+            // add side-panel "card-list-item"
+            let li = document.createElement("div");
+            li.className = "card-list-item";
+            li.textContent = ct.title || "Custom";
+            li.title = ct.title;
+            li.setAttribute("tabindex","1");
+            // Drag to workspace
+            li.draggable = true;
+            li.addEventListener("dragstart", ev=>{
+                ev.dataTransfer.setData("type", type);
+            });
+            li.addEventListener("click", ()=>{
+                fabShortcuts.style.display="none";
+                card.scrollIntoView({behavior:"smooth",block:"nearest"});
+                setTimeout(()=>{ card.classList.add("active"); setTimeout(()=>{ card.classList.remove("active"); },1200); },120);
+            });
+            cardList.appendChild(li);
+
+            // State
+            cards.push({elm:card, li:li, type:type, id:id});
+            // Draggable & Resizable & Events
+            makeDraggable(card); makeResizable(card);
+            setCardButtons(card);
+            // Chart auto-resize
+            if(ct.chart) setTimeout(()=> drawChart(id, ct.chart),420);
+        }
+        fabShortcuts.querySelectorAll(".fab-shortcut-btn").forEach(btn=>{
+            btn.onclick = ()=> addCard(btn.dataset.type);
+        });
+
+        // -- Side Panel (Card Socket) toggle collapse
+        document.getElementById("togglePanel").onclick = ()=>{
+            sidePanel.classList.toggle("collapsed");
+        };
+        // -- Drag from .card-list-item (side)
+        cardList.addEventListener("dragstart", ev=>{
+            let type = ev.target.textContent.trim();
+            for(let k in cardTypes){ if(cardTypes[k].title===type){ ev.dataTransfer.setData("type",k); } }
+        },true);
+        workspace.addEventListener("dragover",ev=>ev.preventDefault());
+        workspace.addEventListener("drop",ev=>{
+            let type = ev.dataTransfer.getData("type");
+            if(type) { addCard(type,ev.offsetX,ev.offsetY);}
+        });
+
+        // ---- Card z-index update & click
+        function bringToFront(card){
+            cards.forEach(c=>{
+                if(c.elm!==card && Number(c.elm.style.zIndex)<zRange.max )c.elm.style.zIndex--;
+            });
+            card.style.zIndex = zRange.max;
+            card.dataset.zIndex = zRange.max;
+        }
+
+        // -- Draggable
+        function makeDraggable(card) {
+            let drag = false, sx, sy, sxL, syT;
+            let header = card.querySelector('.card-header');
+            header.onmousedown = function(e){
+                drag = true;
+                bringToFront(card);
+                sx=e.clientX; sy=e.clientY;
+                sxL=Number(card.style.left.replace('px',''))||0;
+                syT=Number(card.style.top.replace('px',''))||0;
+                document.body.style.userSelect = 'none';
+            };
+            window.onmousemove = function(e){
+                if(!drag) return;
+                card.style.left = (sxL+e.clientX-sx)+"px";
+                card.style.top = (syT+e.clientY-sy)+"px";
+                overlay.style.display="none";
+            };
+            window.onmouseup = function(){ drag=false; document.body.style.userSelect='';};
+            card.onclick = ()=>bringToFront(card);
+        }
+        // -- Resizable (8 points, Shift = unlock aspect)
+        function makeResizable(card){
+            let aspectLocked = true, dir="", originW, originH, originX, originY, mouse0x, mouse0y;
+            function handleDown(hdir){ return function(e){
+                dir=hdir; aspectLocked = !e.shiftKey;
+                bringToFront(card);
+                originW=card.offsetWidth; originH=card.offsetHeight;
+                originX=card.offsetLeft; originY=card.offsetTop;
+                mouse0x=e.clientX; mouse0y=e.clientY;
+                document.body.style.userSelect='none';
+                document.onmousemove=resizeMove; document.onmouseup=resizeEnd;
+            }; }
+            function resizeMove(e){
+                let dx=e.clientX-mouse0x, dy=e.clientY-mouse0y, w=originW, h=originH, x=originX, y=originY;
+                if(dir.includes("e")) w=Math.max(160,originW+dx);
+                if(dir.includes("s")) h=Math.max(110,originH+dy);
+                if(dir.includes("w")){ w=Math.max(160,originW-dx); x=originX+dx;}
+                if(dir.includes("n")){ h=Math.max(110,originH-dy); y=originY+dy;}
+                if(aspectLocked){
+                    let asp=originW/originH;
+                    if(dir.match(/[ns]/))w=h*asp; else if(dir.match(/[ew]/))h=w/asp;
+                }
+                card.style.width=w+"px"; card.style.height=h+"px"; card.style.left=x+"px"; card.style.top=y+"px";
+                // chart resize
+                let ch=card.querySelector("canvas");
+                if(ch && ch.getContext) setTimeout(()=>{ch.width=card.offsetWidth-30;ch.height=card.offsetHeight-64;ch.parentElement&&drawChart(card.id,card.dataset.type?.replace('-chart',''),true);},50);
+            }
+            function resizeEnd(){ document.onmousemove="";document.onmouseup="";document.body.style.userSelect=''; }
+            ["nw","ne","sw","se","n","s","e","w"].forEach(h=>{
+                let hdl=card.querySelector(".resize-handle."+h);
+                if(hdl)hdl.onmousedown=handleDown(h);
+            });
+        }
+
+        // -- Card chart draw/update
+        function drawChart(id, type, resp){
+            try{
+                let c=document.getElementById("chart-"+id); if(!c)return;
+                let ctx = c.getContext("2d");
+                let data={},options={responsive:true,maintainAspectRatio:false};
+                if(type==="line"){
+                    data={labels:["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย."],datasets:[
+                        {label:"ยอดขาย", data:[getRandom(7000,11000),getRandom(12000,11000),
+                        getRandom(7000,13000),getRandom(5000,9000),getRandom(8000,15000),getRandom(6000,10000)],
+                        borderColor:"#6b8afd",backgroundColor:"#6b8afd33",tension:0.32, fill:true}
+                    ]};
+                    options.plugins={legend:{labels:{color:"#e0e0e0"}}};
+                    options.scales={x:{ticks:{color:"#a0a0a0"}},y:{ticks:{color:"#a0a0a0",callback:v=>v+" ฿"}}};
+                }
+                if(type==="bar"){
+                    data={labels:["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย."],datasets:[
+                        {label:"รายรับ", data:[getRandom(100,70),getRandom(150,90),getRandom(80,130),getRandom(70,90),getRandom(90,150),getRandom(60,100)],
+                        backgroundColor:"#34e51599", borderRadius:2}
+                    ]};
+                    options.plugins={legend:{labels:{color:"#e0e0e0"}}};
+                }
+                if(type==="pie"){
+                    data={labels:["เงินสด","เงินเชื่อ","โอนเงิน","บัตรเครดิต"],datasets:[{
+                        data:[getRandom(3000,4000),getRandom(1300,2000),getRandom(800,1700),getRandom(500,950)],
+                        backgroundColor:["#6b8afd","#fdcb6e","#ec53de","#34e515"]}]};
+                    options.plugins={legend:{labels:{color:"#e0e0e0"}}};
+                }
+                if(c._cInstance) try{c._cInstance.destroy();}catch(e){}
+                c._cInstance = new Chart(ctx, {type:type, data:data, options:options});
+            }catch(e){}
+        }
+
+        // --- Card control buttons/stack btns
+        function setCardButtons(card) {
+            // ปิดการ์ด
+            card.querySelector('.card-tool-close').onclick = ()=> {
+                workspace.removeChild(card);
+                let idx = cards.findIndex(c=>c.elm===card);
+                if(idx>=0){
+                    cardList.removeChild(cards[idx].li);
+                    cards.splice(idx,1);
+                }
+            };
+            // ซ้อนการ์ด (open overlay listing combinables)
+            card.querySelector('.card-tool-stack').onclick = function(){
+                let rect = card.getBoundingClientRect();
+                let wsRect = workspace.getBoundingClientRect();
+                overlay.style.left = (card.offsetLeft)+"px";
+                overlay.style.top = (card.offsetTop)+"px";
+                overlay.style.width = card.offsetWidth+"px"; overlay.style.height = card.offsetHeight+"px";
+                let ctype = card.dataset.type;
+                // Only those type, and overlapped
+                let combinables = cards.filter(c=>c.elm!==card && c.type===ctype && isOverlapping(card,c.elm));
+                let content = '<div class="stack-overlay-content"><h4>เลือกการ์ดที่จะวางซ้อน</h4>';
+                if(combinables.length){
+                    combinables.forEach(c=>{
+                        content += `<label><input type="checkbox" value="${c.elm.id}"> ${c.elm.querySelector(".card-title").textContent}</label><br>`;
+                    });
+                    content += `<button id="confirmStackBtn">ผสม</button>`;
+                }else{
+                    content += "<em>ไม่มีการ์ดที่ซ้อนในพื้นที่นี้</em>";
+                }
+                content += `<button id="cancelStackBtn" style="float:right;margin-left:14px">ปิด</button></div>`;
+                overlay.innerHTML = content;
+                overlay.style.display = "flex";
+                overlay.className="stack-overlay fadeIn";
+                document.getElementById("cancelStackBtn").onclick = ()=>overlay.style.display = "none";
+                let conf = overlay.querySelector("#confirmStackBtn"); if(!conf)return;
+                conf.onclick = ()=>{
+                    let ids = [...overlay.querySelectorAll('input:checked')].map(i=>i.value);
+                    overlay.style.display="none";
+                    if(ids.length>0) doStackCards([card.id].concat(ids),ctype,card.offsetLeft,card.offsetTop);
+                };
+            };
+        }
+        function isOverlapping(a,b){
+            let ra=a.getBoundingClientRect(),rb=b.getBoundingClientRect();
+            return !(ra.right<rb.left||ra.left>rb.right||ra.bottom<rb.top||ra.top>rb.bottom);
+        }
+        // -- Card stacking new card
+        function doStackCards(ids,ctype,x,y){
+            ids.forEach(id=>{
+                let c=cards.find(c=>c.elm.id===id);
+                if(c){workspace.removeChild(c.elm); if(c.li)cardList.removeChild(c.li);}
+            });
+            let ct = cardTypes[ctype]||cardTypes["custom"];
+            let nid = "card-"+Date.now()+"-S";
+            let html = `<div class="card-header"><span class="card-title">${ct.title+" (ซ้อน)"}</span>
+                <div class="card-tools">
+                    <button class="card-tool card-tool-close" title="ปิด">✕</button>
+                </div>
+            </div>
+            <div class="card-body"><div class="chart-container"><canvas id="chart-${nid}"></canvas></div></div>
+            <div class="resize-handle nw"></div><div class="resize-handle ne"></div>
+            <div class="resize-handle sw"></div><div class="resize-handle se"></div>
+            <div class="resize-handle n"></div><div class="resize-handle s"></div>
+            <div class="resize-handle e"></div><div class="resize-handle w"></div>
+            `;
+            let card=document.createElement('div');
+            card.className = "dashboard-card fadeIn";
+            card.id=nid; card.dataset.type=ctype;
+            card.style.left = (x+8)+"px"; card.style.top=(y+8)+"px";
+            card.dataset.zIndex = zTop--; card.style.zIndex = card.dataset.zIndex;
+            card.innerHTML = html;
+            workspace.appendChild(card);
+            // Side menu
+            let li = document.createElement("div");
+            li.className = "card-list-item";
+            li.textContent = ct.title+" (ซ้อน)";
+            li.setAttribute("tabindex","1");
+            li.draggable = true;
+            li.addEventListener("dragstart", ev=>{ev.dataTransfer.setData("type",ctype);});
+            li.addEventListener("click", ()=>card.scrollIntoView({behavior:"smooth",block:"nearest"}));
+            cardList.appendChild(li);
+            cards.push({elm:card,li:li,type:ctype,id:nid});
+            // Draggable/Resizable/Btns
+            makeDraggable(card); makeResizable(card); setCardButtons(card);
+            setTimeout(()=> drawChart(nid,ct.chart),320);
+        }
+
+        // -- Card add via drag from .card-list-item (side-panel = Card Socket)
+        cardList.addEventListener("dragstart", ev=>{
+            let idx = [...cardList.children].indexOf(ev.target);
+            if(idx>=0){
+                let c = cards[idx];
+                ev.dataTransfer.setData("type", c.type);
+            }
+        }, true);
+
+        // DEMO: Sample cards on start
+        setTimeout(()=>{ addCard('line-chart',120,70); addCard('summary',480,90); },100);
+        setTimeout(()=>{ addCard('pie-chart',160,340); },330);
+
+    </script>
+</body>
+</html>
