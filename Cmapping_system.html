@@ -340,8 +340,6 @@
 
         /* Shortcut panel similar to elements in Dffftled-2.html */
         .shortcut-panel {
-<<<<<<< ours
-=======
             position: fixed;
             right: 20px;
             bottom: 100px;
@@ -388,7 +386,6 @@
         /* โมดัล */
         .modal {
             display: none;
->>>>>>> theirs
             position: fixed;
             right: 20px;
             bottom: 100px;
@@ -594,8 +591,6 @@
     
     <!-- Stack Overlay -->
     <div class="stack-overlay" id="stackOverlay"></div>
-<<<<<<< ours
-=======
 
     <!-- Shortcut Panel -->
     <div class="shortcut-panel" id="shortcutPanel">
@@ -611,7 +606,6 @@
         </div>
     </div>
     
->>>>>>> theirs
 
     <!-- Shortcut Panel -->
     <div class="shortcut-panel" id="shortcutPanel">
@@ -693,8 +687,6 @@
                     document.getElementById('addCardButton').addEventListener('click', function() {
                         const panel = document.getElementById('shortcutPanel');
                         panel.classList.toggle('open');
-<<<<<<< ours
-=======
                     });
                     
                     // ปิดโมดัลเลือกการ์ด
@@ -719,7 +711,6 @@
                     // ยกเลิกการซ้อนการ์ด
                     document.getElementById('cancelStackBtn').addEventListener('click', function() {
                         self.stackModal.style.display = 'none';
->>>>>>> theirs
                     });
                     
                     
@@ -1101,14 +1092,6 @@ bringToFront(el){
                     window.addEventListener('mouseup', up);
                 }
                 
-                bringToFront(card) {
-                    this.topZ += 1;
-                    card.style.zIndex = this.topZ;
-                    card.classList.add('active');
-                    this.cards.forEach(c => {
-                        if (c.element !== card) c.element.classList.remove('active');
-                    });
-                }
                 }
                 
 makeCardResizable(card) {

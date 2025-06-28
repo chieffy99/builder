@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dark‐Theme Prototype</title>
+  <style>
+    /*----------------------------
+      Base & Reset
+    ----------------------------*/
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #111;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+    button {
+      background: transparent;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      text-align: center;
+      padding: 0;
+    }
+
+    /*----------------------------
+      Reusable Circular Button
+    ----------------------------*/
+    .circle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-image:
+        repeating-linear-gradient(
+          -45deg,
+          rgba(255,255,255,0.05) 0px,
+          rgba(255,255,255,0.05) 1px,
+          transparent 1px,
+          transparent 6px
+        );
+      transition: transform .15s ease;
+    }
+    .circle-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /*----------------------------
+      Radial Menu (Left)
+    ----------------------------*/
+    .radial-menu {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 380px;
+      height: 380px;
+    }
+    .radial-menu .center-btn {
+      --size: 150px;
+      position: absolute;
+      top: 50%; left: 50%;
+      width: var(--size);
+      height: var(--size);
+      margin: calc(var(--size)/-2);
+      border: 3px solid #888;
+      color: #eee;
+      font-size: 16px;
+      background-image:
+        repeating-linear-gradient(
+          -45deg,
+          rgba(255,255,255,0.04) 0px,
+          rgba(255,255,255,0.04) 1px,
+          transparent 1px,
+          transparent 8px
+        );
+    }
+    .radial-menu .radial-item {
+      --size: 90px;
+      position: absolute;
+      top: 50%; left: 50%;
+      width: var(--size);
+      height: var(--size);
+      margin: calc(var(--size)/-2);
+      border: 3px solid var(--clr);
+      color: #fff;
+      font-size: 13px;
+      background-image:
+        repeating-linear-gradient(
+          -45deg,
+          rgba(255,255,255,0.05) 0px,
+          rgba(255,255,255,0.05) 1px,
+          transparent 1px,
+          transparent 6px
+        );
+      /* Rotate around center */
+      transform:
+        rotate(calc(36deg * var(--i)))
+        translate(150px)
+        rotate(calc(-36deg * var(--i)));
+    }
+
+    /*----------------------------
+      Vertical Sidebar (Right)
+    ----------------------------*/
+    .side-list {
+      position: absolute;
+      top: 10%;
+      right: 10%;
+      width: 80px;
+      padding: 10px 0;
+      border: 3px solid #fff;
+      border-radius: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.02);
+    }
+    .side-list .circle-btn {
+      width: 60px;
+      height: 60px;
+      border: 3px solid #fff;
+      font-size: 12px;
+    }
+
+    /*----------------------------
+      Bottom Bar
+    ----------------------------*/
+    .bottom-bar {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px;
+      border: 3px solid #fff;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.02);
+    }
+    .bottom-bar .circle-btn {
+      width: 60px;
+      height: 60px;
+      border: 3px solid #fff;
+      font-size: 12px;
+    }
+    .bottom-bar .action-btn {
+      width: 80px;
+      height: 80px;
+      border: 3px solid #888;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Radial Menu -->
+  <div class="radial-menu">
+    <button class="center-btn circle-btn">Action button</button>
+    <!-- Ten color‐coded shot‐cut items -->
+    <button class="radial-item circle-btn" style="--i:0; --clr:#2ecc71">shot cut</button>
+    <button class="radial-item circle-btn" style="--i:1; --clr:#3498db">shot cut</button>
+    <button class="radial-item circle-btn" style="--i:2; --clr:#f1c40f">shot cut</button>
+    <button class="radial-item circle-btn" style="--i:3; --clr:#e74c3c">shot cut</button>
+    <button class="radial-item circle-btn" style="--i:4; --clr:#f39c12">shot cut</button>
+    <button class="radial-item circle-btn" style="--i:5; --clr:#e67e22">shot cut</button>
+    <button class="radial-item circle-btn" style="--i:6; --clr:#9b59b6">shot cut</button>
+    <button class="radial-item circle-btn" style="--i:7; --clr:#8e44ad">shot cut</button>
+    <button class="radial-item circle-btn" style="--i:8; --clr:#ff6b6b">shot cut</button>
+    <button class="radial-item circle-btn" style="--i:9; --clr:#d35400">shot cut</button>
+  </div>
+
+  <!-- Vertical Side List -->
+  <div class="side-list">
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="bottom-bar">
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+    <button class="circle-btn">shot cut</button>
+    <button class="action-btn circle-btn">Action button</button>
+  </div>
+
+  <script>
+    // Log shot‐cut clicks
+    document.querySelectorAll('.radial-item, .side-list .circle-btn, .bottom-bar .circle-btn')
+      .forEach(btn => {
+        btn.addEventListener('click', () => {
+          const txt = btn.innerText.trim();
+          if(txt.toLowerCase() === 'shot cut') {
+            console.log('Clicked:', txt);
+          }
+        });
+      });
+
+    // Alert on action buttons
+    document.querySelectorAll('.center-btn, .bottom-bar .action-btn')
+      .forEach(btn => {
+        btn.addEventListener('click', () => {
+          alert('Action button clicked');
+        });
+      });
+  </script>
+
+</body>
+</html>
