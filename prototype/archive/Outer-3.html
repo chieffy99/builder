@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shot Cut Prototype</title>
+  <style>
+    /* Reset & base */
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body, html {
+      width:100%; height:100%;
+      background: #111;
+      display:flex; align-items:center; justify-content:center;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      color: #fff;
+      overflow:hidden;
+    }
+
+    /* Container for all circles */
+    .circle-container {
+      position: relative;
+      width: 80vmin; height: 80vmin;
+    }
+
+    /* Common style for all orbiting circles */
+    .outer {
+      --size: 12vmin;
+      width: var(--size);
+      height: var(--size);
+      border: 3px solid var(--color, #888);
+      border-radius: 50%;
+      position: absolute;
+      top: 50%; left: 50%;
+      margin: calc(-1 * var(--size) / 2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 1.1vmin;
+      cursor: pointer;
+      transition: transform 0.3s ease, background 0.3s ease;
+      /* place by rotating & translating outwards */
+      transform:
+        rotate(var(--angle))
+        translate(calc(30vmin))
+        rotate(calc(var(--angle) * -1));
+      background: rgba(255,255,255, 0.03);
+    }
+
+    .outer:hover {
+      background: rgba(255,255,255, 0.1);
+      transform:
+        rotate(var(--angle))
+        translate(calc(30vmin + 0.5vmin))
+        rotate(calc(var(--angle) * -1))
+        scale(1.1);
+    }
+
+    /* Central action button */
+    .action {
+      --size: 20vmin;
+      width: var(--size);
+      height: var(--size);
+      border: 4px solid #888;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%; left: 50%;
+      margin: calc(-1 * var(--size) / 2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5vmin;
+      cursor: pointer;
+      background: rgba(255,255,255,0.05);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .action:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.05);
+    }
+
+    /* Label styling */
+    .outer span, .action span {
+      pointer-events: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="circle-container">
+    <!-- Ten orbiting shot-cut buttons -->
+    <div class="outer" style="--angle:   0deg;  --color:#4caf50;"><span>shot cut</span></div>
+    <div class="outer" style="--angle:  36deg;  --color:#2196f3;"><span>shot cut</span></div>
+    <div class="outer" style="--angle:  72deg;  --color:#ffc107;"><span>shot cut</span></div>
+    <div class="outer" style="--angle: 108deg;  --color:#f44336;"><span>shot cut</span></div>
+    <div class="outer" style="--angle: 144deg;  --color:#ff5722;"><span>shot cut</span></div>
+    <div class="outer" style="--angle: 180deg;  --color:#ff8a80;"><span>shot cut</span></div>
+    <div class="outer" style="--angle: 216deg;  --color:#9c27b0;"><span>shot cut</span></div>
+    <div class="outer" style="--angle: 252deg;  --color:#e040fb;"><span>shot cut</span></div>
+    <div class="outer" style="--angle: 288deg;  --color:#00bcd4;"><span>shot cut</span></div>
+    <div class="outer" style="--angle: 324deg;  --color:#8bc34a;"><span>shot cut</span></div>
+
+    <!-- Central action button -->
+    <div class="action"><span>Action button</span></div>
+  </div>
+
+  <script>
+    // Add click handlers
+    document.querySelectorAll('.outer').forEach((btn,i) => {
+      btn.addEventListener('click',()=>{
+        alert(`You clicked shot cut #${i+1}`);
+      });
+    });
+    document.querySelector('.action').addEventListener('click', ()=>{
+      alert('Central Action button clicked!');
+    });
+  </script>
+</body>
+</html>
