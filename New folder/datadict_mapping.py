@@ -7,6 +7,7 @@ with DATA_PATH.open("r", encoding="utf8") as f:
     datadict = json.load(f)
 
 
+
 def map_statN(code: str) -> str:
     return datadict["StatN"].get(str(code), "Unknown")
 

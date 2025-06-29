@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Workflow Management Dashboard</title>
+  <style>
+    /* Global & Dark Theme */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: #121212;
+      color: #e0e0e0;
+    }
+    h1, h2 { margin: 0; }
+    /* Header */
+    header {
+      padding: 1rem;
+      background: #1f1f1f;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.7);
+    }
+    header h1 { color: #fff; font-size: 1.5rem; }
+    /* Nav Tabs */
+    .nav {
+      display: flex;
+      justify-content: center;
+      background: #1e1e1e;
+      border-bottom: 1px solid #333;
+      flex-wrap: wrap;
+    }
+    .nav button {
+      background: none;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      color: #aaa;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: color 0.2s;
+    }
+    .nav button:hover {
+      color: #fff;
+    }
+    .nav button.active {
+      color: #ff9800;
+      border-bottom: 2px solid #ff9800;
+    }
+    /* Container */
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    /* Panels & Forms */
+    .panel { display: none; }
+    form {
+      background: #1e1e1e;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    }
+    form h2 {
+      margin-bottom: 1rem;
+      color: #ff9800;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: #bbb;
+    }
+    input, select, textarea {
+      width: 100%;
+      margin-top: 0.25rem;
+      padding: 0.5rem;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: #2a2a2a;
+      color: #eee;
+      font-size: 1rem;
+    }
+    textarea { resize: vertical; min-height: 4rem; }
+    .submit {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      background: #ff9800;
+      color: #121212;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .submit:hover { background: #e68900; }
+    /* Responsive */
+    @media (max-width: 600px) {
+      .nav button { flex: 1 1 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Workflow Management Dashboard</h1>
+  </header>
+
+  <nav class="nav">
+    <button data-panel="customer">Customer</button>
+    <button data-panel="sales">Sales Channel</button>
+    <button data-panel="inventory">Inventory</button>
+    <button data-panel="finance">Finance</button>
+    <button data-panel="supplier">Supplier</button>
+  </nav>
+
+  <div class="container">
+    <!-- Customer Panel -->
+    <section id="customer" class="panel">
+      <form onsubmit="return false;">
+        <h2>Customer</h2>
+        <label for="cust-name">Name</label>
+        <input id="cust-name" type="text" placeholder="Enter customer name" required />
+
+        <label for="cust-contact">Contact</label>
+        <input id="cust-contact" type="text" placeholder="Email or phone" required />
+
+        <label for="cust-type">Type</label>
+        <select id="cust-type">
+          <option value="retail">Retail</option>
+          <option value="wholesale">Wholesale</option>
+          <option value="online">Online</option>
+        </select>
+
+        <label for="cust-ticket">Ticket#</label>
+        <input id="cust-ticket" type="text" placeholder="Support ticket ID" />
+
+        <button class="submit" onclick="alert('Customer saved.')">Save Customer</button>
+      </form>
+    </section>
+
+    <!-- Sales Channel Panel -->
+    <section id="sales" class="panel">
+      <form onsubmit="return false;">
+        <h2>Sales Channel</h2>
+        <label for="sales-date">Date</label>
+        <input id="sales-date" type="date" required />
+
+        <label for="sales-outlet">Outlet</label>
+        <input id="sales-outlet" type="text" placeholder="Store or platform" required />
+
+        <label for="sales-seller">Seller</label>
+        <input id="sales-seller" type="text" placeholder="Employee or agent" required />
+
+        <label for="sales-items">Items</label>
+        <textarea id="sales-items" placeholder="List of items sold"></textarea>
+
+        <button class="submit" onclick="alert('Sales data saved.')">Save Sales</button>
+      </form>
+    </section>
+
+    <!-- Inventory Panel -->
+    <section id="inventory" class="panel">
+      <form onsubmit="return false;">
+        <h2>Inventory</h2>
+        <label for="inv-movements">Stock Movements</label>
+        <textarea id="inv-movements" placeholder="E.g. +10 pcs, -5 pcs"></textarea>
+
+        <label for="inv-timestamp">Timestamp</label>
+        <input id="inv-timestamp" type="datetime-local" />
+
+        <button class="submit" onclick="alert('Inventory updated.')">Update Inventory</button>
+      </form>
+    </section>
+
+    <!-- Finance Panel -->
+    <section id="finance" class="panel">
+      <form onsubmit="return false;">
+        <h2>Finance</h2>
+        <label for="fin-revenue">Revenue</label>
+        <input id="fin-revenue" type="number" step="0.01" placeholder="Total revenue" />
+
+        <label for="fin-payments">Payments</label>
+        <textarea id="fin-payments" placeholder="Record of payments received"></textarea>
+
+        <button class="submit" onclick="alert('Finance records saved.')">Save Finance</button>
+      </form>
+    </section>
+
+    <!-- Supplier Panel -->
+    <section id="supplier" class="panel">
+      <form onsubmit="return false;">
+        <h2>Supplier</h2>
+        <label for="sup-cost">Cost of Goods</label>
+        <input id="sup-cost" type="number" step="0.01" placeholder="Total COGS" />
+
+        <button class="submit" onclick="alert('Supplier data saved.')">Save Supplier</button>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    // Tab‐panel logic
+    document.querySelectorAll('.nav button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Deactivate all
+        document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p=>p.style.display='none');
+        // Activate current
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.panel).style.display = 'block';
+      });
+    });
+    // Show first panel by default
+    document.querySelector('.nav button').click();
+  </script>
+</body>
+</html>

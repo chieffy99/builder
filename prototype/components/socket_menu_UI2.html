@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dark-Theme Socket Menu Prototype</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --panel-bg: #2b1f1f;
+      --header-bg: #1e1e1e;
+      --text: #eee;
+      --subtext: #aaa;
+      --border: #fff;
+      --drop-highlight: rgba(255,255,255,0.1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Socket Menu (right) */
+    .socket-menu {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 200px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: height 0.3s ease;
+    }
+    .socket-menu.collapsed {
+      height: 50px;
+    }
+    .menu-header {
+      background: var(--header-bg);
+      padding: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .menu-header .title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .menu-header .subtitle {
+      font-size: 13px;
+      color: var(--subtext);
+      margin-top: 4px;
+    }
+    .socket-panel {
+      background: var(--panel-bg);
+      flex: 1;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      overflow-y: auto;
+      transition: opacity 0.3s ease;
+    }
+    .socket-menu.collapsed .socket-panel {
+      opacity: 0;
+      pointer-events: none;
+      height: 0;
+    }
+    /* Bottom Tray */
+    .tray {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--panel-bg);
+      border: 2px solid #e63946;
+      border-radius: 40px;
+      padding: 20px 30px;
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+    /* Circles */
+    .circle {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: #222;
+      border: 3px solid #fff;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      user-select: none;
+    }
+    .circle.green { border-color: #39e600; }
+    .circle.purple { border-color: #cc99ff; }
+    .circle.grey { border-color: #a6b4c1; }
+    .circle.red { border-color: #e63946; }
+    /* Drop highlight */
+    .tray.drop-target,
+    .socket-panel.drop-target {
+      background: var(--drop-highlight);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SOCKET MENU -->
+  <div class="socket-menu" id="socketMenu">
+    <div class="menu-header" id="menuToggle">
+      <div class="title">menu</div>
+      <div class="subtitle">User ID & Socket</div>
+    </div>
+    <div class="socket-panel" id="socketPanel">
+      <div class="circle green" draggable="true">A</div>
+      <div class="circle purple" draggable="true">B</div>
+      <div class="circle grey" draggable="true">C</div>
+      <div class="circle green" draggable="true">D</div>
+    </div>
+  </div>
+
+  <!-- BOTTOM TRAY -->
+  <div class="tray" id="tray">
+    <div class="circle green" draggable="true">1</div>
+    <div class="circle purple" draggable="true">2</div>
+    <div class="circle grey" draggable="true">3</div>
+    <div class="circle green" draggable="true">4</div>
+  </div>
+
+<script>
+  // drag & drop setup
+  let dragged = null;
+  document.querySelectorAll('.circle').forEach(circ => {
+    circ.addEventListener('dragstart', e => {
+      dragged = circ;
+      setTimeout(() => circ.style.opacity = '0.4', 0);
+    });
+    circ.addEventListener('dragend', e => {
+      circ.style.opacity = '1';
+      dragged = null;
+    });
+  });
+
+  // two drop zones
+  const zones = [ document.getElementById('socketPanel'), document.getElementById('tray') ];
+  zones.forEach(zone => {
+    zone.addEventListener('dragover', e => {
+      e.preventDefault();
+      zone.classList.add('drop-target');
+    });
+    zone.addEventListener('dragleave', e => {
+      zone.classList.remove('drop-target');
+    });
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('drop-target');
+      if (dragged) zone.appendChild(dragged);
+    });
+  });
+
+  // collapse/expand menu
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('socketMenu').classList.toggle('collapsed');
+  });
+</script>
+
+</body>
+</html>

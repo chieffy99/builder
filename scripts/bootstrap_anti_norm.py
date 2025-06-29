@@ -3,7 +3,8 @@
 Bootstrap Anti-Normalization structure for Dynamic Data Weaver
 """
 
-import os, textwrap, pathlib
+import textwrap
+import pathlib
 
 root = pathlib.Path(__file__).resolve().parent.parent
 
@@ -63,6 +64,7 @@ if not app_py.exists():
     )
 
 # ── logic_engine stubs ────────────────────────────────────
+(root / "backend/__init__.py").touch()
 (root / "backend/logic_engine/__init__.py").touch()
 
 (root / "backend/logic_engine/parser.py").write_text(
