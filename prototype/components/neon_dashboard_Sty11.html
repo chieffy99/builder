@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Workflow Management Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Reset & Base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* Header & Tabs */
+    .header {
+      background: #161b22;
+      padding: 1rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .tabs {
+      display: flex;
+      list-style: none;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .tabs li {
+      margin-right: 1.5rem;
+      padding: 0.5rem 0;
+      cursor: pointer;
+      position: relative;
+      color: #8b949e;
+      transition: color .2s;
+    }
+    .tabs li.active, .tabs li:hover {
+      color: #ff9800;
+    }
+    .tabs li.active::after {
+      content:"";
+      position:absolute;
+      bottom: -0.2rem;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #ff9800;
+    }
+
+    /* Content Areas */
+    .content {
+      padding: 2rem;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Customer Form Card */
+    .form-card {
+      max-width: 400px;
+      margin: 0 auto;
+      background: #161b22;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,.5);
+    }
+    .form-card h2 {
+      color: #ff9800;
+      margin-bottom: 1rem;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 0.3rem;
+      color: #8b949e;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.6rem;
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      color: #c9d1d9;
+      font-size: 0.95rem;
+    }
+    .form-group input::placeholder {
+      color: #8b949e;
+    }
+    .btn-save {
+      width: 100%;
+      background: #ff9800;
+      border: none;
+      color: #121212;
+      font-weight: bold;
+      padding: 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      transition: background .2s;
+    }
+    .btn-save:hover {
+      background: #e68900;
+    }
+
+    /* Sales Channel / Dashboard Section */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .neon-card {
+      background: #010a1f;
+      border: 1px solid #1c82f0;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 0 8px rgba(28,130,240,.6);
+      position: relative;
+    }
+    .neon-card h3 {
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+    .neon-card p {
+      color: #8b949e;
+    }
+    /* Progress bar inside neon card */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #202b3c;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .progress-bar .fill {
+      width: 45%;
+      height: 100%;
+      background: #00e5ff;
+    }
+    /* Neon button */
+    .neon-btn {
+      background: transparent;
+      color: #00e5ff;
+      border: 2px solid #00e5ff;
+      padding: 0.8rem 1.2rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(0,229,255,.6);
+      transition: background .2s, color .2s;
+    }
+    .neon-btn:hover {
+      background: #00e5ff;
+      color: #0d1117;
+    }
+    /* Chart container */
+    .chart-card {
+      grid-column: 1 / -1;
+      background: #010a1f;
+      border: 1px solid #1c82f0;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(28,130,240,.6);
+    }
+
+    /* Responsive tweaks */
+    @media(max-width:600px){
+      .header { flex-direction: column; align-items:flex-start; }
+      .tabs { margin-left:0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER & NAV -->
+  <header class="header">
+    <h1>Workflow Management Dashboard</h1>
+    <ul class="tabs">
+      <li class="active" data-tab="customer">Customer</li>
+      <li data-tab="sales">Sales Channel</li>
+      <li data-tab="inventory">Inventory</li>
+      <li data-tab="finance">Finance</li>
+      <li data-tab="supplier">Supplier</li>
+    </ul>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+    <!-- CUSTOMER FORM -->
+    <section id="customer" class="tab-content active">
+      <div class="form-card">
+        <h2>Customer</h2>
+        <div class="form-group">
+          <label for="cust-name">Name</label>
+          <input id="cust-name" type="text" placeholder="Enter customer name">
+        </div>
+        <div class="form-group">
+          <label for="cust-contact">Contact</label>
+          <input id="cust-contact" type="text" placeholder="Email or phone">
+        </div>
+        <div class="form-group">
+          <label for="cust-type">Type</label>
+          <select id="cust-type">
+            <option>Retail</option>
+            <option>Wholesale</option>
+            <option>Distributor</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="cust-ticket">Ticket#</label>
+          <input id="cust-ticket" type="text" placeholder="Support ticket ID">
+        </div>
+        <button class="btn-save">Save Customer</button>
+      </div>
+    </section>
+
+    <!-- SALES CHANNEL / DASHBOARD -->
+    <section id="sales" class="tab-content">
+      <div class="dashboard-grid">
+        <div class="neon-card">
+          <h3>Dashboard</h3>
+          <div class="progress-bar">
+            <div class="fill"></div>
+          </div>
+        </div>
+        <div class="neon-card">
+          <h3>Card Title</h3>
+          <p>Some text goes here…</p>
+        </div>
+        <div class="chart-card">
+          <canvas id="lineChart"></canvas>
+        </div>
+        <div class="neon-card">
+          <h3>Another Card</h3>
+          <p>More text here…</p>
+        </div>
+        <div class="neon-card" style="display:flex; align-items:center; justify-content:center;">
+          <button class="neon-btn">Button</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- OTHER PLACEHOLDERS -->
+    <section id="inventory" class="tab-content">
+      <p>Inventory content goes here…</p>
+    </section>
+    <section id="finance" class="tab-content">
+      <p>Finance content goes here…</p>
+    </section>
+    <section id="supplier" class="tab-content">
+      <p>Supplier content goes here…</p>
+    </section>
+  </main>
+
+  <!-- SCRIPTS -->
+  <script>
+    // TAB NAVIGATION
+    document.querySelectorAll('.tabs li').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tabs li').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        const tgt = tab.getAttribute('data-tab');
+        document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+        document.getElementById(tgt).classList.add('active');
+      });
+    });
+
+    // CHART.JS LINE CHART
+    const ctx = document.getElementById('lineChart');
+    if (ctx) {
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'],
+          datasets: [{
+            data: [3,6,4,7,5,9,6,8,7],
+            borderColor: '#00e5ff',
+            backgroundColor: 'rgba(0,229,255,0.2)',
+            borderWidth: 2,
+            tension: 0.4,
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { 
+              grid: { color: '#111b2a' },
+              ticks: { color: '#8b949e' }
+            },
+            y: {
+              grid: { color: '#111b2a' },
+              ticks: { color: '#8b949e' },
+              beginAtZero: false,
+              suggestedMin: 2,
+              suggestedMax: 10
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+      // give chart container a height
+      ctx.parentElement.style.height = '240px';
+    }
+  </script>
+</body>
+</html>

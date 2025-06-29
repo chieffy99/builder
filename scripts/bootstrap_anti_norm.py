@@ -3,9 +3,10 @@
 Bootstrap Anti-Normalization structure for Dynamic Data Weaver
 """
 
-import os, textwrap, pathlib
+import textwrap
+import pathlib
 
-root = pathlib.Path(__file__).resolve().parent.parent
+root = Path(__file__).resolve().parent.parent
 
 # ── โฟลเดอร์หลัก ──────────────────────────────────────────
 for d in [
@@ -20,7 +21,9 @@ for d in [
 # ── README ────────────────────────────────────────────────
 readme = root / "README.md"
 if not readme.exists():
-    readme.write_text(textwrap.dedent("""
+    readme.write_text(
+        textwrap.dedent(
+            """
     # Dynamic Data Weaver — Anti-Normalization bootstrap
 
     ระบบนี้เก็บข้อมูลเป็น *logic-embedded string* 1 บรรทัดต่อเหตุการณ์
@@ -32,12 +35,17 @@ if not readme.exists():
     - `backend/logic_engine/` parser · interpreter · reducer
     - `agent/`      AI agent เข้าใจ logic string
     - `data/samples/` ตัวอย่างไฟล์
-    """).strip()+"\n")
+    """
+        ).strip()
+        + "\n"
+    )
 
 # ── FastAPI stub ──────────────────────────────────────────
 app_py = root / "backend/app.py"
 if not app_py.exists():
-    app_py.write_text(textwrap.dedent("""
+    app_py.write_text(
+        textwrap.dedent(
+            """
     from fastapi import FastAPI
     from pydantic import BaseModel
     import logic_engine.interpreter as interp
@@ -50,15 +58,22 @@ if not app_py.exists():
     @app.post("/interpret")
     def interpret(item: Logic):
         return interp.interpret(item.record)
-    """).strip()+"\n")
+    """
+        ).strip()
+        + "\n"
+    )
 
 # ── logic_engine stubs ────────────────────────────────────
+(root / "backend/__init__.py").touch()
 (root / "backend/logic_engine/__init__.py").touch()
 
 (root / "backend/logic_engine/parser.py").write_text(
-    "def csv_row_to_logic(row):\n    return ','.join(row)\n")
+    "def csv_row_to_logic(row):\n    return ','.join(row)\n"
+)
 
-(root / "backend/logic_engine/interpreter.py").write_text(textwrap.dedent("""
+(root / "backend/logic_engine/interpreter.py").write_text(
+    textwrap.dedent(
+        """
     from .stat_slot_map import MAP
     def interpret(rec: str):
         p = [x.strip() for x in rec.split(',')]
@@ -71,11 +86,13 @@ if not app_py.exists():
             "slots": slots,
             "meaning": MAP.get(statc, {}).get("desc","unknown")
         }
-    """).strip()+"\n")
+    """
+    ).strip()
+    + "\n"
+)
 # -- stat_slot_map -----------------------------------------------------------
 (root / "backend/logic_engine/stat_slot_map.py").write_text(
-    "MAP = {'A': {'desc': 'Amount value'}, "
-    "'B': {'desc': 'Count value'}}\n"
+    "MAP = {'A': {'desc': 'Amount value'}, " "'B': {'desc': 'Count value'}}\n"
 )
 
 # -- reducer stub ------------------------------------------------------------
@@ -84,7 +101,9 @@ if not app_py.exists():
 # -- WizardLogic stub --------------------------------------------------------
 wiz = root / "frontend/WizardLogic.js"
 if not wiz.exists():
-    wiz.write_text(textwrap.dedent("""
+    wiz.write_text(
+        textwrap.dedent(
+            """
     export function buildLogicString(f) {
       return [
         f.date,
@@ -95,12 +114,17 @@ if not wiz.exists():
         ...f.slots
       ].join(',');
     }
-    """).strip()+"\n")
+    """
+        ).strip()
+        + "\n"
+    )
 
 # -- GitHub Actions workflow --------------------------------------------------
 workflow = root / ".github/workflows/ci.yml"
 if not workflow.exists():
-    workflow.write_text(textwrap.dedent("""
+    workflow.write_text(
+        textwrap.dedent(
+            """
     name: CI
     on: [push]
     jobs:
@@ -117,6 +141,9 @@ if not workflow.exists():
           with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             publish_dir: ./frontend
-    """).strip()+"\n")
+    """
+        ).strip()
+        + "\n"
+    )
 
 print("✅ โครงสร้าง Anti-Normalization พร้อมแล้ว")
