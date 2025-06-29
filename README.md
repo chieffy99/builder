@@ -1,8 +1,7 @@
 # Dynamic Data Weaver
 
 This project bootstraps a small FastAPI backend and a simple static frontend.
-The backend lives under `backend/` and is a proper Python package so modules can
-be imported using package‑relative paths.
+The backend lives under `backend/`. The bootstrap script ensures `backend/__init__.py` exists so the folder behaves as a package and modules can be imported using package-relative paths.
 
 ## Setup
 
