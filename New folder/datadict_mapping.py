@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+
 DATA_PATH = Path(__file__).resolve().parent / "dictionary.json"
 with DATA_PATH.open("r", encoding="utf8") as f:
     datadict = json.load(f)
