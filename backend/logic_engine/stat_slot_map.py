@@ -1,1 +1,1 @@
-MAP = {"A": {"desc": "Amount value"}, "B": {"desc": "Count value"}}
+MAP = {'A': {'desc': 'Amount value'}, 'B': {'desc': 'Count value'}}
