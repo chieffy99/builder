@@ -4,7 +4,7 @@ Bootstrap Anti-Normalization structure for Dynamic Data Weaver
 """
 
 import textwrap
-import pathlib
+from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent
 
