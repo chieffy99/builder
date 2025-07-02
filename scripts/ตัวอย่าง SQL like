@@ -1,0 +1,23 @@
+ด้านบนเป็นตัวอย่าง **DataFrame** ที่แสดงตารางสมมุติพร้อมคอลัมน์ตรวจสอบ (`OTSAPL`, `MKSAPL`) ตามที่ระบบ SQL-like ของคุณทำไว้ ตั้งแต่การสร้างชื่อฟีลด์เพื่อเช็กเงื่อนไขไปจนถึงการรวมยอด:
+
+* **OTSAPL**: ยอดรวม `slot1` เมื่อ `ID1='OT'` และ `ID2='SA'` = 100 + 150 = **250**
+* **MKSAPL**: ยอดรวม `slot1` เมื่อ `ID1='MK'` และ `ID2='SA'` = 200 + 250 = **450**
+* **Combined**: ยอดรวมของทั้งสอง (เหมือน `SELECT SUM(slot1) FROM table WHERE OTSAPL OR MKSAPL`) = **700**
+
+วิธีนี้เลียนแบบ SQL แบบ:
+
+```sql
+SELECT
+  SUM(CASE WHEN ID1='OT' AND ID2='SA' THEN slot1 ELSE 0 END) AS OTSAPL,
+  SUM(CASE WHEN ID1='MK' AND ID2='SA' THEN slot1 ELSE 0 END) AS MKSAPL,
+  SUM(CASE WHEN (ID1='OT' AND ID2='SA') OR (ID1='MK' AND ID2='SA') THEN slot1 ELSE 0 END) AS Combined
+FROM table;
+```
+
+โดยเรา:
+
+1. สร้าง Boolean fields (`OTSAPL`, `MKSAPL`) จากเงื่อนไขที่ตรงกับชื่อ
+2. ใช้กรอง (`.loc[mask, 'slot1']`) และ `.sum()` เหมือน `SUM(...)`
+3. ผลลัพธ์ผสานยอดจากทั้งสองกรณีได้เหมือน SQL แต่ไม่ต้องเขียน `SELECT ... FROM ... WHERE ...` หลายครั้ง
+
+โครงนี้สอดคล้องกับแนวระบบคุณที่สร้างชื่อฟีลด์สำหรับตรวจสอบก่อน จากนั้นใช้อ่านชื่อเพื่อคิวรีและรวมข้อมูลโดยตรงครับ!

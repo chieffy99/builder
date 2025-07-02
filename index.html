@@ -1,50 +1,833 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Builder|ChieffySolutions</title>
+    <title>Anti-Normalization | ChieffySolutions</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&family=Sarabun:wght@300;400;500;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            background-color: black;
-            color: white;
+        :root {
+            --bg-primary: #050a18;
+            --bg-secondary: #0c1325;
+            --bg-card: rgba(25, 30, 45, 0.85);
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #6b8afd;
+            --accent-secondary: #9c5fff;
+            --status-0: #56ab2f;
+            --status-1: #fdcb6e;
+            --border-light: rgba(107, 138, 253, 0.3);
         }
-    </style><!-- You might want to add some CSS here or link to an external stylesheet -->
+        
+        body {
+            font-family: 'Prompt', 'Sarabun', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* พื้นหลังเส้นและจุด */
+        .background-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .vertical-line {
+            position: absolute;
+            width: 1px;
+            height: 100vh;
+            background: linear-gradient(to bottom, transparent, rgba(107, 138, 253, 0.2), transparent);
+            animation: float 15s infinite linear;
+        }
+        
+        .dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: rgba(107, 138, 253, 0.5);
+            animation: pulse 3s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100%);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+        
+        /* Navbar ทันสมัย */
+        .navbar {
+            background: rgba(10, 15, 30, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(107, 138, 253, 0.2);
+            padding: 15px 25px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+        
+        .logo {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(107, 138, 253, 0.5);
+        }
+        
+        .navbar-title {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .navbar-menu a {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .navbar-menu a:hover {
+            background: rgba(107, 138, 253, 0.1);
+            color: var(--accent-primary);
+        }
+        
+        .navbar-menu a.active {
+            background: rgba(107, 138, 253, 0.15);
+            color: var(--accent-primary);
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            position: relative;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: var(--text-secondary);
+            animation: fadeIn 1.2s ease-out;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            animation: fadeIn 1.4s ease-out;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(107, 138, 253, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+        
+        /* Section */
+        .section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2rem;
+            color: var(--text-primary);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            border-radius: 3px;
+        }
+        
+        /* การ์ดรายการสวยๆ */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 25px;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 0 15px rgba(107, 138, 253, 0.2);
+        }
+        
+        .card-icon {
+            margin-bottom: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 5px 15px rgba(107, 138, 253, 0.3);
+        }
+        
+        .card h3 {
+            font-size: 1.3rem;
+            margin: 0 0 15px;
+            color: var(--accent-primary);
+        }
+        
+        .card p {
+            color: var(--text-secondary);
+            margin: 0 0 20px;
+            flex-grow: 1;
+        }
+        
+        .card-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            margin-top: auto;
+        }
+        
+        .card-link:hover {
+            text-decoration: underline;
+        }
+        
+        .card-link span {
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card-link:hover span {
+            transform: translateX(5px);
+        }
+        
+        /* ตารางข้อมูล */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 15px;
+            background: rgba(107, 138, 253, 0.1);
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+        
+        .data-table td {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .data-table tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        .data-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* กราฟ */
+        .chart-container {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-light);
+            height: 350px;
+        }
+        
+        /* Feature Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .feature-item {
+            background: rgba(107, 138, 253, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(107, 138, 253, 0.1);
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-5px);
+            background: rgba(107, 138, 253, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--accent-primary);
+        }
+        
+        .feature-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        
+        .feature-item p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            padding: 60px 20px 30px;
+            margin-top: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-column h3 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-column a:hover {
+            color: var(--accent-primary);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px;
+            }
+            
+            .navbar-brand {
+                margin-bottom: 15px;
+            }
+            
+            .navbar-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero {
+                padding: 60px 15px;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                max-width: 250px;
+                text-align: center;
+            }
+            
+            .section {
+                padding: 40px 15px;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to My Site</h1>
-        <nav>
-            <ul>
-                <li><a href="unit4.html">unit4</a></li>
-                <li><a href="">T2024</a></li>
-                <li><a href="">Seed_Noise</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section>
-            <h2>About ChieffySolutions</h2>
-            <p>Information and the purpose of the site.</p>
-                <p>**This website is created for personal purposes.** </p>
-            <br>
-            <br>
-            <p>Due to OpenAI's Builder Profile ChatGPT verification requires identity verification. You can use your own public web domain to verify this step. Therefore, I have used the web space for educational purposes. and test the use of some features of ChatGPT that are often used to help with learning</p>
-            <br>
-            <p>The fact that the information was put here was originally caused by the discovery of a problem with ChatGPT dealing with document files, whether knowledge or uploaded in chat. It has become GPTs that have a duty to focus on one aspect, more than normal, severe level. that uses document content on unrelated topics Including being focused on that piece of information beyond normal. Avoid using external data to supplement relevant or missing content and create incorrect content. This issue occurred in mid-December 2023, with documents being better able to be processed before then. Better use of data</p>
-            <p>Now it more stable. Control GPTS behavior in data usage more firmly.  And what is clearly understood is that Knowledge is not RAG. Knowledge cannot be used as a replacement. At least Knowledge does not need to embed vectors itself.  And splitting content doesn't help if GPT behaves in a way that doesn't support that file format.<p/> 
-            <br>
-            <p>
-            <p>There will be new improvements to the basics of using DALLE to correct misunderstandings.  until the development is stuck  Now it is clear why DALLE has to learn directions or positioning in 3D. SORA is the answer, but currently there is still confusion about left and right often. This means that SORA that must be learned from DALLE ^30 should definitely revolve around itself.  Now DALLE is no different than being a parameter for SORA. DALL's growth has a direct impact on SORA.</p> 
-            <br>
-            <p>I will leave the knowledge on how to use Dalle that I have learned and understood from my field of knowledge on this website.  You can study it.  But it's not ML knowledge.</p>
-            <p>fun for build!!! place for ChatGPT because made for get builder profile.</p>
-            <br>
+    <!-- พื้นหลังเส้นและจุด -->
+    <div class="background-effect" id="backgroundEffect"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">
+            <div class="logo">AN</div>
+            <div class="navbar-title">Anti-Normalization</div>
+        </a>
+        <div class="navbar-menu">
+            <a href="#" class="active">หน้าหลัก</a>
+            <a href="world_fitting.html">World Fitting</a>
+            <a href="generic_data_mapping_system.html">Generic Data</a>
+            <a href="#">รายงาน</a>
+            <a href="#">เกี่ยวกับ</a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Anti-Normalization Dashboard</h1>
+        <p>ระบบจัดการและวิเคราะห์ข้อมูลธุรกรรมแบบ Generic Data Mapping System เพื่อการทำความเข้าใจข้อมูลที่ไม่เป็นไปตามรูปแบบปกติ</p>
+        <div class="hero-buttons">
+            <a href="world_fitting.html" class="btn-primary">World Fitting</a>
+            <a href="#" class="btn-secondary">เรียนรู้เพิ่มเติม</a>
+        </div>
     </section>
-    </main>
-    <footer>
-        <p>© 2024 ChieffySolutions. All rights reserved.</p>
+    
+    <!-- Main Section -->
+    <section class="section">
+        <h2 class="section-title">บริการของเรา</h2>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">🌍</div>
+                <h3>World Fitting</h3>
+                <p>แพลตฟอร์มสำหรับวิเคราะห์และทำความเข้าใจข้อมูลที่ไม่เป็นไปตามรูปแบบปกติ เหมาะสำหรับข้อมูลที่มีโครงสร้างซับซ้อนและต้องการการแปลความหมาย</p>
+                <a href="world_fitting.html" class="card-link">เข้าชม <span>→</span></a>
+            </div>
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3>Generic Data Mapping</h3>
+                <p>ระบบแมปข้อมูลทั่วไปที่รองรับการจัดการและประมวลผลข้อมูลหลากหลายรูปแบบ ช่วยให้การทำงานกับข้อมูลเป็นเรื่องง่าย</p>
+                <a href="#" class="card-link">เข้าชม <span>→</span></a>
+            </div>
+            <div class="card">
+                <div class="card-icon">📈</div>
+                <h3>รายงานและการวิเคราะห์</h3>
+                <p>สร้างและวิเคราะห์รายงานที่มีประสิทธิภาพ พร้อมด้วยการแสดงผลข้อมูลแบบ interactive ที่ช่วยให้คุณเข้าใจข้อมูลได้ดียิ่งขึ้น</p>
+                <a href="#" class="card-link">เข้าชม <span>→</span></a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Data Section -->
+    <section class="section">
+        <h2 class="section-title">ข้อมูลล่าสุด</h2>
+        
+        <div class="chart-container">
+            <canvas id="overviewChart"></canvas>
+        </div>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID1</th>
+                    <th>ID2</th>
+                    <th>StatN</th>
+                    <th>StatC</th>
+                    <th>วันที่</th>
+                    <th>มูลค่า</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>SH04</td>
+                    <td>BYH</td>
+                    <td>0 - ปกติ</td>
+                    <td>B - จำนวนนับ</td>
+                    <td>2/1/2025</td>
+                    <td>3,500.00 ฿</td>
+                </tr>
+                <tr>
+                    <td>SH08</td>
+                    <td>BYH</td>
+                    <td>1 - เงินเชื่อ</td>
+                    <td>B - จำนวนนับ</td>
+                    <td>2/1/2025</td>
+                    <td>1,200.00 ฿</td>
+                </tr>
+                <tr>
+                    <td>MK02</td>
+                    <td>BYK</td>
+                    <td>0 - ปกติ</td>
+                    <td>C - ราคา</td>
+                    <td>3/1/2025</td>
+                    <td>5,800.00 ฿</td>
+                </tr>
+                <tr>
+                    <td>OT12</td>
+                    <td>BYT</td>
+                    <td>1 - เงินเชื่อ</td>
+                    <td>A - ผลลัพธ์คำนวณ</td>
+                    <td>3/1/2025</td>
+                    <td>2,750.00 ฿</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div style="text-align: center;">
+            <a href="#" class="btn-primary">ดูข้อมูลทั้งหมด</a>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="section">
+        <h2 class="section-title">คุณสมบัติเด่น</h2>
+        
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-icon">🔄</div>
+                <h3>รองรับหลายรูปแบบไฟล์</h3>
+                <p>นำเข้าข้อมูลได้จากหลายรูปแบบไฟล์ เช่น CSV, TXT, Excel, JSON และ API</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔍</div>
+                <h3>การค้นหาขั้นสูง</h3>
+                <p>ระบบค้นหาและกรองข้อมูลที่มีประสิทธิภาพ ช่วยให้ค้นหาข้อมูลที่ต้องการได้อย่างรวดเร็ว</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📱</div>
+                <h3>Responsive Design</h3>
+                <p>ใช้งานได้ทั้งบนคอมพิวเตอร์ แท็บเล็ต และโทรศัพท์มือถือ</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <h3>รายงานแบบ Real-time</h3>
+                <p>แสดงรายงานและการวิเคราะห์แบบ real-time เพื่อการตัดสินใจที่รวดเร็ว</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Anti-Normalization</h3>
+                <p>ระบบจัดการและวิเคราะห์ข้อมูลธุรกรรมที่ไม่เป็นไปตามรูปแบบปกติ เพื่อการทำความเข้าใจข้อมูลที่ซับซ้อน</p>
+            </div>
+            <div class="footer-column">
+                <h3>เมนูหลัก</h3>
+                <ul>
+                    <li><a href="#">หน้าหลัก</a></li>
+                    <li><a href="world_fitting.html">World Fitting</a></li>
+                    <li><a href="#">Generic Data</a></li>
+                    <li><a href="#">รายงาน</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>บริการ</h3>
+                <ul>
+                    <li><a href="#">การวิเคราะห์ข้อมูล</a></li>
+                    <li><a href="#">การแมปข้อมูล</a></li>
+                    <li><a href="#">รายงานผลลัพธ์</a></li>
+                    <li><a href="#">บริการที่ปรึกษา</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>ติดต่อเรา</h3>
+                <ul>
+                    <li><a href="#">อีเมล</a></li>
+                    <li><a href="#">โซเชียลมีเดีย</a></li>
+                    <li><a href="#">แผนที่</a></li>
+                    <li><a href="#">คำถามที่พบบ่อย</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 ChieffySolutions - Anti-Normalization Dashboard. All rights reserved.</p>
+        </div>
     </footer>
+
+    <script>
+        // สร้างเส้นและจุดในพื้นหลัง
+        document.addEventListener('DOMContentLoaded', function() {
+            const background = document.getElementById('backgroundEffect');
+            
+            // สร้างเส้นตั้ง
+            for (let i = 0; i < 10; i++) {
+                const line = document.createElement('div');
+                line.className = 'vertical-line';
+                line.style.left = `${5 + i * 10}%`;
+                line.style.animationDelay = `${i * 0.5}s`;
+                background.appendChild(line);
+            }
+            
+            // สร้างจุด
+            for (let i = 0; i < 50; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.style.left = `${Math.random() * 100}%`;
+                dot.style.top = `${Math.random() * 100}%`;
+                dot.style.animationDelay = `${Math.random() * 3}s`;
+                dot.style.opacity = Math.random() * 0.5 + 0.1;
+                background.appendChild(dot);
+            }
+            
+            // สร้างกราฟ
+            const ctx = document.getElementById('overviewChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['ม.ค', 'ก.พ', 'มี.ค', 'เม.ย', 'พ.ค', 'มิ.ย'],
+                    datasets: [{
+                        label: 'ธุรกรรมเงินสด',
+                        data: [12500, 15000, 18200, 20300, 22100, 32450],
+                        borderColor: '#56ab2f',
+                        backgroundColor: 'rgba(86, 171, 47, 0.1)',
+                        tension: 0.4,
+                        pointBackgroundColor: '#56ab2f',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }, {
+                        label: 'ธุรกรรมเงินเชื่อ',
+                        data: [5200, 6300, 8100, 9500, 11200, 13422],
+                        borderColor: '#fdcb6e',
+                        backgroundColor: 'rgba(253, 203, 110, 0.1)',
+                        tension: 0.4,
+                        pointBackgroundColor: '#fdcb6e',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#e0e0e0',
+                                font: {
+                                    family: 'Prompt',
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(10, 15, 30, 0.8)',
+                            titleFont: {
+                                family: 'Prompt',
+                                size: 14
+                            },
+                            bodyFont: {
+                                family: 'Prompt',
+                                size: 13
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('th-TH', {
+                                            style: 'currency',
+                                            currency: 'THB',
+                                            minimumFractionDigits: 2
+                                        }).format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#a0a0a0',
+                                font: {
+                                    family: 'Prompt',
+                                    size: 12
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#a0a0a0',
+                                font: {
+                                    family: 'Prompt',
+                                    size: 12
+                                },
+                                callback: function(value) {
+                                    return value.toLocaleString() + ' ฿';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>

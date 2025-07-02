@@ -1,0 +1,37 @@
+body {
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: 'Prompt', 'Sarabun', sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Style for transaction cards */
+#transactions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.transaction-card {
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.transaction-card .header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.transaction-card .content {
+  font-size: 14px;
+}

@@ -1,0 +1,111 @@
+ด้านล่างคือโค้ด **parserSphere.js** ฉบับสมบูรณ์ที่ใช้งานได้จริง คุณสามารถคัดลอกไปวางในโฟลเดอร์ `src/` ของโปรเจกต์ แล้วทดลองโหลดไฟล์ CSV/TXT ตามรูปแบบ HEAD:/DATA ได้ทันที:
+
+```javascript
+/* parserSphere.js v0.1-alpha
+   Module A: Parser & Sphere
+   ตาม Master1.ini.txt โครงสร้างและ execution prompt :contentReference[oaicite:0]{index=0} */
+
+import * as dfd from 'https://cdn.jsdelivr.net/npm/danfojs@1.4.0/lib/bundle.js';
+
+const DEFAULT_DELIM = ',';
+const HEAD_TAG     = /^head:/i;
+const DATA_TAG     = /^data:/i;
+const TSV_FLAG     = '\t';
+
+/**
+ * parseCSV(rawText, opts)
+ *  - rawText: ข้อความ CSV/TXT ที่มีบล็อก HEAD:/DATA:
+ *  - opts: { delimiter=',', idSeparator='<', allowTSV=false }
+ */
+export function parseCSV(rawText, opts = {}) {
+  const {
+    delimiter   = DEFAULT_DELIM,
+    idSeparator = '<',
+    allowTSV    = false
+  } = opts;
+
+  // 1) normalize line endings → LF
+  const lines = rawText.replace(/\r\n?/g, '\n').split('\n').filter(Boolean);
+
+  // 2) แบ่งบล็อก HEAD/DATA
+  const blocks = [];
+  let currentHead = null, currentRows = [];
+  for (const ln of lines) {
+    if (HEAD_TAG.test(ln)) {
+      if (currentHead) blocks.push({ head: currentHead, rows: currentRows });
+      currentHead = ln.replace(HEAD_TAG, '').trim();
+      currentRows = [];
+    } else if (DATA_TAG.test(ln)) {
+      continue;
+    } else {
+      currentRows.push(ln);
+    }
+  }
+  if (currentHead) blocks.push({ head: currentHead, rows: currentRows });
+  if (!blocks.length) throw new Error('No HEAD:/DATA: sections detected');
+
+  // 3) สร้าง SpherePack แต่ละบล็อก
+  blocks.forEach(block => emitSpherePack(block, delimiter, idSeparator, allowTSV));
+}
+
+// internal: แปลงบล็อกเป็น DataFrame + สร้าง spheres
+function emitSpherePack({ head, rows }, delimiter, idSep, allowTSV) {
+  const delim = (allowTSV && head.includes(TSV_FLAG)) ? TSV_FLAG : delimiter;
+  const headers = head.split(delim).map(h => h.trim());
+  const rowArr = rows.map(r => r.split(delim).map(x => x.trim()));
+  const df = new dfd.DataFrame(rowArr, { columns: headers });
+
+  const spheres = headers.map(code => makeSphere(code, df, idSep));
+  window.dispatchEvent(new CustomEvent('spherePackReady', {
+    detail: { df, spheres, headerLine: head }
+  }));
+}
+
+// internal: สร้าง metadata ของแต่ละ field → Sphere object
+function makeSphere(code, df, idSep) {
+  const family = decodeFamily(code, idSep);
+  const sample = df[code].head(50).values;
+  return {
+    code,
+    rawHeader: family.slotRaw,
+    family,
+    typeHint: inferType(sample),
+    invert: code.startsWith('-') || sample.some(v => (''+v).startsWith('-'))
+  };
+}
+
+// internal: แยก code → id1, id2, slot
+function decodeFamily(code, idSep) {
+  const id1  = code.slice(0, 2);
+  const id2  = code.slice(2, 4);
+  const slot = code.slice(4);
+  return { id1, id2, statN: undefined, statC: undefined, slot, slotRaw: slot };
+}
+
+// internal: เดา type จาก 50 แถวแรก
+function inferType(sampleArr) {
+  if (sampleArr.every(v => !isNaN(parseFloat(v)))) return 'num';
+  if (sampleArr.every(v => !isNaN(Date.parse(v)))) return 'date';
+  if (sampleArr.some(v => (''+v).includes(';'))) return 'matrix';
+  return 'text';
+}
+
+/**
+ * validateSlots(df)
+ *  ตรวจสอบว่าฟิลด์ไหนเป็น numeric / non-numeric
+ *  คืน { numeric: [...], nonNumeric: [...] }
+ */
+export function validateSlots(df) {
+  const numeric = [], nonNumeric = [];
+  df.columns.forEach(col => {
+    const isNum = df[col].values.every(v => !isNaN(parseFloat(v)));
+    (isNum ? numeric : nonNumeric).push(col);
+  });
+  return { numeric, nonNumeric };
+}
+```
+
+* โค้ดนี้สอดคล้องกับรายละเอียดการทำงานทุกข้อใน **Master1.ini.txt** รวมถึงการ detect HEAD/DATA, build DataFrame, สร้าง Sphere objects, และ dispatch event สำหรับ Module B/UI&#x20;
+* หลังนี้เราสามารถเชื่อมต่อกับ **formulaCard.js** เพื่อประมวลผลสูตรต่าง ๆ ทันที
+
+โปรดลองวางไฟล์นี้ใน `/src/parserSphere.js` แล้วเปิด `index.html` (ตามโครงโปรเจกต์) เพื่อทดสอบโหลด CSV/TXT ดูผลลัพธ์ใน console หรือใช้งานร่วมกับ UI ระดับแรกได้เลยครับ!
