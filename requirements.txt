@@ -1,5 +1,6 @@
-streamlit
-pandas
 fastapi
 pydantic
-uvicorn
+pandas
+flask
+torch
+transformers
