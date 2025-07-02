@@ -4,9 +4,10 @@ Bootstrap Anti-Normalization structure for Dynamic Data Weaver
 """
 
 import textwrap
-import pathlib
+from pathlib import Path
 
-root = pathlib.Path(__file__).resolve().parent.parent
+
+root = Path(__file__).resolve().parent.parent
 
 # ── โฟลเดอร์หลัก ──────────────────────────────────────────
 for d in [
@@ -64,6 +65,7 @@ if not app_py.exists():
     )
 
 # ── logic_engine stubs ────────────────────────────────────
+(root / "backend/__init__.py").write_text("")
 (root / "backend/logic_engine/__init__.py").touch()
 
 (root / "backend/logic_engine/parser.py").write_text(

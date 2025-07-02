@@ -2,6 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anti-Normalization | ChieffySolutions</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&family=Sarabun:wght@300;400;500;700&display=swap">
@@ -314,6 +315,87 @@
             transform: translateX(5px);
         }
         
+        /* ตารางข้อมูล */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 15px;
+            background: rgba(107, 138, 253, 0.1);
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+        
+        .data-table td {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .data-table tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        .data-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* กราฟ */
+        .chart-container {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-light);
+            height: 350px;
+        }
+        
+        /* Feature Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .feature-item {
+            background: rgba(107, 138, 253, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(107, 138, 253, 0.1);
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-5px);
+            background: rgba(107, 138, 253, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--accent-primary);
+        }
+        
+        .feature-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        
+        .feature-item p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
         /* Footer */
         .footer {
             background: var(--bg-secondary);
@@ -437,33 +519,32 @@
     
     <!-- Navbar -->
     <nav class="navbar">
-        <a href="index.html" class="navbar-brand">
+        <a href="#" class="navbar-brand">
             <div class="logo">AN</div>
             <div class="navbar-title">Anti-Normalization</div>
         </a>
         <div class="navbar-menu">
-            <a href="index.html" class="active">หน้าหลัก</a>
+            <a href="#" class="active">หน้าหลัก</a>
             <a href="world_fitting.html">World Fitting</a>
             <a href="generic_data_mapping_system.html">Generic Data</a>
-            <a href="#">OntologyCore</a>
             <a href="#">รายงาน</a>
+            <a href="#">เกี่ยวกับ</a>
         </div>
     </nav>
     
     <!-- Hero Section -->
     <section class="hero">
-        <h1>Anti-Normalization Platform</h1>
-        <p>แพลตฟอร์มการจัดการข้อมูลแบบยืดหยุ่น และระบบวิเคราะห์ข้อมูลที่ไม่ต้องพึ่งพาโครงสร้างข้อมูลแบบปกติ</p>
+        <h1>Anti-Normalization Dashboard</h1>
+        <p>ระบบจัดการและวิเคราะห์ข้อมูลธุรกรรมแบบ Generic Data Mapping System เพื่อการทำความเข้าใจข้อมูลที่ไม่เป็นไปตามรูปแบบปกติ</p>
         <div class="hero-buttons">
-            <a href="world_fitting.html" class="btn-primary">ดูระบบ World Fitting</a>
-            <a href="generic_data_mapping_system.html" class="btn-secondary">Generic Data Mapping</a>
+            <a href="world_fitting.html" class="btn-primary">World Fitting</a>
+            <a href="#" class="btn-secondary">เรียนรู้เพิ่มเติม</a>
         </div>
     </section>
     
     <!-- Main Section -->
     <section class="section">
         <h2 class="section-title">บริการของเรา</h2>
-        
         <div class="card-grid">
             <div class="card">
                 <div class="card-icon">🌍</div>
@@ -471,334 +552,106 @@
                 <p>แพลตฟอร์มสำหรับวิเคราะห์และทำความเข้าใจข้อมูลที่ไม่เป็นไปตามรูปแบบปกติ เหมาะสำหรับข้อมูลที่มีโครงสร้างซับซ้อนและต้องการการแปลความหมาย</p>
                 <a href="world_fitting.html" class="card-link">เข้าชม <span>→</span></a>
             </div>
-            
             <div class="card">
                 <div class="card-icon">📊</div>
                 <h3>Generic Data Mapping</h3>
                 <p>ระบบแมปข้อมูลทั่วไปที่รองรับการจัดการและประมวลผลข้อมูลหลากหลายรูปแบบ ช่วยให้การทำงานกับข้อมูลเป็นเรื่องง่าย</p>
-                <a href="generic_data_mapping_system.html" class="card-link">เข้าชม <span>→</span></a>
+                <a href="#" class="card-link">เข้าชม <span>→</span></a>
             </div>
-            
             <div class="card">
                 <div class="card-icon">📈</div>
-                <h3>About ChieffySolutions</h3>
-                <p>This website is created for personal purposes. Due to OpenAI's Builder Profile ChatGPT verification requirement, this site serves as a demonstration of development capabilities.</p>
-                <a href="#about" class="card-link">อ่านเพิ่มเติม <span>→</span></a>
+                <h3>รายงานและการวิเคราะห์</h3>
+                <p>สร้างและวิเคราะห์รายงานที่มีประสิทธิภาพ พร้อมด้วยการแสดงผลข้อมูลแบบ interactive ที่ช่วยให้คุณเข้าใจข้อมูลได้ดียิ่งขึ้น</p>
+                <a href="#" class="card-link">เข้าชม <span>→</span></a>
             </div>
         </div>
     </section>
-   
-    <!-- About Section -->
-    <section class="section" id="about">
-        <h2 class="section-title">เกี่ยวกับ ChieffySolutions</h2>
+    
+    <!-- Data Section -->
+    <section class="section">
+        <h2 class="section-title">ข้อมูลล่าสุด</h2>
         
-        <div class="card" style="max-width: 800px; margin: 0 auto;">
-            <p># Generic Data Mapping System</p>
-
-            <p>**Generic Data Mapping System** is the concept of structuring and processing all types of data into a standard format that is flexible and can support various data sources, whether from table files (.csv, .txt, Excel), JSON, APIs, or even sensor data, without being tied to a rigid database schema. This system consists of a **Central Data Structure** that defines a few essential fields and the core **OntologyCore**, which serves as the central concept for linking data and processing logic together.</p>
-
-            <p>## Central Data Structure and OntologyCore</p>
-
-            <p>The central data structure used by this system is as follows:</p>
-
-            <p>* **Date** – The date or time when the data occurred (dimension of time)</p>
-            <p>* **ID1, ID2** – Identifiers for entities or components (may be **ID1** = main entity, such as customer, account; **ID2** = related entity, such as product, branch)</p>
-            <p>* **StatN, StatC** – Status or code indicating the type and outcome of the event (StatN is a numeric code, StatC is a character code). Together, they identify **events** and **data transformations** that occur to the data record (e.g., 0/B might mean "cash purchase," 1/B = "credit purchase")</p>
-            <p>* **Slot1 ... SlotN** – Data slots for numbers or text to store quantities, values, or other dimensions of the event, depending on context (e.g., Slot1 = transaction amount, Slot2 = discount, Slot3 = payment, etc.) These slots are versatile areas that can be redefined based on the type of event (Stat)</p>
-
-            <p>This structure allows each data record to be captured in a way resembling a **sentence** (similar to narrating an event), consisting of the elements: *time* (Date), *actors* (IDs), *event type* (StatN/StatC), and *data dimensions* (Slots).</p>
-
-            <p>**OntologyCore** is the underlying concept that supports the system and is divided into 7 core dimensions:</p>
-
-            <p>* **Event** – The event or narrative of each data record (viewing each row as an individual event that occurred)</p>
-            <p>* **Word** – Words or tags used to define fields and the meaning of the data (e.g., column names, labels) which are mapped to the internal central fields</p>
-            <p>* **Logic** – Processing logic or formulas related to the data (e.g., interest formulas, various calculation rules)</p>
-            <p>* **Space** – The structural or positional dimension of the data, such as *data slots (Slot)*, each slot holding numerical or textual values (like the X-axis of data dimensions)</p>
-            <p>* **Time** – The dimension of time, such as the sequence of events (Date/Time, Index order), used for sorting or calculating over time</p>
-            <p>* **Gravity** – The structural relationship between data, like the connection between different IDs (*ID1/ID2*) to denote relational context (e.g., user-product, account-transaction)</p>
-            <p>* **Transform** – Data transformation or status (Stat) that changes the meaning of the Slot values. For instance, changing StatC code from B → C to switch from "quantity" to "price," or using a negative value (Invert) to flip the meaning of the data</p>
-
-            <p>These 7 dimensions of OntologyCore enable the system to view data from multiple angles simultaneously, such as considering it an event, identifying "who, what, when," processing logic, relations with other data, and any transformations that occur.</p>
-
-            <p>Overall, this system acts as an **Ontology + Engine** in the middle between users/external systems and raw data from diverse sources. Any user or system can send data using their own structure/labels, and the system maps (“maps”) those into internal fields following the Ontology to process them according to predefined logic, before sending the results back in a format understood by the external system. This process allows for a **"external label ↔ central field ↔ external label"** cycle, ensuring data from any source can be connected through a single central structure.</p>
-
-            <p>Below, we will explain the details of each topic, including the data mapping approach, logical processing system, prototype development guide, and the design of a new Data Dictionary centered around the Slot.</p>
-
-            <p>## 1. Data Mapping Approach to Central Structure</p>
-
-            <p>**Key Principle:** The system must be able to accept “any kind of data in the world” and automatically map it into the defined standard structure (as outlined above). This means supporting data from text files (.txt, .csv), table files (Excel), semi-structured data (JSON, XML), APIs, or even sensor data streams.</p>
-
-            <p>**Data Mapping Steps:**</p>
-
-            <p>* **Data Ingestion:** The system will have a flexible ingestion agent that reads raw data from various sources and converts it into a temporary table format, such as reading a .txt/.csv file into a pandas DataFrame or parsing JSON/XML into Python dict/list structures while supporting various encodings.</p>
-
-            <p>* For table data read in, each column will initially be named based on the source (e.g., header in a CSV file or keys in JSON). In cases where columns have specific prefixes (e.g., "A0\:ID1"), the system may strip out the prefixes to leave only the general names, which helps map to the central fields more easily.</p>
-            <p>* *Note:* This process is **stateless** – every time new data comes in, the system processes it from scratch, eliminating the need for context consistency between old and new data.</p>
-
-            <p>* **Ontological Binding:** The next step is converting the field/column names from external data into standard internal field names that the system understands. This is like “translating” the data sources into a common vocabulary.</p>
-
-            <p>* **Mapping Rules:** Developers must prepare a **mapping dictionary** or set of mapping rules in advance, typically in the form of a table or file (e.g., dict.txt), specifying how field names from different sources map to central fields. For example, `"Date" → "Timeing"`, `"วันที่" → "Timeing"`, `"ID ลูกค้า" → "Obligor (ID1)"`, `"ProductCode" → "ID2"`, `"ยอดหนี้" → "DebtVolume (Slot1)"`, and so on.</p>
-            <p>* These mapping rules will be loaded into a dictionary (e.g., `label_map` in Python) and used to **rename the columns** once the data is ingested. For instance, if the DataFrame contains a column named "StatN" and in the `label_map`, it's defined as `"StatN": "DebtIndicator"`, the column will be renamed to "DebtIndicator" following the standard central field.</p>
-            <p>* The result is **centralized data** with fields according to OntologyCore, such as Timeing, Obligor, Relation, DebtIndicator, CalcState, Slot1…SlotN, rather than the varying names from each source. This allows the processing logic to be written centrally, applying to all data sources.</p>
-
-            <p>* **Dynamic & Intelligent Mapping:** For true universality, the system should handle new field names that have not been encountered before.</p>
-
-            <p>* In cases where a field is not present in the mapping rules, the system might use AI/ML to analyze the field and **suggest a possible mapping** for administrator approval (e.g., encountering a column "Customer\_ID" and suggesting mapping it to "Obligor/ID1").</p>
-            <p>* This approach reduces the burden of modifying code when external data structures change. Adding or adjusting mapping rules will make the system adapt automatically.</p>
-            <p>* *Example:* The "File-Intelligent Pipeline" system, which sets predefined mapping rules for .txt/.csv/JSON/XML files, automatically reads the file structure and suggests mappings. After that, it loads the data into the central Ontology.</p>
-
-            <p>* **External Ontology Integration (if applicable):** If an organization already uses a **Global Ontology** or standard (e.g., RDF/OWL), the system can integrate its mapping with that ontology by defining **common classes and relationships**, ensuring that each field in the system has a unique Global ID (URI).</p>
-
-            <p>* This integration allows the mapped data to be **exchanged across systems** or cross-joined with external knowledge bases easily, preventing issues of name collisions across domains.</p>
-            <p>* However, the system design prioritizes its internal **OntologyCore** as the flexible structure, only mapping externally once the data is in the central format.</p>
-
-            <p>Through these steps, the system can accept data from anyone and **“Dynamic Mapping = Accept data from anyone”**. Users simply send data without needing to adjust schemas or formats to match the system in advance—the system adjusts itself to fit the incoming data.</p>
-
-            <p>Moreover, since all data is mapped into central fields with meaningful labels, all data becomes **ready to use variables** in processing logic immediately, without the need for complex normalization or multi-table JOINs.</p>
-
-            <p>> **Summary Concept:** Mapping data into the central structure is like creating a **common language for data**. Anyone can send data, and the system will translate it. Thus, the system acts as a *Data Weaver* that weaves together data from various sources into a unified form, ready for smooth processing.</p>
-
-            <p>## 2. Logic Processing Engine</p>
-
-            <p>Once the data is mapped into the central structure with standard fields, the next step is processing it according to the defined logic. This system is designed so that **processing logic can be embedded with the data** and easily modified without needing frequent changes to the core program. The following principles apply:</p>
-
-            <p>* **Formula & Reasoning Embedding:** Each field or data record can define its own calculation formula or logical rule (e.g., a column in the DataFrame may have “Formula1,” “Formula2” to store Excel-like formulas for calculation). For instance, we might embed the formula `"Balance_prev + Slot1 - Slot3"` in the FormulaBalance column to automatically calculate the new balance from the current row’s Slot data and the previous Balance.</p>
-
-            <p>* These formulas are written in a format similar to user-friendly formula languages (e.g., Excel), which means **humans can edit system logic directly** if needed, via an interface that allows users to modify formulas without writing code.</p>
-            <p>* The system includes a **Formula Parser** that converts these string formulas into real calculations (e.g., converting `SUMIFS(...)` into filtering and summing a DataFrame in pandas) or maps named variables (e.g., `Balance_prev`) to actual values in the current context and processes them using Python.</p>
-            <p>* **Logic Inversion:** The system supports certain logical operations that can be easily “inverted.” For example, adding a `-` sign in front of a field might indicate an inversion, such as `-weight` = negative weight, or `-meaning` = opposite meaning. This allows rules for opposite situations (e.g., addition vs. subtraction) to be written in the same formula via a symbol, without needing to create separate fields or conditions.</p>
-
-            <p>* **Processing Pipeline:** The core engine (Execution Engine) works step by step as follows:</p>
-
-            <p>1. **Read data into the Engine:** (e.g., DataFrame with mapped fields)</p>
-            <p>2. **Sort data by time:** (e.g., sort by Date or Index to ensure time-dependent calculations are done correctly, such as accumulating daily balances)</p>
-            <p>3. **Loop through each data record:** For each row, extract values from fields (e.g., `timeing = row["Timeing"]`, `obligor = row["Obligor"]`, `debt_volume = row["Slot1"]`, `payment = row["Slot3"]`) to prepare for calculations</p>
-            <p>4. **Retrieve previous state values (if available):** The system can keep **previous state values** (e.g., `prev_balance`, `prev_interest`) from previous rows to use in the current calculation. This concept is essential for continuous logic, such as compound interest calculations or account balances that depend on prior values.</p>
-            <p>5. **Calculate according to formulas:** Use the Formula Parser/Executor to run the formula for each field (e.g., calculate Balance as `Balance_prev + Slot1 - Slot3` and interest as `Balance_prev * Rate * Rule`), passing additional variables (like `Balance_prev`, `Rate`, `Rule`) into the calculation function. The results are written back to the DataFrame (e.g., updating the Balance and Interest values in the row).</p>
-            <p>6. **Update previous state:** After calculating, set `prev_balance = balance_t` (the newly calculated balance) to use for the next row’s calculation.</p>
-            <p>7. **Repeat for all rows** – When all records are processed, the DataFrame will contain the final results, such as correct Balance and Interest values.</p>
-            <p>8. **Triggers & Events:** If there are any predefined *triggers* (e.g., alert if a value exceeds X or trigger an additional action if a specific event occurs), the system can check these conditions during calculations and act accordingly, such as logging special events, sending output to other modules, or rerouting calculations.</p>
-            <p>9. **Output Phase:** Finally, when sending results outside the system (e.g., to a user or another API), the binding tools can work in reverse, **mapping internal fields back to the external format** expected by the recipient, such as converting "Timeing" back to "Date" or "วันที่" before sending.</p>
-
-            <p>* **Open Structured UI:** This system allows for an interface where users can **edit logic or view data transparently**.</p>
-
-            <p>* For example, using Jupyter Notebook or Streamlit to display the DataFrame after calculations and allowing users to edit formulas (e.g., in the "FormulaBalance" / "FormulaInterest" columns) directly. After editing, the user can trigger the pipeline again (starting from the Execution phase) to see immediate results.</p>
-            <p>* The UI can also allow users to **filter** or view specific data conditions, such as selecting transactions where ID2 = branch X and StatC = "B", then showing the totals of specific Slots for that filtered data.</p>
-            <p>* In addition, there could be a **Download** button for users to immediately download the computed results as a CSV/Excel file for further use.</p>
-
-            <p>**Key Features of This Logic Engine** include **"one file → calculated directly → no JOIN"**. This means that all processing occurs on a single data set (no need for multi-table JOINs), making it faster and less complex. Additionally, it **does not rely on external platforms or large database systems** during calculation – everything works self-contained within Python/pandas or an environment controlled by the system, making it easy to *self-host* and reducing external failure points.</p>
-
-            <p>Moreover, embedding logic with OntologyCore ensures that **every step of the calculation understands its data context** – for example, knowing who `Obligor` (ID1) is, which `Timeing` (Date) came first, or how `DebtVolume` (Slot1) behaves. This makes it possible to build systems that “think” based on raw data without needing to write code for every new data structure.</p>
-
-            <p>## 3. Template/Guideline for System Development (Self-Hosted, No Dependency)</p>
-
-            <p>In this section, we will outline steps or templates for developers who want to build systems based on the Generic Data Mapping System concept for practical use, emphasizing self-hosting and minimizing external software dependencies (low-dependency) for flexibility and system control.</p>
-
-            <p>### Design and Development Steps:</p>
-
-            <p>**1. Define Central Fields and OntologyCore:**</p>
-            <p>Start by defining the **internal fields** the system will use, according to the OntologyCore structure.</p>
-
-            <p>* Define the core fields necessary, such as `Timeing` (time), `Obligor` (main entity), `Relation` (related entity), `DebtIndicator` (StatN event status), `CalcState` (StatC calculation mode), `Slot1`–`Slot7` (general numerical slots, such as Slot1=amount, Slot2=discount, Slot3=payment, …)</p>
-            <p>* Define **meanings/definitions** for each of these fields in a Data Dictionary (see next section) to ensure team understanding and to use as the foundation for creating mapping rules.</p>
-            <p>* *Example:* Basic central fields might include 10 fields (Date, ID1, ID2, StatN, StatC, Slot1-7) as shown in the example input file.</p>
-
-            <p>**2. Create Mapping Rules/Pipeline:**</p>
-
-            <p>* Create **Mapping Tables** between external fields and central fields, such as an Excel sheet or CSV file with columns "External Field" and "Internal Field."</p>
-            <p>* Write Python scripts (or use an ETL tool without a heavy GUI) to load the mapping into a dictionary for renaming ingested columns.</p>
-            <p>* Develop an **Ingestion Module** to support desired data sources, such as using `pandas.read_csv` or `pandas.read_excel` for CSV/Excel files; `json.load` for JSON; `requests` for API parsing; or stream reading for sensor data.</p>
-            <p>* Make this ingestion pipeline as generic as possible, separating the *reading logic* for each type of data into helper functions, and externalizing *mapping configurations* to files for easy editing or expansion in the future.</p>
-            <p>* **No special dependencies:** Use basic tools like Python/pandas (open-source libraries) that are easy to install, avoiding closed systems or platforms that incur additional costs.</p>
-
-            <p>**3. Develop Logic Engine:**</p>
-
-            <p>* Write code for **Formula Parser** – for example, using Python regex (`re`) to split formula components and using `eval` or expression parsing to support Excel-like formulas (see pseudo-code examples).</p>
-            <p>* Build an **Execution Engine** that pulls data from the DataFrame and loops through each row, calculating according to formulas sequentially (or vectorized if applicable) based on time order, accumulating necessary values, and writing results back.</p>
-            <p>* Validate **logic correctness** with test data – create sample files covering various cases, such as typical cases, edge cases (e.g., with discounts, no discount, payments only), to ensure the engine calculates as designed (compare with Excel or old systems for validation).</p>
-            <p>* Provide **Trigger Mechanism** if this feature is needed – config can specify triggers that execute special functions (callbacks) or log entries if certain StatN/StatC or Slot values meet conditions.</p>
-
-            <p>**4. Create UI/Interface (if needed):**</p>
-
-            <p>* If you want **developers/analysts to edit formulas or conditions** easily, consider using Jupyter Notebook as both the dev tool and basic UI, as it can display the DataFrame and allow for interactive coding.</p>
-            <p>* For general users, consider building a simple web UI with [**Streamlit**](https://streamlit.io/) (which can be deployed for free and run Python scripts as a web app) – the UI might include sections to upload files, view raw data tables, filter based on fields (e.g., select by ID2, StatC for filtering), and summarize totals on screen.</p>
-            <p>* Add a **Download** button for users to export calculated results as CSV/Excel immediately after computation.</p>
-
-            <p>**5. Test and Refine:**</p>
-
-            <p>* Test the system with real data across different domains (see the next section on cross-domain use) to ensure mapping rules and logic are fully supported.</p>
-            <p>* If new fields or structures are encountered, update mapping rules and logic to cover them – **this system should evolve continuously through adding to the dictionary or adjusting formulas**, rather than requiring major structural changes.</p>
-
-            <p>**6. System Hosting:**</p>
-
-            <p>* Set up a self-hosted environment that runs from ingestion → processing → output all within a single machine or server.</p>
-            <p>* If using Streamlit or Notebook, you can choose to host on free cloud services (like Streamlit Cloud, Google Colab) or on-premise.</p>
-            <p>* The lack of dependencies in the system means \*\*no complex database</p>
-
-
-            <p>is needed\*\* – basic files (CSV/JSON) suffice at the start, with no middleware layers required, making setup easier.</p>
-
-            <p>* **Maintain accuracy:** Ensure there’s basic logging and auditing, such as recording ingestion time, number of records processed, or file hashes, for large-scale system validation.</p>
-
-            <p>**7. Documentation and Guidelines:**</p>
-
-            <p>* Prepare documentation (this document itself can serve as the foundation) explaining the central data structure, field meanings, how to add mappings, adjust formulas, and provide usage examples.</p>
-            <p>* Prepare **Template Code**, such as code for reading files and renaming columns, looping through calculations, sample config files for mappings – so that other developers can quickly build on this foundation for their specific cases.</p>
-            <p>* Emphasize to developers the **principle of “one file/single data set for everything”** the system follows: trying to store everything in this central structure to avoid splitting data into multiple silos.</p>
-
-            <p>**Additional DevOps Guidance:**</p>
-
-            <p>* If the system is to be used continuously within an organization, consider integrating with Git (version code and data dict), setting up CI for formula tests whenever modifications are made, and designating a Data Steward to oversee data quality and mapping.</p>
-            <p>* Establish proper data access rights based on suitability – especially when dealing with sensitive information. It is recommended to differentiate roles between those managing data dict and general users.</p>
-
-            <p>### Example Structure (Pseudo-code):</p>
-
-            <p>For clarity, here's a simplified structure of the main script code (e.g., `app.py`) for the system:</p>
-
-            <p>```python</p>
-            <p># Load mapping rules</p>
-            <p>label_map = load_mapping("field_mapping.csv")  # e.g. read CSV into dict</p>
-
-            <p># Ingest data</p>
-            <p>df = ingest_data(source)  # source could be file path or API data</p>
-            <p>if df is None:</p>
-            <p>raise Exception("No data loaded")</p>
-
-            <p># Map external fields to internal fields</p>
-            <p>df.rename(columns=label_map, inplace=True)</p>
-
-            <p># Sort data by time (if applicable)</p>
-            <p>df.sort_values(["Timeing", "Index"], inplace=True)</p>
-
-            <p># Initialize prev state</p>
-            <p>prev_balance = 0.0</p>
-            <p>prev_interest = 0.0</p>
-
-            <p># Iterate through each record</p>
-            <p>for idx, row in df.iterrows():</p>
-            <p># Extract needed fields for logic</p>
-            <p>stat_n = row["DebtIndicator"]</p>
-            <p>stat_c = row["CalcState"]</p>
-            <p>vol = row["DebtVolume"]      # Slot1</p>
-            <p>discount = row["DiscountGoods"]  # Slot2</p>
-            <p>payment = row["Payment"]     # Slot3</p>
-            <p>rate = row.get("Rate", 0)    # example of extra field</p>
-            <p>rule = row.get("Rule", 1)    # example: rule indicator</p>
-
-            <p># Compute formulas (assuming formulas or direct logic)</p>
-            <p>if idx == 0:</p>
-            <p>balance = vol - payment    # first record logic (no interest for first day)</p>
-            <p>interest = 0</p>
-            <p>else:</p>
-            <p>interest = prev_balance * rate * rule</p>
-            <p>balance = prev_balance + interest + vol - payment</p>
-
-            <p># Store results back</p>
-            <p>df.at[idx, "Interest"] = interest</p>
-            <p>df.at[idx, "Balance"] = balance</p>
-
-            <p># Update prev state</p>
-            <p>prev_balance = balance</p>
-            <p>prev_interest = interest</p>
-
-            <p># Output or visualization</p>
-            <p>display(df)  # e.g. in Streamlit or Jupyter</p>
-            <p>```</p>
-
-            <p>This code is just a simple example that calculates interest and balance continuously, and in practice, we should replace variables and formulas with configurations or data dict readings to make it more flexible (e.g., defining in the data dict that if StatN=0, StatC="B", use this formula). However, this shows the overall flow of the engine's operation.</p>
-
-            <p>**Note:** Developers should understand that **the essence of this system is not coding for every possible situation from the start**, but designing good central structures and rules, allowing for easy feature additions or domain extensions by **adding more terms in the data dictionary instead of writing new if/else code**. This aligns with the **configuration over coding** principle.</p>
-
-            <p>## 4. Slot-Centric Cross-Dimensional Data Dictionary (Logic–Field–Dimension–Event)</p>
-
-            <p>The **Data Dictionary** in this system differs slightly from traditional data dictionaries, as we use **Slots** as the central axis to define and link meanings across dimensions, rather than describing each field separately.</p>
-
-            <p>The purpose of this data dictionary is to:</p>
-
-            <p>* Provide **clear definitions** of each central field (especially Slot1–SlotN) in general terms</p>
-            <p>* Define the **logical relationships** that link fields to calculation formulas or rules</p>
-            <p>* Define the **context or dimensions** in which each field is used (e.g., what event it pertains to, units of measurement, or other dimensions)</p>
-            <p>* **Support cross-domain comparisons** – identifying what the same slot means in different domains while maintaining the core idea</p>
-
-            <p>Here is an example structure of a **Data Dictionary**:</p>
-
-            <p>| **Field Name (Slot/Field)**         | **Type/Role**                                 | **Related Logic**                                                                                     | **Sample Values & Meaning**                                                                                                              | **Event/Context**                                                                                                                                                 |</p>
-            <p>| ----------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |</p>
-            <p>| **Date (Timeing)**                  | *Time Dimension* (Date/Time)                  | Used to order events, calculate time spans (e.g., daily interest)                                     | `2025-06-07` – Transaction date                                                                                                          | Every event (all transactions have a timestamp)                                                                                                                   |</p>
-            <p>| **ID1 (Obligor)**                   | *Primary Entity* (Main actor)                 | Identifies who/what the event pertains to as the main entity                                          | `CUST123` – Customer ID, `ACC5566` – Account number                                                                                      | Every event (must have a primary entity, like a customer, student, or organization)                                                                               |</p>
-            <p>| **ID2 (Relation)**                  | *Secondary Entity* (Related)                  | Defines additional relationships, such as product, category, secondary party                          | `PROD50` – Product code, `SUBJ30` – Subject code                                                                                         | May be empty in some events (if no additional relation is needed)                                                                                                 |</p>
-            <p>| **StatN (Indicator)**               | *Event Code* (Numeric)                        | Specifies the *broad type* of event or overall status                                                 | `0` = Regular transaction, `1` = Credit transaction (e.g., in the commerce domain)                                                       | Every event (must specify the primary event type, even if 0 = none)                                                                                               |</p>
-            <p>| **StatC (State/Mode)**              | *Event Code* (Alphabetical)                   | Specifies the *calculation mode* of the event, influencing slot meanings                              | `B` = Base (basic mode, slot values are quantities), `C` = Convert (price mode, slot values are amounts), `A` = Aggregate (summary mode) | May have different values based on the domain, such as `B`, `C`, `D`... (at least one default value)                                                              |</p>
-            <p>| **Slot1 (DebtVolume)**              | *Core Value Slot* (Slot 1)                    | Logic: Usually used to calculate principal amounts, such as item volume or principal debt             | `1000` – Amount, `50` – Test score                                                                                                       | - If StatC = B: Slot1 is *quantity*<br>- If StatC = C: Slot1 is *total value*<br>- If StatC = A: Slot1 might become *net total*                                   |</p>
-            <p>| **Slot2 (Discount)**                | *Secondary Value Slot* (Slot 2)               | Logic: Stores additional values affecting Slot1, such as discounts, coupons, adjustments              | `20` – Discount of 20 baht (in the sales domain), `-5` – Score adjustment of -5 (in education)                                           | Usually used with Slot1:<br>- If StatC = B or C: Slot2 = *discount* (value subtracted from Slot1)<br>- If StatC = A: Slot2 might = *additional charges* or others |</p>
-            <p>| **Slot3 (Payment)**                 | *Tertiary Value Slot* (Slot 3)                | Logic: Stores payment amounts or other similar data depending on the event                            | `500` – Paid 500 baht (in finance domain), `30` – Bonus points added by 30                                                               | - If StatN indicates financial transaction: Slot3 = *paid amount* (payment)<br>- If StatN is used in other domains, Slot3 might denote *bonus points added*       |</p>
-            <p>| **Slot4 (Extra1)** – Slot5 (Extra2) | *Extended Slots* (Extra slots)                | Logic: Stores additional information specific to certain events, like tax, shipping fee, etc          | e.g., Slot4 = VAT, Slot5 = ShippingFee (in e-commerce domain)                                                                            | Used when necessary, based on the event type (typically might be 0 if unused)                                                                                     |</p>
-            <p>| **Slot6 (DReduce)**                 | *Dynamic Rule Slot* (Slot for rule reduction) | Logic: Reserved for rules/values that do not change with certain Stat types                           | `20` – Fine reduction of 20 (constant regardless of StatC)                                                                               | Used for fine reductions or special rules, like birthday discounts, that don't depend on the mode of calculation                                                  |</p>
-            <p>| **Slot7 (Deduce)**                  | *Dynamic Rule Slot* (Slot for deductions)     | Logic: Reserved for rules/values related to deductions or other fixed adjustments based on conditions | `500` – Past debt payment (special case)                                                                                                 | Used to store "*debt-only payments*" in transactions with no new purchases (rare event)                                                                           |</p>
-
-            <p>*(Note: Field names in parentheses, such as DebtVolume, Discount, are just sample names for core fields to illustrate meaning and can be adapted based on the actual context.)*</p>
-
-            <p>From the table above, we can see that we aim to link **fields (Slot/Field)** with **logical dimensions (Logic)** and **event contexts (Event)**. For example, explaining how Slot2 (Discount) affects the calculation of Slot1 or how each StatC value changes Slot meanings. This way, developers and users can understand that **"the numbers in each column mean something different depending on the context."** It’s not just about knowing the field name.</p>
-
-            <p>**Difference from Traditional Data Dictionaries:**</p>
-
-            <p>* Traditional: Typically explains “what Field X is, its datatype, and units” for each field separately.</p>
-            <p>* New (ours): Focuses on linking meanings **across fields** and **across dimensions** – stating that this Field relates to which other Field, how its meaning changes when different events occur, and what role it plays in formulas or rules.</p>
-
-            <p>**Example of Use:** Suppose in a retail domain, we have a Data Dict for StatN/StatC, such as:</p>
-
-            <p>* StatN = 0 means cash sale; StatN = 1 means credit sale</p>
-            <p>* StatC = B means quantity mode; StatC = C means value mode; StatC = A means aggregated mode</p>
-
-            <p>The Data Dict will further define that in the case of a cash sale (StatN=0, StatC="B"), the values in Slot correspond to what: e.g., Slot1 = quantity of items, Slot3 = actual payment amount (should equal Slot1 because it's a cash sale). If StatC = C (cash sale with value mode), Slot1 might mean the item’s total value, Slot3 = paid amount, Slot2 = discount value.</p>
-
-            <p>In the case of credit sale (StatN=1), the meaning of Slot3 changes to “unpaid (outstanding)” instead of “paid.”</p>
-
-            <p>This system allows **the same Slot** to serve many roles, depending on the StatN/StatC combination, reducing the need to create new fields for every case and making the data structure **denser** (low-frequency, high-weight data points). For rare events, like a “payment-only customer with no purchase,” we can use combinations of StatN/StatC and slots to represent the event, **avoiding the need for a new field**.</p>
-
-            <p>Lastly, this slot-centric Data Dictionary should be stored in a **machine-readable** format (e.g., JSON/YAML) so that it can be used to *drive processing* in the system. For example:</p>
-
-            <p>* When reading the Data Dict, the system knows that StatC="C" means multiplying Slot B and Slot C to obtain A (and can select the corresponding calculation formula).</p>
-            <p>* Or it knows that Slot6, Slot7 are constants unaffected by the mode (not changed by StatC) and should remain fixed across transformations.</p>
-
-            <p>Designing the data dictionary to handle such contexts will make the system smarter because it “knows” how to handle values differently in various contexts, **without needing to hardcode** many conditions. External systems can also read this data dictionary to use the information appropriately.</p>
-
-            <p>## Cross-Domain Applications</p>
-
-            <p>A key strength of the Generic Data Mapping System is its ability to **not be tied to a single domain** but to be adapted across multiple industries or use cases by interpreting the central fields (OntologyCore) according to each domain's context.</p>
-
-            <p>* **Finance/Banking:** The system could be used for tracking financial transactions or bank accounts. For instance, *ID1* could represent an account number, *ID2* a branch code, *StatN* represents the transaction type (0=deposit, 1=withdrawal, 2=transfer), *StatC* could define interest calculation mode (e.g., B=basic transaction, A=interest calculation), and *Slot* values may represent account balance, transaction amounts, interest, fees, etc. The system would calculate the daily balance and accumulated interest by applying the rules, which could be adjusted by triggers.</p>
-
-            <p>* **Retail/Sales Systems:** As mentioned earlier, *ID1* might be Customer ID, *ID2* could be Store ID or Order ID, *StatN* = 0 for regular sales, 1 for credit sales, *StatC* = B for quantity mode, C for price mode, A for aggregation, *Slot1* for item prices, *Slot2* for discounts, *Slot3* for actual payments, *Slot6/7* could be used for special promotions (e.g., reward points or paying old debts while making new purchases). The system can easily summarize sales, track outstanding balances, or analyze customer behavior (e.g., how often a customer buys on credit) by filtering by StatN/StatC and summing slots.</p>
-
-            <p>* **Education:** Used for storing student activities or scores. *ID1* = Student ID, *ID2* = Course/Subject ID, *StatN* may define activity types (0=assignments, 1=exams, 2=special activities), *StatC* may define score status (B=raw score, C=scaled score, A=aggregated score), and *Slot* may define new types, such as Slot1 = score received, Slot2 = full score, Slot3 = special points/homework, Slot4 = penalty points, etc. The system can then calculate total scores, GPA, or analyze which activities students perform best at (using StatN/StatC filters as well).</p>
-
-            <p>* **Government/Citizen Data:** Track key citizen events. *ID1* = Citizen ID, *ID2* = Project/Agency ID, *StatN* = Service type (0=ID card, 1=license request, 2=complaint, etc.), *StatC* = Service status (B=new request, C=renewal request, A=completed), *Slot* may represent fees, fines, service quality ratings, etc. This system could easily consolidate data across departments, as all events from civil registries, government agencies, etc., are unified under one structure. For example, a question like “How many times did Citizen A contact government services last year, for what issues, and how much did they pay in total?” can be answered instantly.</p>
-
-            <p>* **IoT/Sensors:** *ID1* = Device ID, *ID2* = Location or sensor type, *StatN* = Reading type (0=normal value, 1=warning, 2=abnormal value), *StatC* = Data mode (B=raw data, C=average data, A=aggregated data), *Slot1-7* stores numerical values like temperature, humidity, pressure, etc. based on sensor type. This system would help organize IoT data from various sources for concurrent analysis (e.g., filtering all readings with StatN=2 as abnormal values for alerts).</p>
-
-            <p>It is clear that **central fields (Date, ID1, ID2, StatN, StatC, Slot)** in this system have broad meanings and can be **reinterpreted** to suit the context of different domains without altering the structure. It is almost like having a **universal language** for data. Therefore, one of the essential tasks when using this system across domains is **creating domain-specific Mapping Rules and Data Dicts**, which define what each Slot represents in each domain and how each StatN/StatC value is interpreted (as illustrated in the above examples).</p>
-
-            <p>Importantly, **core rules and logic do not need to change** – the same loop structure or formula engine can be used in various domains. For example, in retail vs. banking, even though the context differs, if we properly define StatN and Slots, we can still use the formula `Balance_prev + Slot1 - Slot3` to calculate the balance, whether it’s the bank balance or inventory levels in a store (by changing the meaning of Balance accordingly).</p>
-
-            <p>## Conclusion and Final Thoughts</p>
-
-            <p>The **Generic Data Mapping System** presented here is an effort to create a **universal standard** for storing and processing data in a highly flexible manner, supporting data from all sources without changing the structure of the system itself. The main strengths are:</p>
-
-            <p>* **Universal Data Structure:** Uses only a few key fields (Date, ID1, ID2, StatN, StatC, Slot1..N), yet they can be combined to represent any data event, provided mapping and meaning definitions are properly set.</p>
-            <p>* **OntologyCore + Engine:** Combining *meaning definition* (Ontology) with *processing* (Engine) allows the system to “understand” incoming data contextually and “think” based on the predefined logic whenever new data is processed.</p>
-            <p>* **Dynamic Mapping & Logic:** This dynamic aspect ensures the system **does not impose constraints on the outside world**. Instead, anyone can use it. They simply provide *labels, formulas, and fields*, and the system adapts to fit their data. It's like *water* that adapts to any container, while maintaining its inherent qualities.</p>
-            <p>* **Self-Hosted & Transparent:** The system emphasizes simplicity in operation and transparency in its workings. Users do not need to purchase large platforms or migrate all their data to a new system – with basic tools like Python and CSV files, the system is ready to use. The system also allows easy modification of rules (no black-box), making organizations have full control over their system, while AI/automation is also **auditable** for transparency.</p>
-            <p>* **Future Scalability:** If the system needs to handle massive data (Big Data) or connect with vast networks (Global Graph), it can be scaled to be more robust by adding components like a Graph Database to speed up queries, adding SPARQL/GraphQL endpoints for direct relationship queries, doing Ontology versioning, Data governance, etc., as detailed in the document. However, the core principles remain unchanged.</p>
-
-            <p>Ultimately, we live in an era where data is flowing in from all directions. Any system that cannot integrate data from multiple sources will create *data silos* and miss opportunities to generate insights from comprehensive data. The Generic Data Mapping System, therefore, represents another attempt to **"combine everything in the world into one file"** in a figurative sense. This means making data from different sources fit into a unified format so that advanced analytics or AI can work more efficiently and reliably. Because once the structure and rules are correctly set, we can **empower data to think for itself** – reducing dependence on rigid software and giving data the ability to tell its own story and compute its own results smoothly across all domains.</p>
-
-            <p>> **"Anyone who uses it just inputs data, formulas, and fields – no need to buy platforms, no need to migrate systems."** The system we built is not just software – it's an **Ontology + Engine** concept that allows any inputted data to *become a program that can think on its own*. Once we establish the right structure and rules, we give **data the power to think for itself** – reducing the need to constantly rely on rigid software systems and opening up the possibility for data to tell its own story and compute its results seamlessly across all domains.</p>
-
-            <p>**This document can be directly exported and applied as a manual guideline** for developing the Generic Data Mapping System within your organization. We hope it provides a clear design framework that can be expanded based on your users’ needs.</p>            <p></p>          
-            <p></p>
-            
-            <p>fun for build!!! place for ChatGPT because made for get builder profile.</p>
+        <div class="chart-container">
+            <canvas id="overviewChart"></canvas>
+        </div>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID1</th>
+                    <th>ID2</th>
+                    <th>StatN</th>
+                    <th>StatC</th>
+                    <th>วันที่</th>
+                    <th>มูลค่า</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>SH04</td>
+                    <td>BYH</td>
+                    <td>0 - ปกติ</td>
+                    <td>B - จำนวนนับ</td>
+                    <td>2/1/2025</td>
+                    <td>3,500.00 ฿</td>
+                </tr>
+                <tr>
+                    <td>SH08</td>
+                    <td>BYH</td>
+                    <td>1 - เงินเชื่อ</td>
+                    <td>B - จำนวนนับ</td>
+                    <td>2/1/2025</td>
+                    <td>1,200.00 ฿</td>
+                </tr>
+                <tr>
+                    <td>MK02</td>
+                    <td>BYK</td>
+                    <td>0 - ปกติ</td>
+                    <td>C - ราคา</td>
+                    <td>3/1/2025</td>
+                    <td>5,800.00 ฿</td>
+                </tr>
+                <tr>
+                    <td>OT12</td>
+                    <td>BYT</td>
+                    <td>1 - เงินเชื่อ</td>
+                    <td>A - ผลลัพธ์คำนวณ</td>
+                    <td>3/1/2025</td>
+                    <td>2,750.00 ฿</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div style="text-align: center;">
+            <a href="#" class="btn-primary">ดูข้อมูลทั้งหมด</a>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="section">
+        <h2 class="section-title">คุณสมบัติเด่น</h2>
+        
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-icon">🔄</div>
+                <h3>รองรับหลายรูปแบบไฟล์</h3>
+                <p>นำเข้าข้อมูลได้จากหลายรูปแบบไฟล์ เช่น CSV, TXT, Excel, JSON และ API</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔍</div>
+                <h3>การค้นหาขั้นสูง</h3>
+                <p>ระบบค้นหาและกรองข้อมูลที่มีประสิทธิภาพ ช่วยให้ค้นหาข้อมูลที่ต้องการได้อย่างรวดเร็ว</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📱</div>
+                <h3>Responsive Design</h3>
+                <p>ใช้งานได้ทั้งบนคอมพิวเตอร์ แท็บเล็ต และโทรศัพท์มือถือ</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <h3>รายงานแบบ Real-time</h3>
+                <p>แสดงรายงานและการวิเคราะห์แบบ real-time เพื่อการตัดสินใจที่รวดเร็ว</p>
+            </div>
         </div>
     </section>
     
@@ -807,33 +660,44 @@
         <div class="footer-content">
             <div class="footer-column">
                 <h3>Anti-Normalization</h3>
-                <p>แพลตฟอร์มการจัดการข้อมูลที่ยืดหยุ่นสำหรับข้อมูลทุกรูปแบบ</p>
+                <p>ระบบจัดการและวิเคราะห์ข้อมูลธุรกรรมที่ไม่เป็นไปตามรูปแบบปกติ เพื่อการทำความเข้าใจข้อมูลที่ซับซ้อน</p>
+            </div>
+            <div class="footer-column">
+                <h3>เมนูหลัก</h3>
+                <ul>
+                    <li><a href="#">หน้าหลัก</a></li>
+                    <li><a href="world_fitting.html">World Fitting</a></li>
+                    <li><a href="#">Generic Data</a></li>
+                    <li><a href="#">รายงาน</a></li>
+                </ul>
             </div>
             <div class="footer-column">
                 <h3>บริการ</h3>
                 <ul>
-                    <li><a href="world_fitting.html">World Fitting</a></li>
-                    <li><a href="generic_data_mapping_system.html">Generic Data Mapping</a></li>
-                    <li><a href="#">OntologyCore</a></li>
+                    <li><a href="#">การวิเคราะห์ข้อมูล</a></li>
+                    <li><a href="#">การแมปข้อมูล</a></li>
+                    <li><a href="#">รายงานผลลัพธ์</a></li>
+                    <li><a href="#">บริการที่ปรึกษา</a></li>
                 </ul>
             </div>
             <div class="footer-column">
-                <h3>ข้อมูลเพิ่มเติม</h3>
+                <h3>ติดต่อเรา</h3>
                 <ul>
-                    <li><a href="#about">เกี่ยวกับเรา</a></li>
-                    <li><a href="#">นโยบายความเป็นส่วนตัว</a></li>
-                    <li><a href="#">เงื่อนไขการใช้งาน</a></li>
+                    <li><a href="#">อีเมล</a></li>
+                    <li><a href="#">โซเชียลมีเดีย</a></li>
+                    <li><a href="#">แผนที่</a></li>
+                    <li><a href="#">คำถามที่พบบ่อย</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>© 2024 ChieffySolutions - Anti-Normalization. All rights reserved.</p>
+            <p>© 2025 ChieffySolutions - Anti-Normalization Dashboard. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
+        // สร้างเส้นและจุดในพื้นหลัง
         document.addEventListener('DOMContentLoaded', function() {
-            // สร้างเส้นและจุดในพื้นหลัง
             const background = document.getElementById('backgroundEffect');
             
             // สร้างเส้นตั้ง
@@ -855,6 +719,114 @@
                 dot.style.opacity = Math.random() * 0.5 + 0.1;
                 background.appendChild(dot);
             }
+            
+            // สร้างกราฟ
+            const ctx = document.getElementById('overviewChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['ม.ค', 'ก.พ', 'มี.ค', 'เม.ย', 'พ.ค', 'มิ.ย'],
+                    datasets: [{
+                        label: 'ธุรกรรมเงินสด',
+                        data: [12500, 15000, 18200, 20300, 22100, 32450],
+                        borderColor: '#56ab2f',
+                        backgroundColor: 'rgba(86, 171, 47, 0.1)',
+                        tension: 0.4,
+                        pointBackgroundColor: '#56ab2f',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }, {
+                        label: 'ธุรกรรมเงินเชื่อ',
+                        data: [5200, 6300, 8100, 9500, 11200, 13422],
+                        borderColor: '#fdcb6e',
+                        backgroundColor: 'rgba(253, 203, 110, 0.1)',
+                        tension: 0.4,
+                        pointBackgroundColor: '#fdcb6e',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#e0e0e0',
+                                font: {
+                                    family: 'Prompt',
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(10, 15, 30, 0.8)',
+                            titleFont: {
+                                family: 'Prompt',
+                                size: 14
+                            },
+                            bodyFont: {
+                                family: 'Prompt',
+                                size: 13
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('th-TH', {
+                                            style: 'currency',
+                                            currency: 'THB',
+                                            minimumFractionDigits: 2
+                                        }).format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#a0a0a0',
+                                font: {
+                                    family: 'Prompt',
+                                    size: 12
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#a0a0a0',
+                                font: {
+                                    family: 'Prompt',
+                                    size: 12
+                                },
+                                callback: function(value) {
+                                    return value.toLocaleString() + ' ฿';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         });
     </script>
 </body>
