@@ -1,14 +1,11 @@
 fastapi
 pydantic
-<<<<<<< HEAD
 uvicorn
 pytest
 flake8
 black
 pyright
-=======
 pandas
 flask
 torch
 transformers
->>>>>>> main
