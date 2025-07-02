@@ -1,0 +1,324 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/e4af272ccee01ff0-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/css/655f058c082412d5.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-784d911b66f65286.js"/><script src="/_next/static/chunks/fd9d1056-b3500ecc2c136488.js" async=""></script><script src="/_next/static/chunks/472-f4388ba888fc77cc.js" async=""></script><script src="/_next/static/chunks/main-app-b120517776e8c69c.js" async=""></script><script src="/_next/static/chunks/app/layout-148faf59fff862df.js" async=""></script><script src="/_next/static/chunks/app/makereal.tldraw.link/%5BlinkId%5D/page-4f6c8f93cf571d0f.js" async=""></script><title>make real • tldraw</title><meta name="description" content="Draw a ui and make it real with tldraw."/><meta name="application-name" content="make real • tldraw"/><meta name="format-detection" content="telephone=no"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-title" content="make real • tldraw"/><meta name="apple-mobile-web-app-status-bar-style" content="black"/><meta property="og:title" content="make real • tldraw"/><meta property="og:description" content="Draw a ui and make it real with tldraw."/><meta property="og:url" content="https://makereal.tldraw.com/"/><meta property="og:site_name" content="make real • tldraw"/><meta property="og:image" content="https://makereal.tldraw.com/social-og.png"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:creator" content="@tldraw"/><meta name="twitter:title" content="make real • tldraw"/><meta name="twitter:description" content="Draw a ui and make it real with tldraw."/><meta name="twitter:image" content="https://makereal.tldraw.com/social-twitter.png"/><link rel="mask-icon" href="safari-pinned-tab.svg" color="#FFFFFF"/><link rel="shortcut icon" href="/favicon.svg"/><link rel="icon" href="favicon-32x32.png" sizes="32x32"/><link rel="icon" href="favicon-16x16.png" sizes="16x16"/><link rel="apple-touch-icon" href="touch-icon-iphone.png"/><link rel="apple-touch-icon" href="apple-touch-icon-152x152.png" sizes="152x152"/><link rel="apple-touch-icon" href="apple-touch-icon-180x180.png" sizes="180x180"/><link rel="apple-touch-icon" href="apple-touch-icon-167x167.png" sizes="167x167"/><meta name="next-size-adjust"/><script src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js" noModule=""></script></head><body class="__className_e8ce0c"><iframe id="iframe-2-shape:2qYOeafrhyGrrgUHv2Tp5" srcDoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;Wireframe Prototype - Dark Theme&lt;/title&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Fredoka+One&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+  &lt;style&gt;
+    :root {
+      --bg: #181818;
+      --white: #fff;
+      --gray: #222;
+      --blue: #3b4a8b;
+      --yellow: #e2b93b;
+      --red: #c94a4a;
+      --purple: #7b4a8b;
+      --green: #2b7a6b;
+      --border: #fff;
+      --menu-width: 260px;
+      --menu-radius: 130px;
+      --menu-padding: 18px;
+      --shortcut-size: 90px;
+      --shortcut-font: 1.1rem;
+      --action-size: 90px;
+      --transition: 0.2s;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--white);
+      font-family: &#x27;Fredoka One&#x27;, Arial, sans-serif;
+      box-sizing: border-box;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      position: relative;
+      min-height: 100vh;
+    }
+    /* Left Menu */
+    .side-menu {
+      position: absolute;
+      left: 40px;
+      top: 120px;
+      width: var(--menu-width);
+      background: var(--gray);
+      border: 4px solid var(--border);
+      border-radius: var(--menu-radius);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--menu-padding) 0;
+      z-index: 2;
+      min-height: 600px;
+      box-sizing: border-box;
+    }
+    .menu-arrow {
+      width: 60px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }
+    .menu-arrow svg {
+      display: block;
+      width: 40px;
+      height: 40px;
+      fill: none;
+      stroke: var(--white);
+      stroke-width: 4;
+    }
+    .menu-content {
+      width: 85%;
+      background: #111;
+      border: 3px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 0 10px 0;
+      margin-bottom: 18px;
+      text-align: center;
+      font-size: 1.15rem;
+      letter-spacing: 0.5px;
+      box-sizing: border-box;
+    }
+    .menu-fields {
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .field {
+      border-radius: 7px;
+      padding: 10px 0 8px 0;
+      font-size: 1.05rem;
+      text-align: center;
+      border: 3px solid transparent;
+      color: var(--white);
+      font-family: &#x27;Fredoka One&#x27;, Arial, sans-serif;
+      box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08);
+      transition: box-shadow var(--transition);
+    }
+    .field.blue { background: var(--blue); border-color: var(--blue);}
+    .field.yellow { background: var(--yellow); color: #222; border-color: var(--yellow);}
+    .field.red { background: var(--red); border-color: var(--red);}
+    .field.purple { background: var(--purple); border-color: var(--purple);}
+    .field.green { background: var(--green); border-color: var(--green);}
+    /* Right vertical shortcuts */
+    .right-shortcuts {
+      position: absolute;
+      right: 40px;
+      top: 30px;
+      width: 180px;
+      height: 90vh;
+      min-height: 700px;
+      background: var(--gray);
+      border: 4px solid var(--border);
+      border-radius: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 30px 0;
+      box-sizing: border-box;
+      z-index: 2;
+    }
+    .shortcut-circle {
+      width: var(--shortcut-size);
+      height: var(--shortcut-size);
+      border: 3px solid var(--border);
+      border-radius: 50%;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 12px 0;
+      font-size: var(--shortcut-font);
+      color: var(--white);
+      font-family: &#x27;Fredoka One&#x27;, Arial, sans-serif;
+      text-align: center;
+      transition: background var(--transition), color var(--transition);
+      cursor: pointer;
+      user-select: none;
+    }
+    .shortcut-circle:hover {
+      background: #333;
+      color: #e2b93b;
+    }
+    /* Bottom shortcuts */
+    .bottom-shortcuts-container {
+      position: absolute;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      z-index: 2;
+    }
+    .bottom-shortcuts {
+      background: var(--gray);
+      border: 4px solid var(--border);
+      border-radius: 60px;
+      padding: 18px 24px;
+      display: flex;
+      flex-direction: row;
+      gap: 24px;
+      align-items: center;
+      box-sizing: border-box;
+    }
+    .action-btn {
+      width: var(--action-size);
+      height: var(--action-size);
+      border: 3px solid var(--border);
+      border-radius: 50%;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 24px;
+      font-size: 1.1rem;
+      color: var(--white);
+      font-family: &#x27;Fredoka One&#x27;, Arial, sans-serif;
+      text-align: center;
+      transition: background var(--transition), color var(--transition);
+      cursor: pointer;
+      user-select: none;
+      background: #222;
+    }
+    .action-btn:hover {
+      background: #333;
+      color: #e2b93b;
+    }
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .side-menu {
+        left: 10px;
+        width: 200px;
+        border-radius: 100px;
+      }
+      .right-shortcuts {
+        right: 10px;
+        width: 120px;
+        border-radius: 60px;
+      }
+      .shortcut-circle, .action-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 0.95rem;
+      }
+      .bottom-shortcuts {
+        border-radius: 40px;
+        padding: 10px 10px;
+        gap: 10px;
+      }
+    }
+    @media (max-width: 700px) {
+      .side-menu, .right-shortcuts {
+        position: static;
+        width: 100vw;
+        border-radius: 0;
+        min-height: unset;
+        margin: 0;
+        left: 0;
+        right: 0;
+        top: 0;
+      }
+      .side-menu {
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 10px 0;
+        min-width: unset;
+        min-height: unset;
+      }
+      .menu-content, .menu-fields {
+        width: 90vw;
+      }
+      .right-shortcuts {
+        flex-direction: row;
+        width: 100vw;
+        height: auto;
+        padding: 10px 0;
+        border-radius: 0;
+        justify-content: flex-start;
+      }
+      .shortcut-circle {
+        margin: 0 8px;
+      }
+      .bottom-shortcuts-container {
+        left: 0;
+        transform: none;
+        width: 100vw;
+        justify-content: center;
+      }
+      .bottom-shortcuts {
+        width: 100vw;
+        border-radius: 0;
+        padding: 10px 0;
+        gap: 8px;
+      }
+      .action-btn {
+        margin-left: 8px;
+      }
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;!-- Left Side Menu --&gt;
+  &lt;div class=&quot;side-menu&quot;&gt;
+    &lt;div class=&quot;menu-arrow&quot;&gt;
+      &lt;svg viewBox=&quot;0 0 40 40&quot;&gt;
+        &lt;polygon points=&quot;20,8 32,28 8,28&quot; /&gt;
+      &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;menu-content&quot;&gt;
+      menu&lt;br&gt;
+      User ID &amp;amp; Socket
+    &lt;/div&gt;
+    &lt;div class=&quot;menu-fields&quot;&gt;
+      &lt;div class=&quot;field blue&quot;&gt;fieldnamr,&lt;br&gt;Type,other&lt;/div&gt;
+      &lt;div class=&quot;field yellow&quot;&gt;fieldnamr,&lt;br&gt;Type,other&lt;/div&gt;
+      &lt;div class=&quot;field red&quot;&gt;fieldnamr,&lt;br&gt;Type,other&lt;/div&gt;
+      &lt;div class=&quot;field purple&quot;&gt;fieldnamr,&lt;br&gt;Type,other&lt;/div&gt;
+      &lt;div class=&quot;field green&quot;&gt;fieldnamr,&lt;br&gt;Type,other&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;menu-arrow&quot; style=&quot;margin-top:auto;&quot;&gt;
+      &lt;svg viewBox=&quot;0 0 40 40&quot; style=&quot;transform: rotate(180deg);&quot;&gt;
+        &lt;polygon points=&quot;20,8 32,28 8,28&quot; /&gt;
+      &lt;/svg&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- Right Vertical Shortcuts --&gt;
+  &lt;div class=&quot;right-shortcuts&quot;&gt;
+    &lt;div class=&quot;shortcut-circle&quot;&gt;shot cut&lt;/div&gt;
+    &lt;div class=&quot;shortcut-circle&quot;&gt;shot cut&lt;/div&gt;
+    &lt;div class=&quot;shortcut-circle&quot;&gt;shot cut&lt;/div&gt;
+    &lt;div class=&quot;shortcut-circle&quot;&gt;shot cut&lt;/div&gt;
+    &lt;div class=&quot;shortcut-circle&quot;&gt;shot cut&lt;/div&gt;
+    &lt;div class=&quot;shortcut-circle&quot;&gt;shot cut&lt;/div&gt;
+    &lt;div class=&quot;shortcut-circle&quot;&gt;shot cut&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- Bottom Shortcuts --&gt;
+  &lt;div class=&quot;bottom-shortcuts-container&quot;&gt;
+    &lt;div class=&quot;bottom-shortcuts&quot;&gt;
+      &lt;div class=&quot;shortcut-circle&quot;&gt;shot cut&lt;/div&gt;
+      &lt;div class=&quot;shortcut-circle&quot;&gt;shot cut&lt;/div&gt;
+      &lt;div class=&quot;shortcut-circle&quot;&gt;shot cut&lt;/div&gt;
+      &lt;div class=&quot;shortcut-circle&quot;&gt;shot cut&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;action-btn&quot;&gt;Action&lt;br&gt;button&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;" draggable="false" allow="geolocation;midi;usb;magnetometer;fullscreen;animations;picture-in-picture;accelerometer;vr;camera;microphone" style="position:fixed;inset:0;width:100%;height:100%;border:none"></iframe><script src="/_next/static/chunks/webpack-784d911b66f65286.js" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/_next/static/media/e4af272ccee01ff0-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n2:HL[\"/_next/static/css/655f058c082412d5.css\",\"style\"]\n0:\"$L3\"\n"])</script><script>self.__next_f.push([1,"4:I[33728,[],\"\"]\n6:I[29928,[],\"\"]\n7:I[56954,[],\"\"]\n8:I[7264,[],\"\"]\nb:I[89817,[\"185\",\"static/chunks/app/layout-148faf59fff862df.js\"],\"Analytics\"]\n"])</script><script>self.__next_f.push([1,"3:[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/655f058c082412d5.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\"}]],[\"$\",\"$L4\",null,{\"buildId\":\"THeu-bmuAz6RXzh0guNVR\",\"assetPrefix\":\"\",\"initialCanonicalUrl\":\"/2qYOeafrhyGrrgUHv2Tp5\",\"initialTree\":[\"\",{\"children\":[\"makereal.tldraw.link\",{\"children\":[[\"linkId\",\"2qYOeafrhyGrrgUHv2Tp5\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]},\"$undefined\",\"$undefined\",true],\"initialHead\":[false,\"$L5\"],\"globalErrorComponent\":\"$6\",\"children\":[null,[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[[\"$\",\"head\",null,{\"children\":[\"$\",\"meta\",null,{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1\"}]}],[\"$\",\"body\",null,{\"className\":\"__className_e8ce0c\",\"children\":[[\"$\",\"$L7\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"loading\":\"$undefined\",\"loadingStyles\":\"$undefined\",\"loadingScripts\":\"$undefined\",\"hasLoading\":false,\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L8\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],\"notFoundStyles\":[],\"childProp\":{\"current\":[\"$\",\"$L7\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\",\"makereal.tldraw.link\",\"children\"],\"loading\":\"$undefined\",\"loadingStyles\":\"$undefined\",\"loadingScripts\":\"$undefined\",\"hasLoading\":false,\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L8\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"notFoundStyles\":\"$undefined\",\"childProp\":{\"current\":[\"$\",\"$L7\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\",\"makereal.tldraw.link\",\"children\",[\"linkId\",\"2qYOeafrhyGrrgUHv2Tp5\",\"d\"],\"children\"],\"loading\":\"$undefined\",\"loadingStyles\":\"$undefined\",\"loadingScripts\":\"$undefined\",\"hasLoading\":false,\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L8\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"notFoundStyles\":\"$undefined\",\"childProp\":{\"current\":[\"$L9\",\"$La\",null],\"segment\":\"__PAGE__\"},\"styles\":null}],\"segment\":[\"linkId\",\"2qYOeafrhyGrrgUHv2Tp5\",\"d\"]},\"styles\":null}],\"segment\":\"makereal.tldraw.link\"},\"styles\":null}],[\"$\",\"$Lb\",null,{}]]}]]}],null]}]]\n"])</script><script>self.__next_f.push([1,"5:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"make real • tldraw\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"Draw a ui and make it real with tldraw.\"}],[\"$\",\"meta\",\"4\",{\"name\":\"application-name\",\"content\":\"make real • tldraw\"}],[\"$\",\"meta\",\"5\",{\"name\":\"format-detection\",\"content\":\"telephone=no\"}],[\"$\",\"meta\",\"6\",{\"name\":\"apple-mobile-web-app-capable\",\"content\":\"yes\"}],[\"$\",\"meta\",\"7\",{\"name\":\"apple-mobile-web-app-title\",\"content\":\"make real • tldraw\"}],[\"$\",\"meta\",\"8\",{\"name\":\"apple-mobile-web-app-status-bar-style\",\"content\":\"black\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:title\",\"content\":\"make real • tldraw\"}],[\"$\",\"meta\",\"10\",{\"property\":\"og:description\",\"content\":\"Draw a ui and make it real with tldraw.\"}],[\"$\",\"meta\",\"11\",{\"property\":\"og:url\",\"content\":\"https://makereal.tldraw.com/\"}],[\"$\",\"meta\",\"12\",{\"property\":\"og:site_name\",\"content\":\"make real • tldraw\"}],[\"$\",\"meta\",\"13\",{\"property\":\"og:image\",\"content\":\"https://makereal.tldraw.com/social-og.png\"}],[\"$\",\"meta\",\"14\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"15\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"16\",{\"name\":\"twitter:creator\",\"content\":\"@tldraw\"}],[\"$\",\"meta\",\"17\",{\"name\":\"twitter:title\",\"content\":\"make real • tldraw\"}],[\"$\",\"meta\",\"18\",{\"name\":\"twitter:description\",\"content\":\"Draw a ui and make it real with tldraw.\"}],[\"$\",\"meta\",\"19\",{\"name\":\"twitter:image\",\"content\":\"https://makereal.tldraw.com/social-twitter.png\"}],[\"$\",\"link\",\"20\",{\"rel\":\"mask-icon\",\"href\":\"safari-pinned-tab.svg\",\"color\":\"#FFFFFF\"}],[\"$\",\"link\",\"21\",{\"rel\":\"shortcut icon\",\"href\":\"/favicon.svg\"}],[\"$\",\"link\",\"22\",{\"rel\":\"icon\",\"href\":\"favicon-32x32.png\",\"sizes\":\"32x32\"}],[\"$\",\"link\",\"23\",{\"rel\":\"icon\",\"href\":\"favicon-16x16.png\",\"sizes\":\"16x16\"}],[\"$\",\"link\",\"24\",{\"rel\":\"apple-touch-icon\",\"href\":\"touch-icon-iphone.png\"}],[\"$\",\"link\",\"25\",{\"rel\":\"apple-touch-icon\",\"href\":\"apple-touch-icon-152x152.png\",\"sizes\":\"152x152\"}],[\"$\",\"link\",\"26\",{\"rel\":\"apple-touch-icon\",\"href\":\"apple-touch-icon-180x180.png\",\"sizes\":\"180x180\"}],[\"$\",\"link\",\"27\",{\"rel\":\"apple-touch-icon\",\"href\":\"apple-touch-icon-167x167.png\",\"sizes\":\"167x167\"}],[\"$\",\"meta\",\"28\",{\"name\":\"next-size-adjust\"}]]\n"])</script><script>self.__next_f.push([1,"9:null\n"])</script><script>self.__next_f.push([1,"c:I[70548,[\"509\",\"static/chunks/app/makereal.tldraw.link/%5BlinkId%5D/page-4f6c8f93cf571d0f.js\"],\"LinkComponent\"]\nd:T21f2,"])</script><script>self.__next_f.push([1,"\u003c!DOCTYPE html\u003e\n\u003chtml lang=\"en\"\u003e\n\u003chead\u003e\n  \u003cmeta charset=\"UTF-8\"\u003e\n  \u003ctitle\u003eWireframe Prototype - Dark Theme\u003c/title\u003e\n  \u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"\u003e\n  \u003clink href=\"https://fonts.googleapis.com/css2?family=Fredoka+One\u0026display=swap\" rel=\"stylesheet\"\u003e\n  \u003cstyle\u003e\n    :root {\n      --bg: #181818;\n      --white: #fff;\n      --gray: #222;\n      --blue: #3b4a8b;\n      --yellow: #e2b93b;\n      --red: #c94a4a;\n      --purple: #7b4a8b;\n      --green: #2b7a6b;\n      --border: #fff;\n      --menu-width: 260px;\n      --menu-radius: 130px;\n      --menu-padding: 18px;\n      --shortcut-size: 90px;\n      --shortcut-font: 1.1rem;\n      --action-size: 90px;\n      --transition: 0.2s;\n    }\n    html, body {\n      height: 100%;\n      margin: 0;\n      padding: 0;\n      background: var(--bg);\n      color: var(--white);\n      font-family: 'Fredoka One', Arial, sans-serif;\n      box-sizing: border-box;\n      width: 100vw;\n      height: 100vh;\n      overflow: hidden;\n    }\n    body {\n      width: 100vw;\n      height: 100vh;\n      display: flex;\n      flex-direction: row;\n      justify-content: flex-start;\n      align-items: flex-start;\n      position: relative;\n      min-height: 100vh;\n    }\n    /* Left Menu */\n    .side-menu {\n      position: absolute;\n      left: 40px;\n      top: 120px;\n      width: var(--menu-width);\n      background: var(--gray);\n      border: 4px solid var(--border);\n      border-radius: var(--menu-radius);\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      padding: var(--menu-padding) 0;\n      z-index: 2;\n      min-height: 600px;\n      box-sizing: border-box;\n    }\n    .menu-arrow {\n      width: 60px;\n      height: 40px;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      margin-bottom: 10px;\n      margin-top: 10px;\n    }\n    .menu-arrow svg {\n      display: block;\n      width: 40px;\n      height: 40px;\n      fill: none;\n      stroke: var(--white);\n      stroke-width: 4;\n    }\n    .menu-content {\n      width: 85%;\n      background: #111;\n      border: 3px solid var(--border);\n      border-radius: 12px;\n      padding: 16px 0 10px 0;\n      margin-bottom: 18px;\n      text-align: center;\n      font-size: 1.15rem;\n      letter-spacing: 0.5px;\n      box-sizing: border-box;\n    }\n    .menu-fields {\n      width: 90%;\n      display: flex;\n      flex-direction: column;\n      gap: 10px;\n      margin-bottom: 10px;\n    }\n    .field {\n      border-radius: 7px;\n      padding: 10px 0 8px 0;\n      font-size: 1.05rem;\n      text-align: center;\n      border: 3px solid transparent;\n      color: var(--white);\n      font-family: 'Fredoka One', Arial, sans-serif;\n      box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08);\n      transition: box-shadow var(--transition);\n    }\n    .field.blue { background: var(--blue); border-color: var(--blue);}\n    .field.yellow { background: var(--yellow); color: #222; border-color: var(--yellow);}\n    .field.red { background: var(--red); border-color: var(--red);}\n    .field.purple { background: var(--purple); border-color: var(--purple);}\n    .field.green { background: var(--green); border-color: var(--green);}\n    /* Right vertical shortcuts */\n    .right-shortcuts {\n      position: absolute;\n      right: 40px;\n      top: 30px;\n      width: 180px;\n      height: 90vh;\n      min-height: 700px;\n      background: var(--gray);\n      border: 4px solid var(--border);\n      border-radius: 90px;\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: flex-start;\n      padding: 30px 0;\n      box-sizing: border-box;\n      z-index: 2;\n    }\n    .shortcut-circle {\n      width: var(--shortcut-size);\n      height: var(--shortcut-size);\n      border: 3px solid var(--border);\n      border-radius: 50%;\n      background: transparent;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      margin: 12px 0;\n      font-size: var(--shortcut-font);\n      color: var(--white);\n      font-family: 'Fredoka One', Arial, sans-serif;\n      text-align: center;\n      transition: background var(--transition), color var(--transition);\n      cursor: pointer;\n      user-select: none;\n    }\n    .shortcut-circle:hover {\n      background: #333;\n      color: #e2b93b;\n    }\n    /* Bottom shortcuts */\n    .bottom-shortcuts-container {\n      position: absolute;\n      left: 50%;\n      bottom: 30px;\n      transform: translateX(-50%);\n      display: flex;\n      flex-direction: row;\n      align-items: flex-end;\n      z-index: 2;\n    }\n    .bottom-shortcuts {\n      background: var(--gray);\n      border: 4px solid var(--border);\n      border-radius: 60px;\n      padding: 18px 24px;\n      display: flex;\n      flex-direction: row;\n      gap: 24px;\n      align-items: center;\n      box-sizing: border-box;\n    }\n    .action-btn {\n      width: var(--action-size);\n      height: var(--action-size);\n      border: 3px solid var(--border);\n      border-radius: 50%;\n      background: transparent;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      margin-left: 24px;\n      font-size: 1.1rem;\n      color: var(--white);\n      font-family: 'Fredoka One', Arial, sans-serif;\n      text-align: center;\n      transition: background var(--transition), color var(--transition);\n      cursor: pointer;\n      user-select: none;\n      background: #222;\n    }\n    .action-btn:hover {\n      background: #333;\n      color: #e2b93b;\n    }\n    /* Responsive */\n    @media (max-width: 1100px) {\n      .side-menu {\n        left: 10px;\n        width: 200px;\n        border-radius: 100px;\n      }\n      .right-shortcuts {\n        right: 10px;\n        width: 120px;\n        border-radius: 60px;\n      }\n      .shortcut-circle, .action-btn {\n        width: 60px;\n        height: 60px;\n        font-size: 0.95rem;\n      }\n      .bottom-shortcuts {\n        border-radius: 40px;\n        padding: 10px 10px;\n        gap: 10px;\n      }\n    }\n    @media (max-width: 700px) {\n      .side-menu, .right-shortcuts {\n        position: static;\n        width: 100vw;\n        border-radius: 0;\n        min-height: unset;\n        margin: 0;\n        left: 0;\n        right: 0;\n        top: 0;\n      }\n      .side-menu {\n        flex-direction: row;\n        justify-content: flex-start;\n        align-items: flex-start;\n        padding: 10px 0;\n        min-width: unset;\n        min-height: unset;\n      }\n      .menu-content, .menu-fields {\n        width: 90vw;\n      }\n      .right-shortcuts {\n        flex-direction: row;\n        width: 100vw;\n        height: auto;\n        padding: 10px 0;\n        border-radius: 0;\n        justify-content: flex-start;\n      }\n      .shortcut-circle {\n        margin: 0 8px;\n      }\n      .bottom-shortcuts-container {\n        left: 0;\n        transform: none;\n        width: 100vw;\n        justify-content: center;\n      }\n      .bottom-shortcuts {\n        width: 100vw;\n        border-radius: 0;\n        padding: 10px 0;\n        gap: 8px;\n      }\n      .action-btn {\n        margin-left: 8px;\n      }\n    }\n  \u003c/style\u003e\n\u003c/head\u003e\n\u003cbody\u003e\n  \u003c!-- Left Side Menu --\u003e\n  \u003cdiv class=\"side-menu\"\u003e\n    \u003cdiv class=\"menu-arrow\"\u003e\n      \u003csvg viewBox=\"0 0 40 40\"\u003e\n        \u003cpolygon points=\"20,8 32,28 8,28\" /\u003e\n      \u003c/svg\u003e\n    \u003c/div\u003e\n    \u003cdiv class=\"menu-content\"\u003e\n      menu\u003cbr\u003e\n      User ID \u0026amp; Socket\n    \u003c/div\u003e\n    \u003cdiv class=\"menu-fields\"\u003e\n      \u003cdiv class=\"field blue\"\u003efieldnamr,\u003cbr\u003eType,other\u003c/div\u003e\n      \u003cdiv class=\"field yellow\"\u003efieldnamr,\u003cbr\u003eType,other\u003c/div\u003e\n      \u003cdiv class=\"field red\"\u003efieldnamr,\u003cbr\u003eType,other\u003c/div\u003e\n      \u003cdiv class=\"field purple\"\u003efieldnamr,\u003cbr\u003eType,other\u003c/div\u003e\n      \u003cdiv class=\"field green\"\u003efieldnamr,\u003cbr\u003eType,other\u003c/div\u003e\n    \u003c/div\u003e\n    \u003cdiv class=\"menu-arrow\" style=\"margin-top:auto;\"\u003e\n      \u003csvg viewBox=\"0 0 40 40\" style=\"transform: rotate(180deg);\"\u003e\n        \u003cpolygon points=\"20,8 32,28 8,28\" /\u003e\n      \u003c/svg\u003e\n    \u003c/div\u003e\n  \u003c/div\u003e\n  \u003c!-- Right Vertical Shortcuts --\u003e\n  \u003cdiv class=\"right-shortcuts\"\u003e\n    \u003cdiv class=\"shortcut-circle\"\u003eshot cut\u003c/div\u003e\n    \u003cdiv class=\"shortcut-circle\"\u003eshot cut\u003c/div\u003e\n    \u003cdiv class=\"shortcut-circle\"\u003eshot cut\u003c/div\u003e\n    \u003cdiv class=\"shortcut-circle\"\u003eshot cut\u003c/div\u003e\n    \u003cdiv class=\"shortcut-circle\"\u003eshot cut\u003c/div\u003e\n    \u003cdiv class=\"shortcut-circle\"\u003eshot cut\u003c/div\u003e\n    \u003cdiv class=\"shortcut-circle\"\u003eshot cut\u003c/div\u003e\n  \u003c/div\u003e\n  \u003c!-- Bottom Shortcuts --\u003e\n  \u003cdiv class=\"bottom-shortcuts-container\"\u003e\n    \u003cdiv class=\"bottom-shortcuts\"\u003e\n      \u003cdiv class=\"shortcut-circle\"\u003eshot cut\u003c/div\u003e\n      \u003cdiv class=\"shortcut-circle\"\u003eshot cut\u003c/div\u003e\n      \u003cdiv class=\"shortcut-circle\"\u003eshot cut\u003c/div\u003e\n      \u003cdiv class=\"shortcut-circle\"\u003eshot cut\u003c/div\u003e\n    \u003c/div\u003e\n    \u003cdiv class=\"action-btn\"\u003eAction\u003cbr\u003ebutton\u003c/div\u003e\n  \u003c/div\u003e\n\u003c/body\u003e\n\u003c/html\u003e"])</script><script>self.__next_f.push([1,"a:[\"$\",\"$Lc\",null,{\"linkId\":\"2qYOeafrhyGrrgUHv2Tp5\",\"isPreview\":false,\"html\":\"$d\"}]\n"])</script><script>self.__next_f.push([1,""])</script></body></html>
