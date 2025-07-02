@@ -1,0 +1,16 @@
+/src
+ ├─ /components
+ │   ├─ Layout/         # Header, Main, Footer รับ props override
+ │   ├─ ThemeProvider/  # จัดการ CSS Variables, Context
+ │   └─ SharedUI/       # ปุ่ม, การ์ด, Wizard Step ฯลฯ
+ ├─ /features
+ │   ├─ wizard/
+ │   ├─ importMapping/
+ │   ├─ executorDashboard/
+ │   ├─ blueprintManager/
+ │   └─ support/
+ ├─ /pages             # React Router (Next.js: /app)
+ ├─ /plugins           # ส่วนเสริม โหลดไดนามิกตาม manifest
+ ├─ /hooks             # useSchema, useMapping, useExecutor
+ ├─ /store             # Redux/Pinia สถานะธีม, schema, mapping
+ └─ /utils             # apiClient, validators, helpers
