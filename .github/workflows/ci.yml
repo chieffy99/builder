@@ -1,9 +1,12 @@
 name: CI
-on: [push]
+
+on: [push, pull_request]
+
 jobs:
-  test-deploy:
+  lint-and-test:
     runs-on: ubuntu-latest
     steps:
+<<<<<<< HEAD
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
       with:
@@ -18,3 +21,30 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./frontend
 
+=======
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+        - name: Install flake8
+          run: pip install flake8
+
+            - name: Run flake8
+          run: flake8 .
+
+      - name: black --check
+        run: black --check .
+
+      - name: pyright
+        run: pyright
+
+      - name: pytest
+        run: pytest
+>>>>>>> main
