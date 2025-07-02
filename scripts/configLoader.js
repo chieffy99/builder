@@ -1,11 +1,12 @@
-/* configLoader.js
+/**
+ * configLoader.js
  * A Node.js module to load and validate .ini/.json config grammar
  * for the Anti-Normalization system based on Master1.ini.txt specs
  */
 
-const fs = require('fs');
+const fs   = require('fs');
 const path = require('path');
-const ini = require('ini');
+const ini  = require('ini');
 
 class ConfigLoader {
   /**
@@ -16,13 +17,14 @@ class ConfigLoader {
     if (!fs.existsSync(this.configPath)) {
       throw new Error(`Config file not found: ${this.configPath}`);
     }
-    this.raw = null;
+    this.raw    = null;
     this.config = null;
   }
 
   /**
    * Load and parse the config file.
    * Supports .ini and .json formats.
+   * @returns {Object} Parsed config
    */
   load() {
     this.raw = fs.readFileSync(this.configPath, 'utf-8');
@@ -40,7 +42,8 @@ class ConfigLoader {
   /**
    * Validate that required sections and keys exist.
    * @param {Object} schema - definition of required structure
-   *   e.g. { sections: { sectionName: ['key1', 'key2'] } }
+   *   e.g. { sections: { General: ['delimiter'], Mapping: ['DaTiX','ID1'] } }
+   * @returns {boolean}
    */
   validate(schema) {
     if (!this.config) {
@@ -59,8 +62,7 @@ class ConfigLoader {
       }
     }
     if (errors.length) {
-      const msg = errors.join('; ');
-      throw new Error(`Config validation failed: ${msg}`);
+      throw new Error(`Config validation failed: ${errors.join('; ')}`);
     }
     return true;
   }
@@ -68,8 +70,22 @@ class ConfigLoader {
 
 module.exports = ConfigLoader;
 
-// Usage example:
-// const ConfigLoader = require('./configLoader');
-// const loader = new ConfigLoader('Master1.ini.txt');
-// const cfg = loader.load();
-// loader.validate({ sections: { General: ['delimiter'], Mapping: ['DaTiX', 'ID1'] } });
+/*
+Usage Example:
+
+const ConfigLoader = require('./configLoader');
+const loader = new ConfigLoader('Master1.ini.txt');
+
+// Load and parse
+const cfg = loader.load();
+
+// Validate required structure
+loader.validate({
+  sections: {
+    General: ['delimiter'],
+    Mapping: ['DaTiX', 'ID1', 'ID2']
+  }
+});
+
+// cfg now contains your parsed config object
+*/
