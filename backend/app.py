@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 from .logic_engine import interpreter as interp
 
+
 app = FastAPI(title="DDW Anti-Normalization API")
 
 

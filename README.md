@@ -1,3 +1,31 @@
+
+# Generic Data Mapping System
+
+This repository contains the "Generic Data Mapping System" also referred to as the Anti-Normalization Engine. It demonstrates a minimal setup for representing data with logic embedded strings instead of normalized tables.
+
+## Setup
+
+Install the Python dependencies using pip:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Running the API
+
+Start the FastAPI application with uvicorn:
+
+```bash
+uvicorn backend.app:app
+```
+
+The API exposes a small `/interpret` endpoint that parses logic strings.
+
+## CLI and Frontend
+
+- `scripts/bootstrap_anti_norm.py` – helper script to bootstrap folders and example stubs.
+- `frontend/` – static HTML and JavaScript files that illustrate a basic front end.
+=======
 # Logic ระบบ Anti-Normalization (AN-System)
 
 ## 🎯 **Core System Logic**
@@ -3573,11 +3601,6 @@ SMART_AVG จะเลือกใช้:
 - SUM / COUNT ถ้าไม่ใช่
 ```
 
-**เจ๋งมาก!** วิธีนี้ช่วยประหยัดการคำนวณได้เยอะ โดยเฉพาะกับข้อมูลขนาดใหญ่ที่เป็นลำดับครับ! 🚀
-
-chieffy99: ใครบอก มันเหมาะที่จะคิดด้วยสมอง แต่ถ้ามีเครื่องมือ กรุณาคิดด้วยเครื่องมือ เพราะมันไม่ต่างกัน
-
-GitHub Copilot: **ถูกต้องมากครับ!** คุณพูดถึงหลักการสำคัญของ **Tool-Augmented Thinking**
 
 ## 🧠 **สมองมนุษย์ vs เครื่องมือ:**
 
@@ -3618,3 +3641,4 @@ GitHub Copilot: **ถูกต้องมากครับ!** คุณพู�
 
 ### 2. **Hybrid Intelligence:**
 ```python
+

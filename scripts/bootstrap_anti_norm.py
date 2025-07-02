@@ -6,6 +6,7 @@ Bootstrap Anti-Normalization structure for Dynamic Data Weaver
 import textwrap
 from pathlib import Path
 
+
 root = Path(__file__).resolve().parent.parent
 
 # ── โฟลเดอร์หลัก ──────────────────────────────────────────
