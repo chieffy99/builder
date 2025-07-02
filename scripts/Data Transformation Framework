@@ -1,0 +1,112 @@
+ผมอ่านไฟล์ทั้งหมดต่อไปนี้มาเรียบร้อย:
+
+1. **คู่มือ.txt** – แนวคิด Anti-Normalization และตัวอย่าง Logic String
+2. **AnLogic4.txt** – OntologyCore 7 มิติ และกฎ Invert
+3. **การสร้าง 2.ini** – Grammar `.ini` สำหรับ Mapping Header→Field และสูตร Excel-style
+4. **ลอง + กฏ+ Anti-Normalization.txt** – Core Unit, คำสั่ง Transform/Reform/Deconstruction
+5. **ก่อน time value\_250630\_172416.txt** – Mapping Header→Field, on-the-fly inference
+6. **Time value data\_250629\_232325.txt** – Time-Value Behavioral Data และ Glossary
+7. **# #ตัวอย่างการตั้งชื่อฟีลด์…vb** – VB ตัวอย่างแม็ป header → ชื่อกลาง (PascalCase + reserved-word guard)
+8. **Sample – Superstore – Demoy.csv** – ข้อมูลดิบ Superstore ต้นฉบับ
+9. **MAD1แชท.txt** – ภาพรวม AN-System: Field Generation, Data Flow, Advanced Features
+10. **Master1.ini.txt** – EBNF ของ fieldName, ตัวอย่าง config.json, DSL format
+
+---
+
+## โครงสร้าง “Data Transformation Framework” ที่จะสร้างขึ้น
+
+```
+/transformer
+ ├─ /config
+ │    ├ master1.ini          # Grammar ของ fieldName
+ │    └ mapping.json         # Mapping Header→Field (แปลงจาก .ini)
+ ├─ /src
+ │    ├ parser.js            # แยก Logic String → JS object
+ │    ├ mapper.js            # แม็ปชื่อคอลัมน์ต้นทาง → ชื่อกลาง
+ │    └ engine.js            # ประมวลผลสูตร (SUMIFS, IF, Invert, Time-Value)
+ ├─ /samples
+ │    └ demoy.csv            # ตัวอย่างข้อมูลจาก Superstore
+ └─ /tests
+      ├ parser.test.js
+      ├ mapper.test.js
+      └ engine.test.js
+```
+
+### 1. parser.js
+
+```javascript
+// parser.js
+// แยก logic string แต่ละบรรทัดเป็น JS object
+export function parseRecord(line) {
+  const parts = Array.from(line.matchAll(/\{[^}]*\}|[^,]+/g), m => m[0].trim());
+  const [ date, id1, id2, statN, statC, ...slots ] = parts;
+  if (!date || !id1 || !id2) {
+    throw new Error(`Invalid record: ${line}`);
+  }
+  return { date, id1, id2, statN, statC, slots };
+}
+```
+
+### 2. mapper.js
+
+```javascript
+// mapper.js
+import fs from 'fs';
+import ini from 'ini';
+
+/**
+ * โหลดและแปลง config .ini → JSON
+ */
+export function loadConfig(path) {
+  const raw = fs.readFileSync(path, 'utf-8');
+  return ini.parse(raw);
+}
+
+/**
+ * แม็ป header ต้นทาง → ชื่อกลาง ตาม config.mappings
+ */
+export function mapHeader(header, mappings) {
+  if (mappings[header]) return mappings[header];
+  // fallback PascalCase
+  const clean = header.replace(/[^ก-๙A-Za-z0-9]+/g,' ').trim();
+  return clean
+    .split(' ')
+    .map(w => w[0].toUpperCase()+w.slice(1))
+    .join('');
+}
+```
+
+### 3. engine.js
+
+```javascript
+// engine.js
+/**
+ * สร้างสูตร SUMIFS ตาม code pattern (OTPKPT, OTSAPT, ฯลฯ)
+ */
+const slotIdxMap = { PT:1, LT:2, ST:3, CL:4, CU:5, RU:6, DU:7 };
+
+export function generateFormula(code, opts={}) {
+  const id1 = code.slice(0,2), id2 = code.slice(2,4), tgt = code.slice(4,6);
+  const slot = opts.slotField || `slot${slotIdxMap[tgt]}`;
+  const sn  = opts.statN || '"0"', sc = opts.statC || '"B"';
+  const df  = opts.dateField || 'DaTiX', dfB = opts.dateStart || 'DaTiXFin';
+  return `=SUMIFS(${slot},ID1,"${id1}",ID2,"${id2}",StatN,${sn},StatC,${sc},${df},">="&${dfB},${df},"<="&${dfB})`;
+}
+```
+
+---
+
+**ตรงนี้คือโครงสร้างพื้นฐาน** ที่คุณดึงไปใช้ได้ทันที:
+
+* `/transformer/src/parser.js` แปลงแต่ละบรรทัด → object
+* `/transformer/src/mapper.js` โหลด config + แม็ป header
+* `/transformer/src/engine.js` สร้างสูตรคำนวณตามตัวอย่าง
+* สามารถเขียน REST API, CLI หรือ script แล้วเรียกโมดูลเหล่านี้ได้เลย
+
+หากตรงตามที่ต้องการ ผมจะต่อยอดเพิ่ม:
+
+* ฟังก์ชัน bulk-processing
+* การอ่าน/เขียนไฟล์ CSV
+* Unit tests ใน `/tests`
+
+แจ้งได้เลยครับ จะเริ่ม implement ส่วนไหนต่อทันที!
