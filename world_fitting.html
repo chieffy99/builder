@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Fitting - Anti-Normalization</title>
+    <title>Formula Generator Dashboard - World Fitting</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&family=Sarabun:wght@300;400;500;700&display=swap">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
@@ -20,6 +20,9 @@
             --status-0: #56ab2f;
             --status-1: #fdcb6e;
             --border-light: rgba(107, 138, 253, 0.3);
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
         }
         
         body {
@@ -63,24 +66,16 @@
         }
         
         @keyframes float {
-            0% {
-                transform: translateY(-100%);
-            }
-            100% {
-                transform: translateY(100%);
-            }
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
         }
         
         @keyframes pulse {
-            0%, 100% {
-                opacity: 0.3;
-            }
-            50% {
-                opacity: 0.8;
-            }
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
         }
         
-        /* เพิ่ม Navbar */
+        /* Navbar */
         .navbar {
             background: rgba(10, 15, 30, 0.8);
             backdrop-filter: blur(10px);
@@ -126,26 +121,24 @@
             gap: 10px;
         }
         
-        .navbar-menu a {
+        .navbar-menu button {
             color: var(--text-primary);
-            text-decoration: none;
+            background: transparent;
+            border: none;
             padding: 8px 15px;
             border-radius: 8px;
             transition: all 0.3s ease;
             font-weight: 500;
+            cursor: pointer;
         }
         
-        .navbar-menu a:hover {
-            background: rgba(107, 138, 253, 0.1);
-            color: var(--accent-primary);
-        }
-        
-        .navbar-menu a.active {
+        .navbar-menu button:hover,
+        .navbar-menu button.active {
             background: rgba(107, 138, 253, 0.15);
             color: var(--accent-primary);
         }
         
-        /* การ์ดรายการข้อมูล */
+        /* Cards */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-light);
@@ -159,11 +152,10 @@
         }
         
         .card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35), 0 0 20px rgba(107, 138, 253, 0.3);
         }
         
-        /* ส่วนหัวการ์ด */
         .card-header {
             border-bottom: 1px solid var(--border-light);
             padding-bottom: 12px;
@@ -171,69 +163,26 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        
-        /* แสดงสถานะ StatN และ StatC */
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-size: 14px;
-            margin-right: 10px;
-            font-weight: 500;
-        }
-        
-        .status-0 {
-            background-color: rgba(86, 171, 47, 0.2);
-            color: var(--status-0);
-            border: 1px solid var(--status-0);
-        }
-        
-        .status-1 {
-            background-color: rgba(253, 203, 110, 0.2);
-            color: var(--status-1);
-            border: 1px solid var(--status-1);
-        }
-        
-        /* ตารางข้อมูล */
-        .data-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-        
-        .data-table th {
-            text-align: left;
-            padding: 12px 15px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid var(--border-light);
-            font-weight: 500;
+            font-weight: 600;
             color: var(--accent-primary);
         }
         
-        .data-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
         }
         
-        .data-table tr:hover {
-            background-color: rgba(255, 255, 255, 0.05);
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
         }
         
-        /* ตัวกรองและการค้นหา */
-        .filter-container {
-            background: var(--bg-secondary);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-        }
-        
-        .filter-input {
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--border-light);
             border-radius: 8px;
@@ -241,61 +190,23 @@
             color: var(--text-primary);
             outline: none;
             transition: all 0.3s ease;
-            min-width: 150px;
+            font-family: inherit;
         }
         
-        .filter-input:focus {
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
             border-color: var(--accent-primary);
             box-shadow: 0 0 0 2px rgba(107, 138, 253, 0.2);
         }
         
-        /* การแสดงผล Slot */
-        .slot-value {
-            position: relative;
-            cursor: pointer;
-            transition: background 0.3s;
-            border-radius: 4px;
-            padding: 2px 8px;
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
         }
         
-        .slot-value:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .slot-value:hover::after {
-            content: attr(data-meaning);
-            position: absolute;
-            top: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            white-space: nowrap;
-            z-index: 100;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* กราฟและการวิเคราะห์ */
-        .chart-container {
-            background: var(--bg-card);
-            height: 350px;
-            margin-bottom: 30px;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 15px rgba(107, 138, 253, 0.2);
-        }
-        
-        .chart-title {
-            margin-bottom: 15px;
-            font-weight: 500;
-            color: var(--accent-primary);
-        }
-        
-        /* ปุ่ม */
-        .action-button {
+        /* Buttons */
+        .btn {
             background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
             color: white;
             border: none;
@@ -307,14 +218,142 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
+            font-family: inherit;
         }
         
-        .action-button:hover {
+        .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(107, 138, 253, 0.3);
         }
         
-        /* เลย์เอาต์ */
+        .btn-success {
+            background: linear-gradient(45deg, var(--success), #2ecc71);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(45deg, var(--warning), #e67e22);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, var(--danger), #c0392b);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #6c757d, #5a6268);
+        }
+        
+        /* Wizard Steps */
+        .wizard-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .wizard-step {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .wizard-step.active {
+            display: block;
+        }
+        
+        .wizard-progress {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .wizard-progress-bar {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .option-button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 15px 20px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        
+        .option-button:hover {
+            background: rgba(107, 138, 253, 0.1);
+            border-color: var(--accent-primary);
+        }
+        
+        .option-button.selected {
+            background: rgba(107, 138, 253, 0.2);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+        
+        /* Results */
+        .result-container {
+            background: linear-gradient(45deg, rgba(86, 171, 47, 0.1), rgba(46, 204, 113, 0.1));
+            border: 1px solid var(--success);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .formula-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: var(--accent-primary);
+            border: 1px solid var(--border-light);
+            word-break: break-all;
+        }
+        
+        /* Status Messages */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid;
+        }
+        
+        .alert-success {
+            background: rgba(39, 174, 96, 0.1);
+            border-left-color: var(--success);
+            color: #2ecc71;
+        }
+        
+        .alert-warning {
+            background: rgba(243, 156, 18, 0.1);
+            border-left-color: var(--warning);
+            color: var(--warning);
+        }
+        
+        .alert-danger {
+            background: rgba(231, 76, 60, 0.1);
+            border-left-color: var(--danger);
+            color: var(--danger);
+        }
+        
+        .alert-info {
+            background: rgba(107, 138, 253, 0.1);
+            border-left-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+        
+        /* Layout */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -335,77 +374,47 @@
             font-weight: 600;
             background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 0;
         }
         
-        .dashboard-grid {
+        .grid-2 {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 25px;
         }
         
-        /* สรุปข้อมูล */
-        .summary-card {
-            background: linear-gradient(45deg, rgba(107, 138, 253, 0.15), rgba(156, 95, 255, 0.15));
-            border: 1px solid rgba(107, 138, 253, 0.3);
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
         }
         
-        .summary-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            color: var(--accent-primary);
-        }
-        
-        .summary-card h2 {
-            font-size: 1.8rem;
-            margin: 10px 0 20px;
-        }
-        
-        /* รูปแบบข้อความ */
-        h1, h2, h3, h4 {
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            margin: 0 0 15px 0;
-            line-height: 1.3;
-        }
-        
-        h1 {
-            font-size: 1.8rem;
-        }
-        
-        h2 {
-            font-size: 1.5rem;
-            margin: 30px 0 20px;
-            color: var(--text-primary);
-        }
-        
-        h3 {
-            font-size: 1.2rem;
-        }
-        
-        section {
-            margin-bottom: 40px;
-        }
-        
-        footer {
-            background: rgba(15, 20, 30, 0.6);
-            backdrop-filter: blur(10px);
-            padding: 20px;
+        /* File Upload */
+        .file-upload-area {
+            border: 2px dashed var(--border-light);
+            border-radius: 12px;
+            padding: 40px;
             text-align: center;
-            margin-top: 30px;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .file-upload-area:hover {
+            border-color: var(--accent-primary);
+            background: rgba(107, 138, 253, 0.05);
+        }
+        
+        .file-upload-area.dragover {
+            border-color: var(--accent-primary);
+            background: rgba(107, 138, 253, 0.1);
         }
         
         /* Animation */
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .fadeIn {
@@ -420,28 +429,34 @@
             
             .navbar {
                 padding: 10px 15px;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .navbar-menu {
+                width: 100%;
+                justify-content: center;
             }
             
             .dashboard-header {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 15px;
             }
             
-            .dashboard-header > div {
-                margin-top: 15px;
-            }
-            
-            .filter-container {
-                flex-direction: column;
-            }
-            
-            .filter-input {
-                width: 100%;
-            }
-            
-            .dashboard-grid {
+            .grid-2,
+            .grid-3 {
                 grid-template-columns: 1fr;
             }
+            
+            .wizard-container {
+                max-width: 100%;
+            }
+        }
+        
+        /* Hidden utility */
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -451,188 +466,273 @@
     
     <!-- Navbar -->
     <nav class="navbar">
-        <a href="index.html" class="navbar-brand">
-            <div class="logo">AN</div>
-            <div class="navbar-title">World Fitting</div>
+        <a href="#" class="navbar-brand">
+            <div class="logo">FG</div>
+            <div class="navbar-title">Formula Generator Dashboard</div>
         </a>
         <div class="navbar-menu">
             <a href="index.html">หน้าหลัก</a>
-            <a href="world_fitting.html" class="active">World Fitting</a>
             <a href="generic_data_mapping_system.html">Generic Data</a>
-            <a href="#">OntologyCore</a>
-            <a href="#">รายงาน</a>
+            <button onclick="showSection('wizard')" class="active" id="nav-wizard">🧙‍♂️ Wizard</button>
+            <button onclick="showSection('calculator')" id="nav-calculator">🧮 Calculator</button>
+            <button onclick="showSection('dashboard')" id="nav-dashboard">📊 Dashboard</button>
+            <button onclick="showSection('data')" id="nav-data">📁 Data</button>
         </div>
     </nav>
 
     <div class="container">
-        <div class="dashboard-header">
-            <h1 class="dashboard-title">World Fitting Dashboard</h1>
-            <div>
-                <button class="action-button">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M8 12l-4-4h8l-4 4z"/>
-                    </svg>
-                    นำเข้าข้อมูล
-                </button>
-                <button class="action-button">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M14 5h-4V1H6v4H2l6 6 6-6zm-8 7v2h4v-2H6z"/>
-                    </svg>
-                    รายงาน
-                </button>
+        <!-- Section: Wizard -->
+        <div id="section-wizard" class="section">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Formula Generator Wizard</h1>
+                <div>
+                    <button class="btn" onclick="resetWizard()">🔄 เริ่มใหม่</button>
+                </div>
             </div>
-        </div>
-        
-        <div class="filter-container">
-            <input type="text" class="filter-input" placeholder="ค้นหา ID1...">
-            <select class="filter-input">
-                <option value="">เลือก StatN</option>
-                <option value="0">0 - ปกติ</option>
-                <option value="1">1 - เงินเชื่อ</option>
-            </select>
-            <select class="filter-input">
-                <option value="">เลือก StatC</option>
-                <option value="B">B - จำนวนนับ</option>
-                <option value="C">C - ราคา</option>
-                <option value="A">A - ผลลัพธ์คำนวณ</option>
-            </select>
-            <input type="date" class="filter-input">
-            <button class="action-button">ค้นหา</button>
-        </div>
-        
-        <div class="chart-container">
-            <h3 class="chart-title">สถิติภาพรวม: ความสัมพันธ์ระหว่าง StatN และมูลค่าธุรกรรม</h3>
-            <canvas id="transactionChart"></canvas>
-        </div>
-        
-        <section>
-            <h2>ธุรกรรมล่าสุด</h2>
             
-            <div class="card">
-                <div class="card-header">
-                    <div>
-                        <span class="status-indicator status-0">StatN: 0</span>
-                        <span>StatC: B</span>
+            <div class="wizard-container">
+                <div class="wizard-progress">
+                    <div class="wizard-progress-bar" id="wizardProgress" style="width: 0%"></div>
+                </div>
+                
+                <div class="card">
+                    <div id="wizardContent">
+                        <!-- Dynamic wizard content will be inserted here -->
                     </div>
-                    <div>2/1/2025</div>
-                </div>
-                
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID1</th>
-                            <th>ID2</th>
-                            <th>Slot1</th>
-                            <th>Slot2</th>
-                            <th>Slot3</th>
-                            <th>Slot4</th>
-                            <th>Slot5</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>SH04</td>
-                            <td>BYH</td>
-                            <td class="slot-value" data-meaning="จำนวนสินค้า #1">0</td>
-                            <td class="slot-value" data-meaning="จำนวนสินค้า #2">0</td>
-                            <td class="slot-value" data-meaning="จำนวนสินค้า #3">0</td>
-                            <td class="slot-value" data-meaning="จำนวนสินค้า #4">3</td>
-                            <td class="slot-value" data-meaning="จำนวนสินค้า #5">0</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <div style="margin-top: 15px; background: rgba(86, 171, 47, 0.1); padding: 10px; border-radius: 8px;">
-                    <strong>ความหมาย:</strong> ลูกค้าซื้อเงินสด สินค้าประเภท #4 จำนวน 3 ชิ้น
                 </div>
             </div>
+        </div>
+
+        <!-- Section: Calculator -->
+        <div id="section-calculator" class="section hidden">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Anti-Normalization Calculator</h1>
+            </div>
             
-            <div class="card">
-                <div class="card-header">
-                    <div>
-                        <span class="status-indicator status-1">StatN: 1</span>
-                        <span>StatC: B</span>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">📁 อัปโหลดข้อมูล CSV</div>
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <div>
+                            <h3>📄 ลากไฟล์มาวางที่นี่</h3>
+                            <p>หรือคลิกเพื่อเลือกไฟล์ CSV</p>
+                            <input type="file" id="csvFile" accept=".csv" style="display: none;">
+                        </div>
                     </div>
-                    <div>2/1/2025</div>
+                    <div id="uploadStatus" class="mt-3"></div>
                 </div>
                 
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID1</th>
-                            <th>ID2</th>
-                            <th>Slot1</th>
-                            <th>Slot2</th>
-                            <th>Slot3</th>
-                            <th>Slot4</th>
-                            <th>Slot5</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>SH08</td>
-                            <td>BYH</td>
-                            <td class="slot-value" data-meaning="จำนวนสินค้า #1">0</td>
-                            <td class="slot-value" data-meaning="จำนวนสินค้า #2">0</td>
-                            <td class="slot-value" data-meaning="จำนวนสินค้า #3">0</td>
-                            <td class="slot-value" data-meaning="จำนวนสินค้า #4">0</td>
-                            <td class="slot-value" data-meaning="จำนวนสินค้า #5">1</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <div style="margin-top: 15px; background: rgba(253, 203, 110, 0.1); padding: 10px; border-radius: 8px;">
-                    <strong>ความหมาย:</strong> ลูกค้าซื้อเงินเชื่อ สินค้าประเภท #5 จำนวน 1 ชิ้น
+                <div class="card">
+                    <div class="card-header">🧮 คำนวณจาก Entity Codes</div>
+                    <div class="form-group">
+                        <label class="form-label">วันที่ (Date Fin):</label>
+                        <input type="date" id="dateFin" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Entity Codes (คั่นด้วย comma):</label>
+                        <input type="text" id="entityCodes" class="form-input" placeholder="OTPKPT,MKPKLT,SHSAPT">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">นิพจน์ (ใช้ Entity Codes):</label>
+                        <input type="text" id="expression" class="form-input" placeholder="OTPKPT + MKPKLT * 2">
+                    </div>
+                    <button class="btn btn-success" onclick="calculate()">🧮 คำนวณ</button>
                 </div>
             </div>
-        </section>
-        
-        <section>
-            <h2>สรุปข้อมูล</h2>
             
-            <div class="dashboard-grid">
-                <div class="card summary-card">
-                    <h3>ยอดขายรวม</h3>
-                    <h2>45,872.50 บาท</h2>
+            <div id="calculatorResults" class="hidden">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">📊 ค่า Entities</div>
+                        <div id="entityResults"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">📈 ผลลัพธ์นิพจน์</div>
+                        <div id="expressionResults"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Dashboard -->
+        <div id="section-dashboard" class="section hidden">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Dashboard Overview</h1>
+                <div>
+                    <button class="btn">📊 รายงาน</button>
+                    <button class="btn btn-secondary">⚙️ ตั้งค่า</button>
+                </div>
+            </div>
+            
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header">💰 ยอดขายรวม</div>
+                    <h2 style="color: var(--success); font-size: 2rem; margin: 10px 0;">45,872.50 บาท</h2>
                     <div>เงินสด: 32,450.00 บาท</div>
                     <div>เงินเชื่อ: 13,422.50 บาท</div>
                 </div>
                 
-                <div class="card summary-card">
-                    <h3>จำนวนรายการ</h3>
-                    <h2>385 รายการ</h2>
+                <div class="card">
+                    <div class="card-header">📋 จำนวนรายการ</div>
+                    <h2 style="color: var(--accent-primary); font-size: 2rem; margin: 10px 0;">385 รายการ</h2>
                     <div>เงินสด (StatN=0): 289 รายการ</div>
                     <div>เงินเชื่อ (StatN=1): 96 รายการ</div>
                 </div>
                 
-                <div class="card summary-card">
-                    <h3>Top ID1</h3>
-                    <div>SH (128 รายการ)</div>
-                    <div>MK (95 รายการ)</div>
-                    <div>OT (45 รายการ)</div>
-                </div>
-                
-                <div class="card summary-card">
-                    <h3>Top ID2</h3>
-                    <div>BYH (256 รายการ)</div>
-                    <div>BYK (76 รายการ)</div>
-                    <div>BYT (53 รายการ)</div>
+                <div class="card">
+                    <div class="card-header">🎯 สูตรที่ใช้</div>
+                    <h2 style="color: var(--warning); font-size: 2rem; margin: 10px 0;">12 สูตร</h2>
+                    <div>SUMIFS: 8 สูตร</div>
+                    <div>Complex: 4 สูตร</div>
                 </div>
             </div>
-        </section>
+            
+            <div class="card">
+                <div class="card-header">📈 กราฟการใช้งาน</div>
+                <canvas id="usageChart" style="max-height: 400px;"></canvas>
+            </div>
+        </div>
+
+        <!-- Section: Data -->
+        <div id="section-data" class="section hidden">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Data Management</h1>
+                <div>
+                    <button class="btn">📤 นำเข้า</button>
+                    <button class="btn btn-secondary">📤 ส่งออก</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">🗃️ ข้อมูลล่าสุด</div>
+                <div class="alert alert-info">
+                    <strong>ข้อมูลตัวอย่าง:</strong> ระบบกำลังใช้ข้อมูลตัวอย่างสำหรับการทดสอบ
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: rgba(107, 138, 253, 0.1);">
+                                <th style="padding: 12px; border: 1px solid var(--border-light);">ID1</th>
+                                <th style="padding: 12px; border: 1px solid var(--border-light);">ID2</th>
+                                <th style="padding: 12px; border: 1px solid var(--border-light);">StatN</th>
+                                <th style="padding: 12px; border: 1px solid var(--border-light);">StatC</th>
+                                <th style="padding: 12px; border: 1px solid var(--border-light);">Value</th>
+                                <th style="padding: 12px; border: 1px solid var(--border-light);">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody">
+                            <tr>
+                                <td style="padding: 12px; border: 1px solid var(--border-light);">CU</td>
+                                <td style="padding: 12px; border: 1px solid var(--border-light);">BUY</td>
+                                <td style="padding: 12px; border: 1px solid var(--border-light);">0</td>
+                                <td style="padding: 12px; border: 1px solid var(--border-light);">A</td>
+                                <td style="padding: 12px; border: 1px solid var(--border-light);">1500.00</td>
+                                <td style="padding: 12px; border: 1px solid var(--border-light);">2025-06-18</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border: 1px solid var(--border-light);">SU</td>
+                                <td style="padding: 12px; border: 1px solid var(--border-light);">SELL</td>
+                                <td style="padding: 12px; border: 1px solid var(--border-light);">1</td>
+                                <td style="padding: 12px; border: 1px solid var(--border-light);">B</td>
+                                <td style="padding: 12px; border: 1px solid var(--border-light);">250</td>
+                                <td style="padding: 12px; border: 1px solid var(--border-light);">2025-06-18</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <footer>
-        <div>© 2025 Anti-Normalization - World Fitting</div>
-        <div>ระบบแมปข้อมูลทั่วไป (Generic Data Mapping System)</div>
-    </footer>
 
     <script>
+        // Global variables
+        let currentSection = 'wizard';
+        let wizardStep = 0;
+        let wizardData = {};
+        let csvData = [];
+        
+        // Wizard flow configuration
+        const wizardFlow = {
+            steps: [
+                {
+                    id: 'welcome',
+                    title: '🎯 ยินดีต้อนรับสู่ Formula Generator',
+                    question: 'คุณต้องการทำอะไรครับ?',
+                    options: [
+                        { text: '🆕 สร้างสูตรใหม่ (ผู้ใช้ใหม่)', value: 'newuser' },
+                        { text: '📁 แปลงข้อมูลที่มีอยู่', value: 'convert' },
+                        { text: '🔧 สร้างสูตรแบบละเอียด', value: 'advanced' }
+                    ]
+                },
+                {
+                    id: 'newuser_q1',
+                    title: '👥 ข้อมูลของคุณเกี่ยวกับใคร?',
+                    question: 'ใครเป็นคนสำคัญในธุรกิจคุณ?',
+                    options: [
+                        { text: '👨‍💼 ลูกค้า', value: 'CU' },
+                        { text: '👩‍🏫 นักเรียน', value: 'ST' },
+                        { text: '🏥 ผู้ป่วย', value: 'PT' },
+                        { text: '👷‍♂️ พนักงาน', value: 'EM' },
+                        { text: '🏪 ผู้จำหน่าย', value: 'SU' }
+                    ],
+                    condition: { from: 'welcome', value: 'newuser' }
+                },
+                {
+                    id: 'newuser_q2',
+                    title: '⚡ พวกเขาทำอะไรกับคุณ?',
+                    question: 'การกระทำหลักคืออะไร?',
+                    options: [
+                        { text: '🛒 ซื้อของ', value: 'BUY' },
+                        { text: '💰 ขายของ', value: 'SELL' },
+                        { text: '📚 เรียนหนังสือ', value: 'LEARN' },
+                        { text: '🏥 มารักษา', value: 'TREAT' },
+                        { text: '💼 ทำงาน', value: 'WORK' }
+                    ],
+                    condition: { from: 'newuser_q1' }
+                },
+                {
+                    id: 'newuser_q3',
+                    title: '💳 การชำระเงิน',
+                    question: 'พวกเขาจ่ายเงินยังไง?',
+                    options: [
+                        { text: '💵 เงินสด', value: '0' },
+                        { text: '💳 เงินเชื่อ/ผ่อน', value: '1' }
+                    ],
+                    condition: { from: 'newuser_q2' }
+                },
+                {
+                    id: 'newuser_q4',
+                    title: '📊 ประเภทข้อมูล',
+                    question: 'อยากเก็บข้อมูลอะไร?',
+                    options: [
+                        { text: '💰 จำนวนเงิน', value: 'A' },
+                        { text: '📦 จำนวนชิ้น/คน', value: 'B' },
+                        { text: '💎 ราคาต่อหน่วย', value: 'C' }
+                    ],
+                    condition: { from: 'newuser_q3' }
+                },
+                {
+                    id: 'result',
+                    title: '✅ สูตรของคุณเสร็จแล้ว!',
+                    condition: { from: 'newuser_q4' }
+                }
+            ]
+        };
+        
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // สร้างเส้นและจุดในพื้นหลัง
+            initializeBackground();
+            initializeWizard();
+            initializeFileUpload();
+            initializeChart();
+        });
+        
+        // Background effects
+        function initializeBackground() {
             const background = document.getElementById('backgroundEffect');
             
-            // สร้างเส้นตั้ง
+            // Create vertical lines
             for (let i = 0; i < 10; i++) {
                 const line = document.createElement('div');
                 line.className = 'vertical-line';
@@ -641,7 +741,7 @@
                 background.appendChild(line);
             }
             
-            // สร้างจุด
+            // Create dots
             for (let i = 0; i < 50; i++) {
                 const dot = document.createElement('div');
                 dot.className = 'dot';
@@ -651,129 +751,354 @@
                 dot.style.opacity = Math.random() * 0.5 + 0.1;
                 background.appendChild(dot);
             }
+        }
+        
+        // Section management
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
             
-            // ฟังก์ชันอ่านไฟล์ CSV
-            function loadCSV(url, callback) {
-                Papa.parse(url, {
-                    download: true,
-                    header: true,
-                    complete: function(results) {
-                        callback(results.data);
+            // Show target section
+            document.getElementById(`section-${sectionName}`).classList.remove('hidden');
+            
+            // Update nav buttons
+            document.querySelectorAll('.navbar-menu button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`nav-${sectionName}`).classList.add('active');
+            
+            currentSection = sectionName;
+        }
+        
+        // Wizard functionality
+        function initializeWizard() {
+            showWizardStep(0);
+        }
+        
+        function showWizardStep(stepIndex) {
+            const step = wizardFlow.steps[stepIndex];
+            const content = document.getElementById('wizardContent');
+            const progress = ((stepIndex + 1) / wizardFlow.steps.length) * 100;
+            
+            document.getElementById('wizardProgress').style.width = `${progress}%`;
+            
+            if (step.id === 'result') {
+                content.innerHTML = generateResultHTML();
+            } else {
+                content.innerHTML = generateStepHTML(step);
+            }
+            
+            wizardStep = stepIndex;
+        }
+        
+        function generateStepHTML(step) {
+            let html = `
+                <div class="card-header">
+                    <h2>${step.title}</h2>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <h3>${step.question}</h3>
+                </div>
+                <div class="question-options">
+            `;
+            
+            step.options.forEach(option => {
+                html += `
+                    <div class="option-button" onclick="selectOption('${option.value}')">
+                        ${option.text}
+                    </div>
+                `;
+            });
+            
+            html += `
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                    <button class="btn btn-secondary" onclick="previousStep()" ${wizardStep === 0 ? 'disabled' : ''}>
+                        ← ก่อนหน้า
+                    </button>
+                    <button class="btn" id="nextButton" onclick="nextStep()" disabled>
+                        ถัดไป →
+                    </button>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        function generateResultHTML() {
+            const formula = generateFormula();
+            return `
+                <div class="card-header">
+                    <h2>✅ สูตรของคุณเสร็จแล้ว!</h2>
+                </div>
+                <div class="result-container">
+                    <h3>📋 สูตร Excel:</h3>
+                    <div class="formula-display">${formula}</div>
+                    
+                    <h3 style="margin-top: 20px;">💡 คำอธิบาย:</h3>
+                    <div style="background: rgba(107, 138, 253, 0.1); padding: 15px; border-radius: 8px;">
+                        ${generateExplanation()}
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-success" onclick="copyFormula()">📋 คัดลอกสูตร</button>
+                        <button class="btn btn-secondary" onclick="resetWizard()">🔄 สร้างใหม่</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function selectOption(value) {
+            document.querySelectorAll('.option-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            
+            const currentStep = wizardFlow.steps[wizardStep];
+            wizardData[currentStep.id] = value;
+            
+            document.getElementById('nextButton').disabled = false;
+        }
+        
+        function nextStep() {
+            if (wizardStep < wizardFlow.steps.length - 1) {
+                showWizardStep(wizardStep + 1);
+            }
+        }
+        
+        function previousStep() {
+            if (wizardStep > 0) {
+                showWizardStep(wizardStep - 1);
+            }
+        }
+        
+        function resetWizard() {
+            wizardStep = 0;
+            wizardData = {};
+            showWizardStep(0);
+        }
+        
+        function generateFormula() {
+            const targetColumn = "G:G";
+            const id1 = wizardData.newuser_q1 || "CU";
+            const id2 = wizardData.newuser_q2 || "BUY";
+            const statN = wizardData.newuser_q3 || "0";
+            const statC = wizardData.newuser_q4 || "A";
+            
+            return `=SUMIFS(${targetColumn},ID1,"${id1}",ID2,"${id2}",StatN,"${statN}",StatC,"${statC}")`;
+        }
+        
+        function generateExplanation() {
+            const entityMap = {
+                'CU': 'ลูกค้า', 'ST': 'นักเรียน', 'PT': 'ผู้ป่วย', 'EM': 'พนักงาน', 'SU': 'ผู้จำหน่าย'
+            };
+            const actionMap = {
+                'BUY': 'ซื้อ', 'SELL': 'ขาย', 'LEARN': 'เรียน', 'TREAT': 'รักษา', 'WORK': 'ทำงาน'
+            };
+            const paymentMap = { '0': 'เงินสด', '1': 'เงินเชื่อ' };
+            const dataMap = { 'A': 'เงิน', 'B': 'จำนวน', 'C': 'ราคา' };
+            
+            const entity = entityMap[wizardData.newuser_q1] || 'ลูกค้า';
+            const action = actionMap[wizardData.newuser_q2] || 'ซื้อ';
+            const payment = paymentMap[wizardData.newuser_q3] || 'เงินสด';
+            const dataType = dataMap[wizardData.newuser_q4] || 'เงิน';
+            
+            return `รวม${dataType}ของ${entity}ที่${action}แบบ${payment}`;
+        }
+        
+        function copyFormula() {
+            const formula = generateFormula();
+            navigator.clipboard.writeText(formula).then(() => {
+                alert('📋 คัดลอกสูตรเรียบร้อยแล้ว!');
+            });
+        }
+        
+        // File upload functionality
+        function initializeFileUpload() {
+            const fileUploadArea = document.getElementById('fileUploadArea');
+            const fileInput = document.getElementById('csvFile');
+            
+            fileUploadArea.addEventListener('click', () => fileInput.click());
+            fileUploadArea.addEventListener('dragover', handleDragOver);
+            fileUploadArea.addEventListener('drop', handleDrop);
+            fileInput.addEventListener('change', handleFileSelect);
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+        
+        function handleFileSelect(e) {
+            if (e.target.files.length > 0) {
+                processFile(e.target.files[0]);
+            }
+        }
+        
+        function processFile(file) {
+            if (file.type !== 'text/csv') {
+                showUploadStatus('danger', 'กรุณาเลือกไฟล์ CSV เท่านั้น');
+                return;
+            }
+            
+            showUploadStatus('info', 'กำลังประมวลผลไฟล์...');
+            
+            Papa.parse(file, {
+                header: true,
+                complete: function(results) {
+                    csvData = results.data;
+                    showUploadStatus('success', `อัปโหลดสำเร็จ! พบข้อมูล ${csvData.length} แถว`);
+                    updateDataTable();
+                },
+                error: function(error) {
+                    showUploadStatus('danger', 'เกิดข้อผิดพลาดในการอ่านไฟล์');
+                }
+            });
+        }
+        
+        function showUploadStatus(type, message) {
+            const statusDiv = document.getElementById('uploadStatus');
+            statusDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        }
+        
+        // Calculator functionality
+        function calculate() {
+            const dateFin = document.getElementById('dateFin').value;
+            const entityCodes = document.getElementById('entityCodes').value.split(',').map(code => code.trim()).filter(code => code);
+            const expression = document.getElementById('expression').value.trim();
+            
+            if (csvData.length === 0) {
+                alert('⚠️ กรุณาอัปโหลดไฟล์ CSV ก่อน');
+                return;
+            }
+            
+            // Simulate calculation results
+            const results = simulateCalculation(entityCodes, expression);
+            displayCalculationResults(results);
+        }
+        
+        function simulateCalculation(entityCodes, expression) {
+            // This is a simulation - in real implementation, this would process the CSV data
+            const entityResults = {};
+            entityCodes.forEach(code => {
+                entityResults[code] = Math.floor(Math.random() * 10000) + 1000;
+            });
+            
+            let expressionResult = null;
+            if (expression) {
+                // Simple expression evaluation simulation
+                expressionResult = Math.floor(Math.random() * 50000) + 5000;
+            }
+            
+            return { entities: entityResults, expression: expressionResult };
+        }
+        
+        function displayCalculationResults(results) {
+            const entityDiv = document.getElementById('entityResults');
+            const expressionDiv = document.getElementById('expressionResults');
+            
+            // Display entity results
+            let entityHTML = '<table style="width: 100%;">';
+            for (const [code, value] of Object.entries(results.entities)) {
+                entityHTML += `<tr><td>${code}</td><td style="text-align: right;">${value.toLocaleString()}</td></tr>`;
+            }
+            entityHTML += '</table>';
+            entityDiv.innerHTML = entityHTML;
+            
+            // Display expression result
+            if (results.expression !== null) {
+                expressionDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        <h3>${results.expression.toLocaleString()}</h3>
+                        <small>ผลลัพธ์จากการคำนวณนิพจน์</small>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('calculatorResults').classList.remove('hidden');
+        }
+        
+        // Chart functionality
+        function initializeChart() {
+            // Initialize chart when dashboard is first shown
+            setTimeout(() => {
+                if (currentSection === 'dashboard') {
+                    createUsageChart();
+                }
+            }, 1000);
+        }
+        
+        function createUsageChart() {
+            const ctx = document.getElementById('usageChart');
+            if (!ctx) return;
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน'],
+                    datasets: [{
+                        label: 'การใช้งานสูตร',
+                        data: [12, 19, 3, 5, 2, 3],
+                        borderColor: '#6b8afd',
+                        backgroundColor: 'rgba(107, 138, 253, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e0e0e0'
+                            }
+                        }
                     },
-                    error: function(error) {
-                        console.error('เกิดข้อผิดพลาดในการโหลดข้อมูล:', error);
-                        document.querySelector('.chart-container').innerHTML = 
-                            '<div style="height: 100%; display: flex; align-items: center; justify-content: center;">' +
-                            '<p>ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง</p></div>';
-                    }
-                });
-            }
-            
-            // สร้างกราฟด้วย Chart.js
-            function createChart(data) {
-                const ctx = document.getElementById('transactionChart').getContext('2d');
-                
-                // สมมติข้อมูลสำหรับกราฟ (ควรแทนที่ด้วยข้อมูลจริง)
-                const chartData = {
-                    labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.'],
-                    datasets: [
-                        {
-                            label: 'เงินสด (StatN=0)',
-                            data: [12500, 15000, 18200, 20300, 22100, 32450],
-                            borderColor: '#56ab2f',
-                            backgroundColor: 'rgba(86, 171, 47, 0.1)',
-                            tension: 0.4
+                    scales: {
+                        x: {
+                            ticks: { color: '#a0a0a0' },
+                            grid: { color: 'rgba(107, 138, 253, 0.1)' }
                         },
-                        {
-                            label: 'เงินเชื่อ (StatN=1)',
-                            data: [5200, 6300, 8100, 9500, 11200, 13422],
-                            borderColor: '#fdcb6e',
-                            backgroundColor: 'rgba(253, 203, 110, 0.1)',
-                            tension: 0.4
-                        }
-                    ]
-                };
-                
-                new Chart(ctx, {
-                    type: 'line',
-                    data: chartData,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                                labels: {
-                                    color: '#e0e0e0',
-                                    font: {
-                                        family: 'Prompt'
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false,
-                                titleFont: {
-                                    family: 'Prompt'
-                                },
-                                bodyFont: {
-                                    family: 'Prompt'
-                                },
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed.y !== null) {
-                                            label += new Intl.NumberFormat('th-TH', {
-                                                style: 'currency',
-                                                currency: 'THB'
-                                            }).format(context.parsed.y);
-                                        }
-                                        return label;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                grid: {
-                                    color: 'rgba(255, 255, 255, 0.1)'
-                                },
-                                ticks: {
-                                    color: '#a0a0a0'
-                                }
-                            },
-                            y: {
-                                grid: {
-                                    color: 'rgba(255, 255, 255, 0.1)'
-                                },
-                                ticks: {
-                                    color: '#a0a0a0',
-                                    callback: function(value) {
-                                        return value.toLocaleString() + ' ฿';
-                                    }
-                                }
-                            }
+                        y: {
+                            ticks: { color: '#a0a0a0' },
+                            grid: { color: 'rgba(107, 138, 253, 0.1)' }
                         }
                     }
-                });
-            }
+                }
+            });
+        }
+        
+        function updateDataTable() {
+            if (csvData.length === 0) return;
             
-            // โหลดข้อมูลและสร้างกราฟ
-            try {
-                loadCSV('https://raw.githubusercontent.com/chieffy99/File-reader/main/เปลี่ยน%202', function(data) {
-                    console.log(data);
-                    // สร้างกราฟด้วยข้อมูลที่โหลดมา (หรือข้อมูลตัวอย่าง)
-                    createChart(data);
-                });
-            } catch (e) {
-                console.error('เกิดข้อผิดพลาด:', e);
-                // สร้างกราฟด้วยข้อมูลตัวอย่าง
-                createChart([]);
-            }
-        });
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = '';
+            
+            // Show first 10 rows
+            csvData.slice(0, 10).forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="padding: 12px; border: 1px solid var(--border-light);">${row.ID1 || '-'}</td>
+                    <td style="padding: 12px; border: 1px solid var(--border-light);">${row.ID2 || '-'}</td>
+                    <td style="padding: 12px; border: 1px solid var(--border-light);">${row.StatN || '-'}</td>
+                    <td style="padding: 12px; border: 1px solid var(--border-light);">${row.StatC || '-'}</td>
+                    <td style="padding: 12px; border: 1px solid var(--border-light);">${row.Value || '-'}</td>
+                    <td style="padding: 12px; border: 1px solid var(--border-light);">${row.Date || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
     </script>
 </body>
 </html>

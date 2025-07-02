@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Radial Shot Cuts Prototype</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #0d0d0d;
+      height: 100%;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-family: "Comic Sans MS", cursive, sans-serif;
+    }
+    .radial-container {
+      position: relative;
+      width: 80vmin; height: 80vmin;
+      max-width: 600px; max-height: 600px;
+    }
+    .bubble {
+      position: absolute;
+      width: 16%;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      border: 4px solid;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      cursor: pointer;
+      transition: transform .2s, background-color .2s;
+      background-color: rgba(255,255,255,0.04);
+      text-align: center;
+      font-size: .8em;
+      user-select: none;
+    }
+    .bubble:hover {
+      transform: scale(1.15);
+      background-color: rgba(255,255,255,0.1);
+    }
+    .center {
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 30%;
+      aspect-ratio: 1/1;
+      border: 6px solid #fff;
+      font-size: 1.1em;
+      font-weight: bold;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="radial-container" id="radial">
+    <div class="bubble center" id="central">Put It!!!</div>
+  </div>
+
+  <script>
+    (function(){
+      const labels = [
+        "shot cut","shot cut","shot cut",
+        "shot cut","shot cut","shot cut",
+        "shot cut","shot cut","shot cut"
+      ];
+      const colors = [
+        "#4CAF50", "#2196F3", "#FFEB3B",
+        "#F44336", "#FF9800", "#FF6070",
+        "#9C27B0", "#E91E63", "#673AB7"
+      ];
+      const container = document.getElementById("radial");
+      const central = document.getElementById("central");
+      const N = labels.length;
+      const R = 40; // percent radius for placement
+
+      for(let i=0;i<N;i++){
+        const angle = (i/N) * Math.PI*2 - Math.PI/2; 
+        // -90° so first starts at top center
+        const x = 50 + R * Math.cos(angle);
+        const y = 50 + R * Math.sin(angle);
+
+        const b = document.createElement("div");
+        b.className = "bubble";
+        b.style.left  = x + "%";
+        b.style.top   = y + "%";
+        b.style.transform = "translate(-50%, -50%)";
+        b.style.borderColor = colors[i];
+        b.textContent = labels[i];
+
+        b.addEventListener("click", ()=>{
+          central.textContent = labels[i];
+        });
+
+        container.appendChild(b);
+      }
+    })();
+  </script>
+
+</body>
+</html>
