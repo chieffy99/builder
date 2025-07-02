@@ -26,7 +26,7 @@ def parse_custom_text_file(file_path):
                     statc_value = fields[4]
                     slotn_value = fields[5]
                     # เก็บค่าอื่นตามต้องการ...
-                    data_rows.append([date_value, id1_value, id2_value, statn_value, statc_value, slotn_value])
+                    data_rows.append([dateime_value, id1_value, id2_value, statn_value, statc_value, slotn_value])
     return data_rows
 
 def main():

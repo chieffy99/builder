@@ -1,7 +1,10 @@
-2025-06-22: add shortcut panel and setup script
-2025-06-23: update Cmapping_system interface elements
-2025-06-24: remove redundant parsing in interpreter
-2025-06-28: fix line length in app.py
-2025-06-29: ensure backend package initialization
-2025-06-23: improve parsing and mapping functions
+<<<<<<< HEAD
+2025-06-11: Added interpreter tests and CI integration
 
+2025-06-11: Added .gitignore for caches
+2025-06-12: Implemented reducer and new unit test
+2025-06-12: Update workflow to Python 3.10
+2025-06-12: Refined unit tests for interpreter and reducer
+=======
+2024-06-23: add requirements file with backend packages
+>>>>>>> main
