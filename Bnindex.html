@@ -12,10 +12,15 @@
 </head>
 <body>
   <h1>Anti-Normalization Transaction Dashboard</h1>
-  
+
+  <div class="filters">
+    <label>Obligor: <input id="filterObligor" type="text"></label>
+    <label>Activity: <input id="filterActivity" type="text"></label>
+  </div>
+
   <!-- Container for transactions -->
   <div id="transactions"></div>
-  
-  <script src="processStings.js"></script>
+
+  <script type="module" src="processStings.js"></script>
 </body>
 </html>
