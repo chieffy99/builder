@@ -3,8 +3,6 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
-# pyright: reportArgumentType=false
-
 
 # ตัวอย่างฟังก์ชัน parse ไฟล์ text กึ่งโครงสร้าง
 def parse_custom_text_file(file_path):
@@ -12,7 +10,7 @@ def parse_custom_text_file(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
-            # ตัวอย่าง: หา pattern ที่ระบุ "datetimetimetimetimetimetime," "StatC," "slotN," หรือข้อมูลอื่น
+            # ตัวอย่าง: หา pattern ที่ระบุวันที่, รหัส StatC หรือ slotN
             # คุณอาจเปลี่ยน regex หรือการ split ตามโครงสร้างไฟล์จริง
             if line.startswith("date,"):
                 # ข้าม header หรือบันทึก header ค่าอื่นได้
@@ -48,7 +46,10 @@ def main():
     rows = parse_custom_text_file(file_path)
 
     # สร้าง DataFrame
-    df = pd.DataFrame(rows, columns=["date", "ID1", "ID2", "StatN", "StatC", "SlotN"])
+    df = pd.DataFrame(
+        rows,
+        columns=["date", "ID1", "ID2", "StatN", "StatC", "SlotN"],
+    )
 
     # สมมติจะเทรนโมเดลเล็ก ๆ ทำนาย StatN ว่าจะเป็น 0 หรือ 1
     # แปลงข้อมูลเป็น numeric แบบง่าย ๆ
