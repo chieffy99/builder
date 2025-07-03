@@ -1,5 +1,10 @@
 fastapi
 pydantic
+uvicorn
+pytest
+flake8
+black
+pyright
 pandas
 flask
 torch
