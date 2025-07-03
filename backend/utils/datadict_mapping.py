@@ -6,7 +6,6 @@ with DATA_PATH.open("r", encoding="utf8") as f:
     datadict = json.load(f)
 
 
-
 def map_statN(code: str) -> str:
     return datadict["StatN"].get(str(code), "Unknown")
 
@@ -17,6 +16,7 @@ def map_statC(code: str) -> str:
 
 def map_slot(slot: str) -> str:
     return datadict["slotMeaning"].get(slot, "Unknown")
+
 
 def map_ID1(code: str) -> str:
     return datadict["ID1Type"].get(code, "Unknown")

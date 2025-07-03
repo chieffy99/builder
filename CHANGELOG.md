@@ -12,3 +12,4 @@
 2024-06-23: add requirements file with backend packages
 >>>>>>> main
 >>>>>>> main
+2025-07-05: reorganize data mapping utilities

@@ -1,6 +1,6 @@
 # Data Dictionary Schema
 
-This repository uses a JSON file (`New folder/dictionary.json`) to map short codes to their Thai descriptions. The following sections describe the available mappings.
+This repository uses a JSON file (`backend/utils/dictionary.json`) to map short codes to their Thai descriptions. The following sections describe the available mappings.
 
 ## Fields
 
