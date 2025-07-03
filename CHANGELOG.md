@@ -1,4 +1,3 @@
-2024-06-23: add requirements file with backend packages
 2025-06-11: Added interpreter tests and CI integration
 2025-06-11: Added .gitignore for caches
 2025-06-12: Implemented reducer and new unit test
