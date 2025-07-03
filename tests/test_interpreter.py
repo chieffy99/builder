@@ -1,10 +1,6 @@
-from pathlib import Path
-import sys
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
-
-from logic_engine.interpreter import interpret  # noqa: E402
+from backend.logic_engine.interpreter import interpret
 
 
 @pytest.mark.parametrize(
