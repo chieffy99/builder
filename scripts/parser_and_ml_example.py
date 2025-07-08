@@ -48,7 +48,14 @@ def main():
     # สร้าง DataFrame
     df = pd.DataFrame(
         rows,
-        columns=["date", "ID1", "ID2", "StatN", "StatC", "SlotN"],
+        columns=[
+            "date",
+            "ID1",
+            "ID2",
+            "StatN",
+            "StatC",
+            "SlotN",
+        ],  # type: ignore[arg-type]
     )
 
     # สมมติจะเทรนโมเดลเล็ก ๆ ทำนาย StatN ว่าจะเป็น 0 หรือ 1

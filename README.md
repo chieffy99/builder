@@ -30,6 +30,8 @@ Visit `/interpret` to test the logic string interpreter.
 
 - `scripts/bootstrap_anti_norm.py` prepares example folders and files.
 - `frontend/` holds a minimal static interface for exploring field generation.
+- `scripts/image_to_datix_pipeline.py` converts a scanned table image into the
+  DaTix CSV format.
 
 ## System Overview
 
