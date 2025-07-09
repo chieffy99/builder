@@ -4,3 +4,4 @@
 =======
 2025-07-03: add image preparation and DaTix pipeline
 >>>>>>> theirs
+2025-07-09: configure pytest path
