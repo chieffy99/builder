@@ -1,9 +1,4 @@
-from pathlib import Path
-import sys
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
-
-from logic_engine.reducer import reduce_records  # noqa: E402
+from backend.logic_engine.reducer import reduce_records
 
 
 def test_reduce_records():
