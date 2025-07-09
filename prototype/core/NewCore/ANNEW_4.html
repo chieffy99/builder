@@ -490,6 +490,51 @@
             display: none;
             border-radius: 10px;
         }
+
+        /* การ์ดที่ถูกเลือกสำหรับผสม */
+        .card-selected-for-mix {
+            box-shadow: 0 0 0 3px var(--accent-primary), var(--card-shadow);
+            transform: scale(1.02);
+            z-index: 100;
+        }
+
+        /* แถบแจ้งเตือนโหมดผสม */
+        .mix-mode-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            border: 1px solid var(--accent-primary);
+            border-radius: 12px;
+            padding: 10px 20px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: var(--card-shadow);
+            z-index: 1500;
+        }
+
+        .mix-mode-info {
+            font-weight: 500;
+            color: var(--accent-primary);
+        }
+
+        .mix-mode-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* การ์ดผสม */
+        .mixed-card {
+            border: 1px solid var(--accent-primary);
+            background: linear-gradient(135deg, var(--bg-card), rgba(107, 138, 253, 0.1));
+        }
+
+        .mixed-card .card-header {
+            background: linear-gradient(45deg, rgba(107, 138, 253, 0.6), rgba(156, 95, 255, 0.6));
+        }
         
         /* Responsive Styles */
         @media screen and (max-width: 768px) {
@@ -607,12 +652,22 @@
     <div class="context-menu" id="contextMenu">
         <div class="context-menu-item" data-action="edit">แก้ไขการ์ด</div>
         <div class="context-menu-item" data-action="stack">ซ้อนการ์ด</div>
+        <div class="context-menu-item" data-action="mix">ผสมการ์ด</div>
         <div class="context-menu-item" data-action="duplicate">คัดลอก</div>
         <div class="context-menu-item" data-action="delete">ลบ</div>
     </div>
     
     <!-- Stack Overlay -->
     <div id="stackOverlay"></div>
+
+    <!-- Mix Mode Bar -->
+    <div id="mixModeBar" class="mix-mode-bar">
+        <div class="mix-mode-info">โหมดผสมการ์ด: เลือกการ์ด <span id="mixSelectedCount">1</span> การ์ด</div>
+        <div class="mix-mode-actions">
+            <button id="mixCardsBtn" class="btn btn-primary">ผสมการ์ด</button>
+            <button id="cancelMixBtn" class="btn btn-outline">ยกเลิก</button>
+        </div>
+    </div>
     
     <!-- Modal: Stack Cards -->
     <div class="modal-overlay" id="stackModal">
@@ -630,6 +685,21 @@
             <div class="modal-footer">
                 <button class="btn btn-outline" id="cancelStackBtn">ยกเลิก</button>
                 <button class="btn btn-primary" id="confirmStackBtn">ยืนยัน</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Mix Options -->
+    <div class="modal-overlay" id="mixOptionsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">ตัวเลือกการผสมการ์ด</h3>
+                <button class="modal-close" id="closeMixModal">&times;</button>
+            </div>
+            <div class="modal-body" id="mixOptionsContent"></div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelMixOptions">ยกเลิก</button>
+                <button class="btn btn-primary" id="confirmMixOptions">ผสมการ์ด</button>
             </div>
         </div>
     </div>
@@ -688,6 +758,12 @@
                 workspace: document.getElementById('dashboardWorkspace'),
                 contextMenu: document.getElementById('contextMenu'),
                 stackModal: document.getElementById('stackModal'),
+                mixOptionsModal: document.getElementById('mixOptionsModal'),
+                mixMode: {
+                    active: false,
+                    selectedCards: [],
+                    sourceCard: null
+                },
                 
                 createSampleCard: function(type, x, y) {
                     const id = `card-${this.nextId++}`;
@@ -1041,6 +1117,181 @@
                         selectedCheckbox.checked = true;
                     }
                 },
+
+                startMixMode: function(cardId) {
+                    this.mixMode.active = true;
+                    this.mixMode.selectedCards = [cardId];
+                    this.mixMode.sourceCard = cardId;
+
+                    const card = document.getElementById(cardId);
+                    if (card) {
+                        card.classList.add('card-selected-for-mix');
+                    }
+
+                    document.querySelectorAll('.dashboard-card').forEach(c => {
+                        c.addEventListener('click', this.handleCardSelectForMix);
+                    });
+
+                    document.body.style.cursor = 'copy';
+                    this.showMixModeBar();
+                    this.updateMixModeBar();
+                },
+
+                handleCardSelectForMix: function(e) {
+                    e.stopPropagation();
+                    const cardId = this.id;
+
+                    if (dashboardManager.mixMode.selectedCards.includes(cardId)) {
+                        dashboardManager.mixMode.selectedCards = dashboardManager.mixMode.selectedCards.filter(id => id !== cardId);
+                        this.classList.remove('card-selected-for-mix');
+                    } else {
+                        dashboardManager.mixMode.selectedCards.push(cardId);
+                        this.classList.add('card-selected-for-mix');
+                    }
+
+                    dashboardManager.updateMixModeBar();
+                },
+
+                showMixModeBar: function() {
+                    const bar = document.getElementById('mixModeBar');
+                    if (bar) {
+                        bar.style.display = 'flex';
+                    }
+
+                    document.getElementById('mixCardsBtn').addEventListener('click', () => {
+                        this.showMixOptionsModal();
+                    });
+                    document.getElementById('cancelMixBtn').addEventListener('click', () => {
+                        this.cancelMixMode();
+                    });
+                },
+
+                updateMixModeBar: function() {
+                    const count = document.getElementById('mixSelectedCount');
+                    if (count) {
+                        count.textContent = this.mixMode.selectedCards.length;
+                    }
+
+                    const mixBtn = document.getElementById('mixCardsBtn');
+                    if (mixBtn) {
+                        mixBtn.disabled = this.mixMode.selectedCards.length < 2;
+                    }
+                },
+
+                cancelMixMode: function() {
+                    this.mixMode.selectedCards.forEach(id => {
+                        const card = document.getElementById(id);
+                        if (card) card.classList.remove('card-selected-for-mix');
+                    });
+
+                    document.querySelectorAll('.dashboard-card').forEach(card => {
+                        card.removeEventListener('click', this.handleCardSelectForMix);
+                    });
+
+                    document.body.style.cursor = '';
+                    const bar = document.getElementById('mixModeBar');
+                    if (bar) bar.style.display = 'none';
+
+                    this.mixMode = { active: false, selectedCards: [], sourceCard: null };
+                },
+
+                showMixOptionsModal: function() {
+                    const content = `
+                        <div class="form-group">
+                            <label>รูปแบบการผสม:</label>
+                            <select id="mixTypeSelect" class="form-control">
+                                <option value="sum">ผลรวม</option>
+                                <option value="avg">ค่าเฉลี่ย</option>
+                            </select>
+                        </div>`;
+                    document.getElementById('mixOptionsContent').innerHTML = content;
+                    this.mixOptionsModal.style.display = 'flex';
+
+                    document.getElementById('closeMixModal').onclick = () => this.closeMixModal();
+                    document.getElementById('cancelMixOptions').onclick = () => this.closeMixModal();
+                    document.getElementById('confirmMixOptions').onclick = () => {
+                        const mixType = document.getElementById('mixTypeSelect').value;
+                        this.mixCards(this.mixMode.selectedCards, mixType, {});
+                        this.closeMixModal();
+                        this.cancelMixMode();
+                    };
+                },
+
+                closeMixModal: function() {
+                    this.mixOptionsModal.style.display = 'none';
+                },
+
+                mixCards: function(selectedCardIds, mixType = 'sum', customSettings = {}) {
+                    const cardsToMix = selectedCardIds
+                        .map(id => this.cards.find(c => c.id === id))
+                        .filter(card => card !== undefined);
+
+                    if (cardsToMix.length < 2) {
+                        alert('กรุณาเลือกการ์ดอย่างน้อย 2 การ์ด');
+                        return null;
+                    }
+
+                    const firstCardType = cardsToMix[0].chartType;
+                    const isAllSameType = cardsToMix.every(card => card.chartType === firstCardType);
+                    if (!isAllSameType) {
+                        alert('การผสมการ์ดต่างประเภทยังไม่รองรับในขณะนี้');
+                        return null;
+                    }
+
+                    const newId = `card-${this.nextId++}`;
+                    const newTitle = `ผสม: ${cardsToMix.map(c => c.title).join('+')}`;
+
+                    const firstCard = document.getElementById(cardsToMix[0].id);
+                    const x = parseInt(firstCard.style.left) + 20;
+                    const y = parseInt(firstCard.style.top) + 20;
+
+                    const mixedCard = {
+                        id: newId,
+                        title: newTitle,
+                        type: 'mixed',
+                        chartType: firstCardType,
+                        sourceCards: cardsToMix,
+                        isMixed: true
+                    };
+
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'dashboard-card mixed-card';
+                    cardEl.id = newId;
+                    cardEl.style.left = `${x}px`;
+                    cardEl.style.top = `${y}px`;
+                    cardEl.innerHTML = `
+                        <div class="card-header">
+                            <h3 class="card-title">${newTitle}</h3>
+                            <div class="card-tools">
+                                <button class="card-tool card-tool-close" title="ปิด">×</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chart-${newId}" class="chart-container"></canvas>
+                        </div>
+                        <div class="resize-handle"></div>`;
+
+                    this.workspace.appendChild(cardEl);
+                    this.cards.push(mixedCard);
+                    this.makeDraggable(cardEl);
+                    this.makeResizable(cardEl);
+                    this.addCardEventHandlers(cardEl, newId);
+                    this.createSampleChart(newId, firstCardType);
+
+                    if (customSettings.removeOriginals) {
+                        cardsToMix.forEach(card => this.removeCard(card.id));
+                    } else if (customSettings.hideOriginals) {
+                        cardsToMix.forEach(card => {
+                            const el = document.getElementById(card.id);
+                            if (el) {
+                                el.style.opacity = '0.5';
+                                el.classList.add('source-card');
+                            }
+                        });
+                    }
+
+                    return mixedCard;
+                },
                 
                 removeCard: function(cardId) {
                     const card = document.getElementById(cardId);
@@ -1097,6 +1348,9 @@
                             // TODO: เพิ่มโค้ดสำหรับคัดลอกการ์ด
                             alert('ฟีเจอร์การคัดลอกกำลังพัฒนา');
                             break;
+                        case 'mix':
+                            dashboardManager.startMixMode(cardId);
+                            break;
                         case 'delete':
                             dashboardManager.removeCard(cardId);
                             break;
@@ -1117,5 +1371,4 @@
             window.dashboardManager = dashboardManager;
         });
     </script>
-</body>
-</html>
+</body></html>
