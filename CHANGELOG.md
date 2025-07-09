@@ -3,3 +3,4 @@
 2025-07-08: add MIT license
 2025-07-09: configure pytest path
 2025-07-09: clean shell prompt artifacts
+2025-07-10: fix pandas example typing
