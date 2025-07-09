@@ -1,5 +1,145 @@
-AGENTS.md
+# AGENTS.md
+Contributor / Codex Ground Rules
 
+> **Goal:** Stop accidental breakage; make every edit predictable & reviewable.
+>
+> **Audience:** ❶ Codex / AI agents that open PRs ❷ Human contributors.
+> **Scope:** `/public` UI, `/core` logic, config, docs.
+
+---
+
+## 1. Folder Contract
+
+| Folder       | Purpose                                                                    | Handlers               |
+| ------------ | -------------------------------------------------------------------------- | ---------------------- |
+| `/public`    | Static front‑end: `index.html`, `dashboard.html`, `wizard.html`, `assets/` | **UI PRs only**        |
+| `/core`      | Python / FastAPI: `mapper.py`, `engine.py`, `api.py`                       | **Logic PRs only**     |
+| `/config`    | `validate_rules.ini`, `compute_rules.yml`, `dict_core.json`                | updated via config PRs |
+| `/tests`     | `pytest` suites — must stay **GREEN**                                      | auto‑run on every PR   |
+| `/prototype` | throw‑away demos; **never** referenced from `/public`                      | free playground        |
+| `/docs`      | PRD, Sitemap, design notes                                                 | read‑only in prod      |
+| `/archive`   | Old snapshots                                                              | auto‑ignored           |
+
+> **CI guard:** Deleting or editing a file **outside** the declared folder for that PR type fails the pipeline.
+
+---
+
+## 2. Theme Toggle (dark / light)
+
+```css
+/* in /public/assets/theme.css */
+:root {
+  --bg: #ffffff; --fg: #111; --card: #f5f5f5;
+}
+[data-theme="dark"] {
+  --bg:#111; --fg:#eee; --card:#1e1e1e;
+}
+body {background:var(--bg); color:var(--fg);}  /* apply tokens */
+.card {background:var(--card);}                 /* example */
+```
+
+```html
+<!-- toggle button (add once in every html that needs it) -->
+<button id="themeToggle" aria-label="switch theme">🌙</button>
+<script>
+  const root = document.documentElement;
+  const current = localStorage.getItem('theme');
+  if (current==='dark') root.setAttribute('data-theme','dark');
+  document.getElementById('themeToggle').onclick = () => {
+    root.toggleAttribute('data-theme','dark');
+    localStorage.setItem('theme',root.hasAttribute('data-theme')?'dark':'light');
+  };
+</script>
+```
+
+*PRs that touch theme **MUST** follow this token system — no hard‑coded colours.*
+
+---
+
+## 3. Language Switch (i18n)
+
+Minimal JS stub (to be replaced by real i18n later):
+
+```html
+<script type="module">
+import strings from '/assets/i18n/th.json' assert { type: 'json' };
+const $ = id => document.getElementById(id);
+$('_lang').onclick = () => switchLang();
+function switchLang(lang='th'){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    el.textContent = strings[lang][key] ?? key;
+  })
+}
+</script>
+```
+
+*All new visible text **MUST** be wrapped in `[data-i18n]`.*
+
+---
+
+## 4. Compute & Validate Separation
+
+1. **Phase‑1 Validate**  → `/config/validate_rules.ini`
+2. **Phase‑2 Compute**   → `/config/compute_rules.yml`
+
+> Codex: Never mix validate logic into `engine.py` — use the rule files.
+
+---
+
+## 5. Required Files
+
+`/config/required_files.yml` defines critical assets.
+CI fails if any PR deletes or renames them.
+
+```yaml
+required:
+  - /public/dashboard.html
+  - /core/engine.py
+  - /config/dict_core.json
+```
+
+---
+
+## 6. Contributor Checklist (every PR)
+
+* [ ] CI ✅
+* [ ] Folder compliance
+* [ ] Tests added if logic touched
+* [ ] README / Docs updated
+
+> *Merge blocked* until all boxes ticked & one human reviewer approves.
+
+---
+
+## 7. Quick Commands
+
+```bash
+# run local dev
+uvicorn core.api:app --reload
+python -m http.server -d public 8080   # static preview
+pytest -q                              # all tests
+```
+
+---
+
+*Last updated: 2025‑07‑09*
+
+## Data Storage Design Summary (Reference)
+
+**Context:** When an *Obligation/Behaviour* is fully mapped to Logic, the engine can store & compute without extra JOINs.
+
+| Step                                    | What happens                                                                                                                                            |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Field Mapping**                    | Bi‑directional `FieldMap` (external header ↔ Core Field) loaded as JSON. All incoming CSV/JSON headers are renamed on the fly.                          |
+| **2. Central `TransactionSting` Table** | Wide table / DataFrame with core columns:<br>`Timeing Obligor Relation DebtIndicator CalcState Slot1‑7 FormulaBalance FormulaInterest Balance Interest` |
+| **3. Formula Parser & Executor**        | Excel‑like strings kept in row (`Formula*`). Call `run_formula(expr, df, extra_vars)` row‑wise (time‑ordered).                                          |
+| **4. Execution Chain**                  | `Ingest → Bind → Compute → Output` as single pipeline.                                                                                                  |
+| **5. Storage Options**                  | a) Single CSV (no‑DB)  b) RDBMS Wide‑table (no JOIN)  c) Graph DB (Event + URI).                                                                        |
+
+>    With this design, *Input fields → Logic → Output* coexist in one record; schema changes rarely needed.
+
+---
 # Instructions
 - The user will provide a task.
 - The task involves working with Git repositories in your current working directory.

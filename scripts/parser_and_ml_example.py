@@ -45,8 +45,10 @@ def main():
     file_path = "my_custom_file.txt"
     rows = parse_custom_text_file(file_path)
 
-    # สร้าง DataFrame
-    df = pd.DataFrame(rows, columns=["date", "ID1", "ID2", "StatN", "StatC", "SlotN"])  # pyright: ignore[reportArgumentType]
+    df = pd.DataFrame(  # type: ignore
+        rows,
+        columns=["date", "ID1", "ID2", "StatN", "StatC", "SlotN"],  # type: ignore
+    )
 
     # สมมติจะเทรนโมเดลเล็ก ๆ ทำนาย StatN ว่าจะเป็น 0 หรือ 1
     # แปลงข้อมูลเป็น numeric แบบง่าย ๆ
