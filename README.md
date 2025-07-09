@@ -26,6 +26,16 @@ uvicorn backend.app:app
 
 Visit `/interpret` to test the logic string interpreter.
 
+## Running Tests
+
+Run the unit tests directly from the project root:
+
+```bash
+pytest
+```
+
+The `pytest.ini` file configures `PYTHONPATH` automatically so no extra setup is required.
+
 ## Usage
 
 - `scripts/bootstrap_anti_norm.py` prepares example folders and files.
