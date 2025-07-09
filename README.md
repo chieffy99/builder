@@ -36,6 +36,13 @@ pytest
 
 The `pytest.ini` file configures `PYTHONPATH` automatically so no extra setup is required.
 
+## Updating the Data Dictionary
+
+Both the Python utilities and the browser scripts read from
+`backend/utils/dictionary.json`. Edit this file when you need to
+add or change code mappings. After modifying the JSON, run the tests
+(`pytest`) to make sure Python and JavaScript stay in sync.
+
 ## Usage
 
 - `scripts/bootstrap_anti_norm.py` prepares example folders and files.
