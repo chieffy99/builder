@@ -4,9 +4,8 @@
 2025-07-09: configure pytest path
 2025-07-09: clean shell prompt artifacts
 2025-07-10: fix pandas example typing
-<<<<<<< ours
 2025-07-09: unify dictionary source and add JS tests
 2025-07-10: add parser edge case tests
-=======
 2025-07-11: add datadict mapping tests
->>>>>>> theirs
+2025-07-09: add card mixing prototype
+2025-07-11: add Filename-as-Header white paper page

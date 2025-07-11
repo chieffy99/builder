@@ -1,6 +1,6 @@
 """Helper to summarise stat numbers by code."""
 
-from typing import Iterable, Dict
+from typing import Iterable, Dict, Any
 
 from .interpreter import interpret
 
@@ -21,7 +21,7 @@ def reduce_records(records: Iterable[str]) -> Dict[str, float]:
 
     totals: Dict[str, float] = {}
     for rec in records:
-        parsed = interpret(rec)
+        parsed: Dict[str, Any] = interpret(rec)
         code = parsed["stat"]["c"]
         try:
             value = float(parsed["stat"]["n"])

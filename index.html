@@ -567,6 +567,178 @@
         </div>
     </section>
     
+<div></div> 
+  <button id="themeToggle" aria-label="switch theme">🌙</button>
+  <article class="card" data-i18n="paper-content">
+<h1>White Paper: Filename-as-Header Methodology</h1>
+<h2>A New Standard for Self-Describing Data Files in the AI Era</h2>
+<h3>Executive Summary</h3>
+<p>The Filename-as-Header methodology embeds critical metadata directly in filenames, enabling both AI systems and human users to understand file contents before opening. This innovation addresses the growing challenge of efficient data discovery and context preservation in automated systems, particularly for "zero-level users" who lack prior knowledge of data structures.</p>
+<h3>1. Introduction</h3>
+<h4>1.1 Problem Statement</h4>
+<p>In today's data ecosystem, files are frequently processed by AI systems or users without prior context. Traditional CSV and data files lack:</p>
+<ul>
+<li>
+<p>Multi-level header capabilities</p>
+</li>
+<li>
+<p>Persistent metadata that stays with the file</p>
+</li>
+<li>Context for automated systems to determine relevance before processing</li>
+</ul>
+<h4>1.2 Innovation Overview</h4>
+<p>The Filename-as-Header methodology embeds structured metadata directly into filenames (e.g., <code>Data_dic_Date_Time_Source_Balance_Description_To_Status_Amount.csv</code>), creating self-documenting data files that communicate their structure and purpose through their names alone.</p>
+<h3>2. Technical Specification</h3>
+<h4>2.1 Naming Convention</h4>
+<p>[DataType]<em>[Structure]</em>[Field1]<em>[Field2]</em>..._[FieldN].[extension]</p>
+<h4>2.2 Implementation Guidelines</h4>
+<ul>
+<li>Use consistent delimiters (underscores) between metadata elements</li>
+<li>Place most important classification information first</li>
+<li>Include field names in order of appearance</li>
+<li>Optional: Add date/version information as suffix</li>
+</ul>
+<h4>2.3 Technical Benefits</h4>
+<ul>
+<li>Compatibility with all existing tools and systems</li>
+<li>No special software required for implementation</li>
+<li>Scales across enterprise environments</li>
+<li>Preserves context during transfers across systems</li>
+</ul>
+<h3>3. Applications and Use Cases</h3>
+<h4>3.1 AI Processing Optimization</h4>
+<ul>
+<li>Enables AI to selectively process files based on filename analysis</li>
+<li>Provides context for automated interpretation of content</li>
+<li>Supports "just-in-time" data access decisions</li>
+</ul>
+<h4>3.2 Enterprise Data Management</h4>
+<ul>
+<li>Simplifies data catalogs and inventory processes</li>
+<li>Reduces reliance on separate metadata repositories</li>
+<li>Improves governance through self-documenting assets</li>
+</ul>
+<h4>3.3 Research and Analytics</h4>
+<ul>
+<li>Preserves field context during collaborative research</li>
+<li>Enables faster data discovery across research teams</li>
+<li>Supports reproducible science through consistent naming</li>
+</ul>
+<h3>4. Implementation Framework</h3>
+<h4>4.1 Organizational Adoption Steps</h4>
+<ol>
+<li>
+<p>Audit current data assets and naming patterns</p>
+</li>
+<li>
+<p>Develop organization-specific naming templates</p>
+</li>
+<li>Create implementation guidelines and documentation</li>
+<li>Implement file renaming workflows (manual or automated)</li>
+<li>Integrate with existing data catalogs and tools</li>
+</ol>
+<h4>4.2 Technical Integration Examples</h4>
+<ul>
+<li>python</li>
+</ul>
+<p>Example: Parse filename to extract field information</p>
+<p>def extract_fields_from_filename(filename):
+    parts = filename.split('_')
+    if len(parts) &lt; 3:
+        return None
+    data_type = parts[0]
+    structure = parts[1]
+    fields = parts[2:-1]  # Extract all fields excluding extension
+    return {
+        "data_type": data_type,
+        "structure": structure,
+        "fields": fields
+    }</p>
+<h3>5. Comparative Analysis</h3>
+<p>| Aspect | Traditional Approach | Filename-as-Header |
+|--------|---------------------|-------------------|
+| Context Preservation | Relies on external documentation | Self-contained |
+| AI Readability | Requires file opening | Available pre-opening |
+| Implementation Effort | High (requires systems) | Low (naming convention only) |
+| Portability | Context lost during transfers | Context always preserved |
+| Learning Curve | Steep | Minimal |</p>
+<h3>6. Future Directions</h3>
+<h4>6.1 Standardization Opportunities</h4>
+<ul>
+<li>ISO data management standard integration</li>
+<li>Industry-specific naming conventions</li>
+<li>Integration with semantic web technologies</li>
+</ul>
+<h4>6.2 Enhanced Applications</h4>
+<ul>
+<li>Automated data pipeline configuration based on filename parsing</li>
+<li>AI assistants that leverage filename context for improved responses</li>
+<li>Knowledge graph construction using filename relationships</li>
+</ul>
+<h3>7. Conclusion</h3>
+<p>The Filename-as-Header methodology represents a simple yet powerful innovation in data management, particularly valuable in AI-driven environments. By embedding structure directly in filenames, this approach bridges human understanding and machine processing, making data more accessible, usable, and durable over time.</p>
+<h4>Appendix A: Implementation Examples</h4>
+<p>Financial_Transactions_Date_Time_Source_Balance_Description_To_Status_Amount.csv
+Medical_Records_PatientID_VisitDate_Diagnosis_Treatment_Provider.xlsx
+Sensor_TimeSeries_Location_Timestamp_Temperature_Humidity_Pressure.parquet</p>
+<h4>Appendix B: Adoption Checklist</h4>
+<ol>
+<li>Define organizational naming convention templates</li>
+<li>Document field naming standards</li>
+<li>Create transition plan for existing data</li>
+<li>Implement validation tools</li>
+<li>Train staff on new methodology</li>
+<li>Monitor compliance and benefits</li>
+</ol>
+<h3>8. Additional Implementation Considerations</h3>
+<h4>8.1 Header Flexibility and Extended Applications</h4>
+<p>While this paper focuses on embedding structure in filenames, it's important to recognize that the headers used within documents need not match the filename exactly. This flexibility extends the methodology's benefits in several key ways:</p>
+<ul>
+<li><strong>Cross-System Compatibility</strong>: Internal headers can follow organization-specific conventions while filenames maintain standardized external naming</li>
+<li><strong>Legacy System Integration</strong>: Files can maintain standard internal header structures required by existing systems while using descriptive filenames</li>
+<li><strong>Multi-purpose Data Assets</strong>: The same file can serve different analytical contexts through descriptive naming while preserving original header structures</li>
+<li><strong>Temporal Evolution</strong>: As data needs evolve, filenames can be updated to reflect new contexts without modifying original content</li>
+</ul>
+<h4>8.2 Mapping Between Systems</h4>
+<p>The relationship between filenames and internal headers creates powerful mapping opportunities:</p>
+<ul>
+<li><strong>System-to-System Translation</strong>: Filename metadata can serve as a translation layer between disparate systems with different naming conventions</li>
+<li><strong>Automated Field Mapping</strong>: Scripts can use filename metadata to intelligently map fields between systems with different internal structures</li>
+<li><strong>Validation Mechanisms</strong>: Discrepancies between filename descriptions and internal headers can trigger quality control processes</li>
+<li><strong>Documentation Generation</strong>: Automated tools can compare filename metadata with internal headers to generate comprehensive data dictionaries</li>
+</ul>
+<h4>8.3 Balancing Flexibility and Governance</h4>
+<p>While embracing flexibility in header implementations, organizations should:</p>
+<ul>
+<li>Maintain consistent naming principles across the filename-header relationship</li>
+<li>Document mapping patterns between external names and internal structures</li>
+<li>Establish governance processes to resolve conflicts between naming approaches</li>
+<li>Create validation tools that verify alignment between filenames and content</li>
+</ul>
+<h4>8.4 Case Study: Cross-System Integration</h4>
+<p>A financial institution implemented this dual approach when integrating legacy banking systems with modern analytics platforms:</p>
+<ul>
+<li><strong>Filename</strong>: <code>Banking_Transactions_AccountID_Date_Amount_Category_Location.csv</code></li>
+<li><strong>Internal Headers</strong>: <code>ACCT_NUM</code>, <code>TXN_DT</code>, <code>TXN_AMT</code>, <code>MCC_CD</code>, <code>MERCH_LOC</code></li>
+</ul>
+<p>This approach enabled seamless processing by both legacy systems (requiring specific header codes) and modern analytics tools (leveraging descriptive filenames), while maintaining data lineage and context across the enterprise.</p>
+<h3>Conclusion</h3>
+<p>The Filename-as-Header methodology represents a powerful innovation in data management that addresses critical challenges in today's AI-driven landscape. By embedding structural metadata directly in filenames, organizations can preserve context, improve discovery, and optimize processing decisions.</p>
+<p>Importantly, this approach does not require rigid conformity between filenames and internal headers. Instead, it embraces flexibility while maintaining the core principles of self-describing data. Whether implemented strictly with matching headers or adapted to bridge different systems, the methodology provides substantial benefits through improved metadata management.</p>
+<p>As organizations navigate increasingly complex data environments, this simple yet effective approach offers a pathway to better data governance, enhanced AI capabilities, and more resilient information systems. The true power of this innovation lies not just in standardization, but in its adaptability to diverse contexts and requirements.</p>
+<hr />
+<p>© 2025 [Your Name/Organization]. This White Paper is available under [Creative Commons Attribution 4.0 International License].</p>  </article>
+  <script>
+    const root = document.documentElement;
+    const current = localStorage.getItem('theme');
+    if (current === 'dark') root.setAttribute('data-theme', 'dark');
+    document.getElementById('themeToggle').onclick = () => {
+      root.toggleAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', root.hasAttribute('data-theme') ? 'dark' : 'light');
+    };
+  </script>
+</div>
+
     <!-- Data Section -->
     <section class="section">
         <h2 class="section-title">ข้อมูลล่าสุด</h2>

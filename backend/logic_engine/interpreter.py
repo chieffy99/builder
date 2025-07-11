@@ -1,5 +1,6 @@
 from .stat_slot_map import MAP
 
+
 def interpret(rec: str):
     p = [x.strip() for x in rec.split(",")]
     if len(p) < 5:
