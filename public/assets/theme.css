@@ -1,0 +1,8 @@
+:root {
+  --bg: #ffffff; --fg: #111; --card: #f5f5f5;
+}
+[data-theme="dark"] {
+  --bg:#111; --fg:#eee; --card:#1e1e1e;
+}
+body {background:var(--bg); color:var(--fg);}  /* apply tokens */
+.card {background:var(--card);}                 /* example */

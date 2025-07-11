@@ -64,4 +64,4 @@ Pre-computed aggregates and data dictionary entries let the API quickly resolve 
 
 ---
 
-This concise README provides instructions for installing dependencies, running the API, and understanding the high-level design. For full details, explore the code and configuration files in this repository.
+Read the Filename-as-Header methodology in public/filename-as-header.html.
