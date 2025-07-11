@@ -7,3 +7,5 @@
 2025-07-09: unify dictionary source and add JS tests
 2025-07-10: add parser edge case tests
 2025-07-11: add datadict mapping tests
+2025-07-09: add card mixing prototype
+2025-07-11: add Filename-as-Header white paper page
