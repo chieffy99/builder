@@ -9,3 +9,4 @@
 2025-07-11: add datadict mapping tests
 2025-07-09: add card mixing prototype
 2025-07-11: add Filename-as-Header white paper page
+2025-07-11: clean ANNEW_5.html conflicts
