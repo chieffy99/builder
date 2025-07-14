@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formula Generator - เครื่องมือสร้างสูตร Excel</title>
+    <style>
+        /* Dyslexia-friendly design principles */
+        body {
+            f                <h1>📋 Excel Formula Generator</h1>
+            <p>เครื่องมือสร้างสูตร Excel สำหรับข้อมูลธุรกิจ - ใส่ชื่อฟิลด์จริง ได้สูตรใช้ได้เลย</p>  <div class="header">
+            <h1>📋 Excel Formula Generator</h1>
+            <p>เครื่องมือสร้างสูตร Excel สำหรับข้อมูลธุรกิจ - ใส่ชื่อฟิลด์จริง ได้สูตรใช้ได้เลย</p>
+        </div>family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .philosophy-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .philosophy-box h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+        
+        .tab-container {
+            margin-bottom: 30px;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            background: #ecf0f1;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: #ecf0f1;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .tab-button:hover {
+            background: #2980b9;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-row.single {
+            grid-template-columns: 1fr;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 1.1em;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .help-text {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        .button-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .button-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .button-secondary:hover {
+            background: #d5dbdb;
+        }
+        
+        .result-panel {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .result-panel h3 {
+            margin-top: 0;
+            color: #d35400;
+        }
+        
+        .logic-output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        
+        .human-description {
+            background: #e8f5e8;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .GDMS-visualization {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .slot {
+            background: #3498db;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .slot.reserved {
+            background: #e74c3c;
+        }
+        
+        .slot.empty {
+            background: #bdc3c7;
+            color: #7f8c8d;
+        }
+        
+        .cognitive-limit {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-left: 4px solid #27ae60;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .explanation-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+        }
+        
+        .feature-card h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .GDMS-visualization {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>� Formula Generator</h1>
+            <p>เครื่องมือสร้างสูตร Excel อัตโนมัติ - ใส่ข้อมูลได้สูตรเลย</p>
+        </div>
+        
+        <div class="content">
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="switchTab('generator')">🧮 สร้างสูตร</button>
+                    <button class="tab-button" onclick="switchTab('mapping')">🎯 Mapping ข้อมูล</button>
+                    <button class="tab-button" onclick="switchTab('advanced')">⚡ สูตรขั้นสูง</button>
+                </div>
+                
+                <!-- Input Tab -->
+                <div class="tab-content active" id="input-tab">
+                    <h3>สร้าง Logic String จากข้อมูลที่มนุษย์เข้าใจได้</h3>
+                    
+                    <form id="logicStringForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="date">📅 วันที่:</label>
+                                <input type="date" id="date" name="date" required>
+                                <div class="help-text">วันที่เกิดเหตุการณ์ธุรกิจ</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="action_type">⚡ ประเภทการกระทำ:</label>
+                                <select id="action_type" name="action_type" required onchange="updateFormFields()">
+                                    <option value="">-- เลือกการกระทำ --</option>
+                                    <option value="LTBY">🏪 ซื้อสินค้าจากคลัง (LT+BY)</option>
+                                    <option value="LTRT">↩️ คืนสินค้าเข้าคลัง (LT+RT)</option>
+                                    <option value="OTBY">🌐 ขายผ่านออนไลน์ (OT+BY)</option>
+                                    <option value="SHBY">🏬 ขายหน้าร้าน (SH+BY)</option>
+                                    <option value="WHCK">📦 ตรวจสอบสต็อกคลัง (WH+CK)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="cognitive-limit">
+                            <strong>🧠 Cognitive Load Management:</strong> ฟอร์มนี้ออกแบบให้ใช้ไม่เกิน 7 ช่องข้อมูล 
+                            เพื่อไม่ให้สมองเหนื่อยล้า (human-centered design principle)
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="product_code">🏷️ รหัสสินค้า (Slot 1):</label>
+                                <input type="text" id="product_code" name="product_code" placeholder="เช่น P001, BOOK123">
+                                <div class="help-text">รหัสสินค้าในระบบ</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="quantity">🔢 จำนวน (Slot 2):</label>
+                                <input type="number" id="quantity" name="quantity" min="0" step="1" placeholder="0">
+                                <div class="help-text">จำนวนสินค้า (ชิ้น/หน่วย)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="unit_price">💰 ราคาต่อหน่วย (Slot 3):</label>
+                                <input type="number" id="unit_price" name="unit_price" min="0" step="0.01" placeholder="0.00">
+                                <div class="help-text">ราคาในบาท</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="warehouse">🏢 คลัง/ช่องทาง (Slot 4):</label>
+                                <input type="text" id="warehouse" name="warehouse" placeholder="เช่น WH1, ONLINE">
+                                <div class="help-text">รหัสคลังหรือช่องทางขาย</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row single">
+                            <div class="form-group">
+                                <label for="notes">📝 หมายเหตุ (Slot 5):</label>
+                                <textarea id="notes" name="notes" rows="3" placeholder="หมายเหตุเพิ่มเติม เช่น 'สินค้าแตก' 'ส่วนลด 10%'"></textarea>
+                                <div class="help-text">ข้อมูลเพิ่มเติม (slot สุดท้ายก่อนถึง business logic slots)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="logic_flag">🔧 Business Logic Flag:</label>
+                                <select id="logic_flag" name="logic_flag">
+                                    <option value="A">A - ตรวจสอบเครดิต/ราคา</option>
+                                    <option value="B" selected>B - โหมดป้อนจำนวนปกติ</option>
+                                    <option value="C">C - คำนวณต้นทุน</option>
+                                </select>
+                                <div class="help-text">กำหนดวิธีการประมวลผลข้อมูล</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="stat_n">🔢 Status Number:</label>
+                                <input type="number" id="stat_n" name="stat_n" value="0" min="0">
+                                <div class="help-text">สถานะเชิงตัวเลข (0 = ปกติ)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button type="button" class="button button-primary" onclick="generateLogicString()">
+                                ✨ สร้าง Logic String
+                            </button>
+                            <button type="button" class="button button-secondary" onclick="clearForm()">
+                                🗑️ เคลียร์ฟอร์ม
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="result-panel" id="result">
+                        <h3>📤 ผลลัพธ์ที่สร้างขึ้น:</h3>
+                        
+                        <h4>🔗 Logic String (สำหรับระบบ):</h4>
+                        <div class="logic-output" id="logic_output"></div>
+                        
+                        <h4>👥 คำอธิบายภาษาคน:</h4>
+                        <div class="human-description" id="human_description"></div>
+                        
+                        <h4>🎯 Slot Breakdown:</h4>
+                        <div id="slot_breakdown"></div>
+                    </div>
+                </div>
+                
+                <!-- Parse Tab -->
+                <div class="tab-content" id="parse-tab">
+                    <h3>แปล Logic String ให้เป็นภาษาคน</h3>
+                    
+                    <div class="form-group">
+                        <label for="input_string">🔍 Logic String ที่ต้องการแปล:</label>
+                        <textarea id="input_string" rows="4" placeholder="วาง Logic String ที่นี่ เช่น: 20250324,LT,BY,0,B,P001,2,150.50,WH1,fragile,0,0"></textarea>
+                        <div class="help-text">วาง Logic String ที่ต้องการให้ระบบแปลเป็นภาษาคน</div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="button" class="button button-primary" onclick="parseLogicString()">
+                            🔍 แปลความหมาย
+                        </button>
+                        <button type="button" class="button button-secondary" onclick="clearParseResults()">
+                            🗑️ เคลียร์ผลลัพธ์
+                        </button>
+                    </div>
+                    
+                    <div class="result-panel" id="parse_result">
+                        <h3>📖 ความหมายที่แปลได้:</h3>
+                        <div id="parsed_description"></div>
+                        
+                        <h3>📊 รายละเอียดข้อมูล:</h3>
+                        <div id="parsed_details"></div>
+                    </div>
+                </div>
+                
+                <!-- Explanation Tab -->
+                <div class="tab-content" id="explain-tab">
+                    <div class="explanation-section">
+                        <h3>🧠 ทำความเข้าใจระบบ Anti-Normalization</h3>
+                        
+                        <div class="cognitive-limit">
+                            <h4>🎯 หลักการหลัก: "Human-Centered Design that only AI can currently interpret"</h4>
+                            <p>เราออกแบบระบบให้เป็นมิตรต่อมนุษย์ แต่ต้องใช้ AI ช่วยแปลให้เข้าใจได้</p>
+                        </div>
+                        
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <h4>🧠 Dyslexia-Friendly</h4>
+                                <p>ออกแบบสำหรับผู้ที่มี Dyslexia โดยใช้ StatN ก่อน StatC เพื่อง่ายต่อการอ่าน</p>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <h4>🔢 7-Slot Limitation</h4>
+                                <p>จำกัดไม่เกิน 7 ช่องข้อมูล ตามขีดจำกัดการจำของสมองมนุษย์</p>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <h4>🎯 Boundary Preservation</h4>
+                                <p>slot[-2], slot[-1] สงวนไว้สำหรับ business logic เสมอ (หลักการส่วนตัว)</p>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <h4>🔄 Cross-Platform</h4>
+                                <p>ใช้ได้กับ Excel, Python, API, SQL โดยไม่ต้องเปลี่ยนโครงสร้าง</p>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <h4>📝 Event-Driven</h4>
+                                <p>บันทึกเหตุการณ์ทั้งหมดในบรรทัดเดียว ไม่ต้องไปหาจากหลายตาราง</p>
+                            </div>
+                            
+                            <div class="feature-card">
+                                <h4>🤖 AI-Interpretable</h4>
+                                <p>AI สามารถอ่านและตีความ Logic String ได้ทันที</p>
+                            </div>
+                        </div>
+                        
+                        <h4>📋 ตัวอย่างการใช้งาน:</h4>
+                        <div class="logic-output">
+20250324,LT,BY,0,B,P001,2,150.50,WH1,fragile,0,0
+                        </div>
+                        
+                        <div class="human-description">
+                            <strong>แปลเป็นภาษาคน:</strong><br>
+                            วันที่ 24 มีนาคม 2025 | ระบบ LT (ดึงจากคลัง) ทำการ BY (ซื้อ) | สินค้า P001 | จำนวน 2 ชิ้น | 
+                            ราคา 150.50 บาท/ชิ้น | คลัง WH1 | หมายเหตุ: fragile | Logic Flag: B (โหมดป้อนจำนวนปกติ)
+                        </div>
+                        
+                        <h4>🔧 วิธีการทำงาน:</h4>
+                        <ol>
+                            <li><strong>มนุษย์กรอกฟอร์ม</strong> ด้วยข้อมูลที่เข้าใจได้</li>
+                            <li><strong>ระบบแปลง</strong> ให้เป็น Logic String</li>
+                            <li><strong>AI ตีความ</strong> และประมวลผลตาม business logic</li>
+                            <li><strong>ผลลัพธ์</strong> กลับมาเป็นภาษาคนอีกครั้ง</li>
+                        </ol>
+                        
+                        <div class="cognitive-limit">
+                            <h4>💡 ปรัชญาการออกแบบ:</h4>
+                            <p><strong>"ถ้าทำแบบนั้น ฉันก็ไม่ใช่ฉันสิ"</strong></p>
+                            <p>หมายถึงการยึดมั่นในหลักการ slot[-2], slot[-1] สงวนไว้สำหรับ business logic 
+                            เป็นเอกลักษณ์และหลักการส่วนตัวที่ไม่เปลี่ยนแปลง</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab and activate button
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // Update form fields based on action type
+        function updateFormFields() {
+            const actionType = document.getElementById('action_type').value;
+            // Here you could customize which fields are shown/required based on action type
+            // For now, we'll keep all fields visible
+        }
+        
+        // Generate Logic String from form
+        function generateLogicString() {
+            const form = document.getElementById('logicStringForm');
+            const formData = new FormData(form);
+            
+            // Get and validate required fields
+            const date = formData.get('date');
+            const actionType = formData.get('action_type');
+            
+            if (!date || !actionType) {
+                alert('❌ กรุณากรอกวันที่และประเภทการกระทำ');
+                return;
+            }
+            
+            // Convert date format
+            const dateFormatted = date.replace(/-/g, '');
+            
+            // Parse action type
+            let id1, id2;
+            const actionMap = {
+                'LTBY': ['LT', 'BY'],
+                'LTRT': ['LT', 'RT'], 
+                'OTBY': ['OT1', 'BY'],
+                'SHBY': ['SH', 'BY'],
+                'WHCK': ['WH', 'CK']
+            };
+            [id1, id2] = actionMap[actionType] || ['', ''];
+            
+            // Get other form values
+            const statN = formData.get('stat_n') || '0';
+            const logicFlag = formData.get('logic_flag') || 'B';
+            const productCode = formData.get('product_code') || '0';
+            const quantity = formData.get('quantity') || '0';
+            const unitPrice = formData.get('unit_price') || '0';
+            const warehouse = formData.get('warehouse') || '0';
+            const notes = formData.get('notes') || '0';
+            
+            // Generate logic string following the philosophy: slot[-2], slot[-1] reserved for business logic
+            const logicString = `${dateFormatted},${id1},${id2},${statN},${logicFlag},${productCode},${quantity},${unitPrice},${warehouse},${notes},0,0`;
+            
+            // Generate human description
+            const actionDescriptions = {
+                'LTBY': 'ซื้อสินค้าจากคลัง',
+                'LTRT': 'คืนสินค้าเข้าคลัง',
+                'OTBY': 'ขายผ่านออนไลน์', 
+                'SHBY': 'ขายหน้าร้าน',
+                'WHCK': 'ตรวจสอบสต็อกคลัง'
+            };
+            
+            let description = `${actionDescriptions[actionType] || 'การกระทำ'}`;
+            const details = [];
+            
+            if (productCode !== '0') details.push(`สินค้า: ${productCode}`);
+            if (quantity !== '0') details.push(`จำนวน: ${quantity}`);
+            if (unitPrice !== '0') details.push(`ราคา: ${unitPrice} บาท`);
+            if (warehouse !== '0') details.push(`คลัง: ${warehouse}`);
+            if (notes !== '0') details.push(`หมายเหตุ: ${notes}`);
+            details.push(`Logic Flag: ${logicFlag}`);
+            
+            if (details.length > 0) {
+                description += ' | ' + details.join(' | ');
+            }
+            
+            // Create slot breakdown
+            const slots = [
+                `Slot 1: ${productCode} (รหัสสินค้า)`,
+                `Slot 2: ${quantity} (จำนวน)`,
+                `Slot 3: ${unitPrice} (ราคา)`,
+                `Slot 4: ${warehouse} (คลัง)`,
+                `Slot 5: ${notes} (หมายเหตุ)`,
+                `Slot 6: 0 (สงวน [-2])`,
+                `Slot 7: 0 (สงวน [-1])`
+            ];
+            
+            // Display results
+            document.getElementById('logic_output').textContent = logicString;
+            document.getElementById('human_description').textContent = description;
+            document.getElementById('slot_breakdown').innerHTML = slots.map(slot => 
+                `<div style="background: #f8f9fa; padding: 8px; margin: 3px 0; border-radius: 4px; border-left: 3px solid #3498db;">${slot}</div>`
+            ).join('');
+            document.getElementById('result').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Parse existing Logic String
+        function parseLogicString() {
+            const input = document.getElementById('input_string').value.trim();
+            
+            if (!input) {
+                alert('❌ กรุณาใส่ Logic String ที่ต้องการแปล');
+                return;
+            }
+            
+            try {
+                const parts = input.split(',');
+                
+                if (parts.length < 7) {
+                    throw new Error('Logic String ไม่สมบูรณ์');
+                }
+                
+                const [date, id1, id2, statN, statC, ...slots] = parts;
+                
+                // Parse date
+                const year = date.substring(0, 4);
+                const month = date.substring(4, 6);
+                const day = date.substring(6, 8);
+                const formattedDate = `${day}/${month}/${year}`;
+                
+                // Create human description
+                const personaMap = {
+                    'LT': 'ระบบดึงจากคลัง',
+                    'OT1': 'ช่องทางออนไลน์',
+                    'SH': 'หน้าร้าน',
+                    'WH': 'คลังสินค้า'
+                };
+                
+                const actionMap = {
+                    'BY': 'ซื้อ/เข้าสินค้า',
+                    'RT': 'คืนสินค้า',
+                    'CK': 'ตรวจสอบสต็อก'
+                };
+                
+                const logicFlagMap = {
+                    'A': 'ตรวจสอบเครดิต/ราคา',
+                    'B': 'โหมดป้อนจำนวนปกติ',
+                    'C': 'คำนวณต้นทุน'
+                };
+                
+                const persona = personaMap[id1] || `ระบบ ${id1}`;
+                const action = actionMap[id2] || `การกระทำ ${id2}`;
+                const logicFlag = logicFlagMap[statC] || `Logic ${statC}`;
+                
+                let description = `วันที่ ${formattedDate} | ${persona} ทำการ ${action}`;
+                
+                // Add slot information
+                const slotLabels = ['รหัสสินค้า', 'จำนวน', 'ราคา', 'คลัง', 'หมายเหตุ', 'สงวน[-2]', 'สงวน[-1]'];
+                const slotDetails = [];
+                
+                slots.forEach((slot, index) => {
+                    if (slot && slot !== '0' && index < 5) {
+                        slotDetails.push(`${slotLabels[index]}: ${slot}`);
+                    }
+                });
+                
+                if (slotDetails.length > 0) {
+                    description += ' | ' + slotDetails.join(' | ');
+                }
+                description += ` | ${logicFlag}`;
+                
+                // Create detailed breakdown
+                const details = [
+                    `📅 วันที่: ${formattedDate}`,
+                    `🏷️ ระบบ/Persona (ID1): ${id1} (${persona})`,
+                    `⚡ การกระทำ (ID2): ${id2} (${action})`,
+                    `🔢 Status Number: ${statN}`,
+                    `🔧 Logic Flag: ${statC} (${logicFlag})`,
+                    '',
+                    '📊 Slot Breakdown:'
+                ];
+                
+                slots.forEach((slot, index) => {
+                    if (index < 7) {
+                        const label = slotLabels[index];
+                        const isReserved = index >= 5;
+                        const status = isReserved ? ' (สงวนสำหรับ business logic)' : '';
+                        details.push(`   Slot ${index + 1}: ${slot || '0'} (${label})${status}`);
+                    }
+                });
+                
+                // Display results
+                document.getElementById('parsed_description').innerHTML = 
+                    `<div class="human-description">${description}</div>`;
+                document.getElementById('parsed_details').innerHTML = 
+                    details.map(detail => 
+                        detail === '' ? '<br>' : 
+                        `<div style="background: #f8f9fa; padding: 5px; margin: 2px 0; border-radius: 3px;">${detail}</div>`
+                    ).join('');
+                document.getElementById('parse_result').style.display = 'block';
+                
+                // Scroll to results
+                document.getElementById('parse_result').scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                alert(`❌ เกิดข้อผิดพลาดในการแปล Logic String: ${error.message}`);
+            }
+        }
+        
+        // Clear functions
+        function clearForm() {
+            document.getElementById('logicStringForm').reset();
+            document.getElementById('result').style.display = 'none';
+        }
+        
+        function clearParseResults() {
+            document.getElementById('input_string').value = '';
+            document.getElementById('parse_result').style.display = 'none';
+        }
+        
+        // Set today's date as default
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+        });
+    </script>
+</body>
+</html>

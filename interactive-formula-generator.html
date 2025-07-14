@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Formula Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .conversation-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .formula-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .conversation-step {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4CAF50;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .step-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-icon {
+            width: 30px;
+            height: 30px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .question::before {
+            content: "🤖 ";
+            font-size: 1.2em;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .uncertainty-help {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .uncertainty-help::before {
+            content: "💡 ";
+            font-size: 1.2em;
+        }
+
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #45a049;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .formula-output {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+
+        .mapping-display {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .mapping-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .mapping-item:last-child {
+            border-bottom: none;
+        }
+
+        .confidence-bar {
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444, #ffaa00, #4CAF50);
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Interactive Formula Generator</h1>
+            <p>Smart Behavior Mapping + Auto Formula Generation</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Conversation Panel -->
+            <div class="conversation-panel">
+                <h2>📋 Data Behavior Analysis</h2>
+                
+                <!-- Step 1: Data Input -->
+                <div class="conversation-step">
+                    <div class="step-title">
+                        <div class="step-icon">1</div>
+                        Data Sample Input
+                    </div>
+                    <textarea class="answer-input" id="dataInput" rows="4" 
+                              placeholder="วางข้อมูลตัวอย่างที่นี่...&#10;เช่น: John Smith, ABC Corp, 1500">
+                    </textarea>
+                </div>
+
+                <!-- Step 2: Gentle Inquiry -->
+                <div class="conversation-step">
+                    <div class="step-title">
+                        <div class="step-icon">2</div>
+                        Behavior Questions
+                    </div>
+                    
+                    <div class="question">
+                        ข้อมูลนี้ทำหน้าที่อะไรนะครับ?
+                    </div>
+                    <input type="text" class="answer-input" id="behaviorAnswer" 
+                           placeholder="เช่น: เก็บข้อมูลลูกค้าที่ซื้อข้าว">
+                    
+                    <button class="btn btn-secondary" onclick="showUncertaintyHelp()">
+                        🤔 ไม่แน่ใจ? คลิกที่นี่
+                    </button>
+                    
+                    <div class="uncertainty-help" id="uncertaintyHelp">
+                        <strong>มีอะไรต้องการเป็นพิเศษไหมครับ?</strong><br>
+                        • อยากรู้ยอดขาย?<br>
+                        • อยากนับจำนวนลูกค้า?<br>
+                        • อยากดูสต็อกคงเหลือ?<br>
+                        • อยากวิเคราะห์กำไร?
+                    </div>
+                </div>
+
+                <!-- Step 3: Value Type -->
+                <div class="conversation-step">
+                    <div class="step-title">
+                        <div class="step-icon">3</div>
+                        Value Classification
+                    </div>
+                    
+                    <div class="question">
+                        ตัวเลขในข้อมูลนี้แสดงอะไรครับ?
+                    </div>
+                    <select class="answer-input" id="valueType">
+                        <option value="">-- เลือก --</option>
+                        <option value="amount">เงินที่ได้/จ่ายจริง</option>
+                        <option value="count">จำนวนชิ้น/นับได้</option>
+                        <option value="price">ราคาต่อหน่วย/คงที่</option>
+                    </select>
+                    
+                    <div class="question">
+                        การทำรายการเป็นแบบไหนครับ?
+                    </div>
+                    <select class="answer-input" id="transactionType">
+                        <option value="">-- เลือก --</option>
+                        <option value="cash">เงินสด</option>
+                        <option value="credit">เชื่อ</option>
+                        <option value="special">รายการพิเศษ</option>
+                    </select>
+                </div>
+
+                <!-- Generate Button -->
+                <button class="btn" onclick="analyzeAndGenerate()" style="width: 100%; font-size: 1.2em;">
+                    🚀 Generate Formulas
+                </button>
+            </div>
+
+            <!-- Formula Panel -->
+            <div class="formula-panel">
+                <h2>⚡ Generated Formulas</h2>
+                
+                <!-- Mapping Display -->
+                <div class="mapping-display" id="mappingDisplay">
+                    <h3>🎯 Behavior Mapping</h3>
+                    <div id="mappingResults">
+                        <p style="text-align: center; color: #999; padding: 40px;">
+                            กรอกข้อมูลแล้วกด Generate เพื่อดู mapping
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Formula Output -->
+                <h3>📊 Auto-Generated Formulas</h3>
+                <div class="formula-output" id="formulaOutput">
+// กรอกข้อมูลแล้วกด Generate เพื่อสร้างสูตร
+
+Formulas will appear here...
+                </div>
+
+                <!-- Action Buttons -->
+                <button class="btn" onclick="copyFormulas()">📋 Copy Formulas</button>
+                <button class="btn btn-secondary" onclick="exportToExcel()">📈 Export to Excel</button>
+                <button class="btn btn-secondary" onclick="resetAll()">🔄 Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Standard Behavior Mapping
+        const standardMapping = {
+            entities: {
+                'ใครที่ขายให้เรา': 'SU',
+                'แหล่งสินค้า': 'SU',
+                'ผู้จำหน่าย': 'SU',
+                'คนขายข้าว': 'SU',
+                'ใครที่ซื้อจากเรา': 'CU',
+                'ลูกค้า': 'CU',
+                'คนซื้อ': 'CU',
+                'ผู้บริโภค': 'CU',
+                'ร้านของเรา': 'SH',
+                'สาขา': 'SH',
+                'จุดขาย': 'SH',
+                'ตลาดที่เราไป': 'MK',
+                'ที่ขาย': 'MK'
+            },
+            actions: {
+                'การที่เราซื้อ': 'BY',
+                'เราไปซื้อ': 'BY',
+                'สั่งสินค้า': 'BY',
+                'การที่เราขาย': 'SA',
+                'ขายให้ลูกค้า': 'SA',
+                'จำหน่าย': 'SA',
+                'การสั่งซื้อ': 'PO',
+                'ใบสั่งซื้อ': 'PO'
+            }
+        };
+
+        function showUncertaintyHelp() {
+            const helpDiv = document.getElementById('uncertaintyHelp');
+            helpDiv.style.display = helpDiv.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function analyzeAndGenerate() {
+            const dataInput = document.getElementById('dataInput').value;
+            const behaviorAnswer = document.getElementById('behaviorAnswer').value;
+            const valueType = document.getElementById('valueType').value;
+            const transactionType = document.getElementById('transactionType').value;
+
+            if (!dataInput || !behaviorAnswer || !valueType || !transactionType) {
+                alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+                return;
+            }
+
+            // Analyze behavior
+            const analysis = analyzeBehavior(behaviorAnswer);
+            
+            // Display mapping
+            displayMapping(analysis, valueType, transactionType);
+            
+            // Generate formulas
+            generateFormulas(analysis, valueType, transactionType);
+        }
+
+        function analyzeBehavior(behaviorText) {
+            const analysis = {
+                entity: null,
+                action: null,
+                confidence: 0
+            };
+
+            // Check entity mapping
+            for (const [behavior, code] of Object.entries(standardMapping.entities)) {
+                if (behaviorText.includes(behavior) || behaviorText.includes(code)) {
+                    analysis.entity = code;
+                    analysis.confidence += 0.4;
+                    break;
+                }
+            }
+
+            // Check action mapping
+            for (const [behavior, code] of Object.entries(standardMapping.actions)) {
+                if (behaviorText.includes(behavior) || behaviorText.includes(code)) {
+                    analysis.action = code;
+                    analysis.confidence += 0.4;
+                    break;
+                }
+            }
+
+            // Smart fallback analysis
+            if (!analysis.entity) {
+                if (behaviorText.includes('ลูกค้า') || behaviorText.includes('ซื้อจากเรา')) {
+                    analysis.entity = 'CU';
+                    analysis.confidence += 0.3;
+                } else if (behaviorText.includes('ขายให้เรา') || behaviorText.includes('สินค้า')) {
+                    analysis.entity = 'SU';
+                    analysis.confidence += 0.3;
+                }
+            }
+
+            if (!analysis.action) {
+                if (behaviorText.includes('ขาย') || behaviorText.includes('จำหน่าย')) {
+                    analysis.action = 'SA';
+                    analysis.confidence += 0.3;
+                } else if (behaviorText.includes('ซื้อ') || behaviorText.includes('สั่ง')) {
+                    analysis.action = 'BY';
+                    analysis.confidence += 0.3;
+                }
+            }
+
+            return analysis;
+        }
+
+        function displayMapping(analysis, valueType, transactionType) {
+            const mappingDiv = document.getElementById('mappingResults');
+            
+            const statC = valueType === 'amount' ? 'A' : valueType === 'count' ? 'B' : 'C';
+            const statN = transactionType === 'cash' ? '0' : transactionType === 'credit' ? '1' : '2';
+            
+            const confidence = Math.min(analysis.confidence * 100, 95);
+            
+            mappingDiv.innerHTML = `
+                <div class="mapping-item">
+                    <span><strong>Entity Code:</strong></span>
+                    <span>${analysis.entity || 'Unknown'}</span>
+                </div>
+                <div class="mapping-item">
+                    <span><strong>Action Code:</strong></span>
+                    <span>${analysis.action || 'Unknown'}</span>
+                </div>
+                <div class="mapping-item">
+                    <span><strong>Field Code:</strong></span>
+                    <span>${(analysis.entity || '') + (analysis.action || '')}</span>
+                </div>
+                <div class="mapping-item">
+                    <span><strong>StatC (Value Type):</strong></span>
+                    <span>${statC}</span>
+                </div>
+                <div class="mapping-item">
+                    <span><strong>StatN (Transaction):</strong></span>
+                    <span>${statN}</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <strong>Confidence Level:</strong>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" style="width: ${confidence}%"></div>
+                    </div>
+                    <small>${confidence.toFixed(0)}% confident</small>
+                </div>
+            `;
+        }
+
+        function generateFormulas(analysis, valueType, transactionType) {
+            const entity = analysis.entity || 'XX';
+            const action = analysis.action || 'XX';
+            const statC = valueType === 'amount' ? 'A' : valueType === 'count' ? 'B' : 'C';
+            const statN = transactionType === 'cash' ? '0' : transactionType === 'credit' ? '1' : '2';
+            
+            const formulas = `
+// =============================================================
+// AUTO-GENERATED FORMULAS - ${entity}${action}
+// =============================================================
+
+// 1. BASIC EXTRACTION
+=SUMIFS(slot1, ID1, "${entity}", ID2, "${action}")
+=SUMIFS(slot7, ID1, "${entity}", ID2, "${action}")
+
+// 2. STATUS FILTERED
+=SUMIFS(slot7, ID1, "${entity}", ID2, "${action}", StatN, "${statN}", StatC, "${statC}")
+=SUMIFS(slot1, ID1, "${entity}", ID2, "${action}", StatC, "${statC}")
+
+// 3. DATE RANGE (Last 30 days)
+=SUMIFS(slot7, ID1, "${entity}", ID2, "${action}", Date, ">="&TODAY()-30)
+=SUMIFS(slot1, ID1, "${entity}", ID2, "${action}", Date, ">="&A1, Date, "<="&B1)
+
+// 4. WILDCARD PATTERNS
+=SUMIFS(slot7, ID1, "${entity}*", ID2, "${action}")
+=SUMIFS(slot1, ID1, "${entity}*", ID2, "${action}*")
+
+// =============================================================
+// BUSINESS ANALYSIS TEMPLATES
+// =============================================================
+
+// Total Amount (All)
+Total_${entity}_${action}_Amount = SUMIFS(slot7, ID1, "${entity}", ID2, "${action}", StatC, "A")
+
+// Cash vs Credit
+Cash_${entity}_${action} = SUMIFS(slot7, ID1, "${entity}", ID2, "${action}", StatN, "0", StatC, "A")
+Credit_${entity}_${action} = SUMIFS(slot7, ID1, "${entity}", ID2, "${action}", StatN, "1", StatC, "A")
+
+// Count Analysis
+Count_${entity}_${action} = SUMIFS(slot1, ID1, "${entity}", ID2, "${action}", StatC, "B")
+
+// Price Analysis
+Price_${entity}_${action} = SUMIFS(slot1, ID1, "${entity}", ID2, "${action}", StatC, "C")
+
+// =============================================================
+// TEXT/ID EXTRACTION (ดึงข้อความ/รหัส/ชื่อ)
+// =============================================================
+
+// ดึงข้อมูลข้อความจาก slot ที่ตรงเงื่อนไข
+=INDEX(slot1,MATCH(1,(ID1="${entity}")*(ID2="${action}"),0))
+=INDEX(slot2,MATCH(1,(ID1="${entity}")*(ID2="${action}")*(StatN="${statN}"),0))
+=INDEX(slot3,MATCH(1,(ID1="${entity}")*(ID2="${action}")*(StatC="${statC}"),0))
+
+// ดึงรายการข้อความทั้งหมด (ลากลงไปเรื่อยๆ)
+=IFERROR(INDEX(slot1,SMALL(IF((ID1="${entity}")*(ID2="${action}"),ROW(ID1:ID1)),ROW(A1))),"")
+=IFERROR(INDEX(slot2,SMALL(IF((ID1="${entity}")*(ID2="${action}"),ROW(ID1:ID1)),ROW(A1))),"")
+
+// หาค่าแรกที่ไม่ว่าง
+=INDEX(slot1,MATCH(TRUE,INDEX((ID1="${entity}")*(ID2="${action}")*(slot1<>""),0),0))
+
+// =============================================================
+// UNIQUE TEXT/ID LIST (รายการข้อความที่ไม่ซ้ำ)
+// =============================================================
+
+// Unique Text List (Excel 365)
+=UNIQUE(FILTER(slot1,(ID1="${entity}")*(ID2="${action}")*(slot1<>"")))
+=UNIQUE(FILTER(slot2,(ID1="${entity}")*(ID2="${action}")*(slot2<>"")))
+
+// Unique Text List (Excel เก่า - ลากลง)
+=IFERROR(INDEX(slot1,MATCH(0,COUNTIFS(ID1,"${entity}",ID2,"${action}",slot1,"<"&slot1,slot1,slot1)+COUNTIFS(\$A\$1:A1,slot1)+IF(slot1="",1,0),0)),"")
+
+// นับจำนวน Unique Text
+=SUMPRODUCT((ID1="${entity}")*(ID2="${action}")*(slot1<>"")/(COUNTIFS(ID1,"${entity}",ID2,"${action}",slot1,slot1)+(slot1="")))
+
+// =============================================================
+// ID/NAME LOOKUP & REFERENCE
+// =============================================================
+
+// หา ID/ชื่อ จากเงื่อนไขอื่น
+=INDEX(slot1,MATCH(1,(ID1="${entity}")*(ID2="${action}")*(slot7=MAX(IF((ID1="${entity}")*(ID2="${action}"),slot7))),0))
+=INDEX(slot2,MATCH(1,(ID1="${entity}")*(ID2="${action}")*(slot1="[ค่าที่ต้องการหา]"),0))
+
+// ตรวจสอบว่ามี ID/ชื่อ นี้หรือไม่
+=IF(COUNTIFS(ID1,"${entity}",ID2,"${action}",slot1,"[ชื่อที่ต้องการหา]")>0,"FOUND","NOT_FOUND")
+=IF(COUNTIFS(ID1,"${entity}",ID2,"${action}",slot2,"[ID ที่ต้องการหา]")>0,"EXISTS","MISSING")
+
+// =============================================================
+// TEXT/ID FILTERING & SEARCH
+// =============================================================
+
+// หาข้อความที่มีคำเฉพาะ (Partial Match)
+=INDEX(slot1,MATCH(TRUE,INDEX(ISNUMBER(SEARCH("[คำค้นหา]",slot1))*(ID1="${entity}")*(ID2="${action}"),0),0))
+
+// ดึงรายการที่มีคำเฉพาะ
+=IFERROR(INDEX(slot1,SMALL(IF(ISNUMBER(SEARCH("[คำค้นหา]",slot1))*(ID1="${entity}")*(ID2="${action}"),ROW(slot1:slot1)),ROW(A1))),"")
+
+// หาข้อความที่ขึ้นต้นด้วย
+=INDEX(slot1,MATCH(TRUE,INDEX((LEFT(slot1,LEN("[คำเริ่มต้น]"))="[คำเริ่มต้น]")*(ID1="${entity}")*(ID2="${action}"),0),0))
+
+// =============================================================
+// SLOT COMBINATIONS (รวมข้อมูลหลาย slot)
+// =============================================================
+
+// รวมข้อความจาก 2-3 slot
+=INDEX(slot1&"|"&slot2,MATCH(1,(ID1="${entity}")*(ID2="${action}"),0))
+=INDEX(slot1&" - "&slot2&" ("&slot3&")",MATCH(1,(ID1="${entity}")*(ID2="${action}"),0))
+
+// สร้างรหัสรวม (Composite ID)
+=INDEX("${entity}"&"${action}"&"-"&slot1&"-"&TEXT(slot7,"000"),MATCH(1,(ID1="${entity}")*(ID2="${action}"),0))
+
+// =============================================================
+// ALTERNATIVE ID SOURCES (แหล่งข้อมูล ID อื่นๆ)
+// =============================================================
+
+// 1. จากฟิลด์หลัก (Main Fields)
+// รายการ Entity ทั้งหมดที่ไม่ซ้ำ
+=UNIQUE(ID1)
+=UNIQUE(FILTER(ID1,(ID1<>"")))
+
+// รายการ Action ทั้งหมดที่ไม่ซ้ำ
+=UNIQUE(ID2)  
+=UNIQUE(FILTER(ID2,(ID2<>"")))
+
+// รายการ Entity+Action ที่ไม่ซ้ำ
+=UNIQUE(FILTER(ID1&ID2,(ID1<>"")*(ID2<>"")))
+=UNIQUE(FILTER(ID1&"|"&ID2,(ID1<>"")*(ID2<>"")))
+
+// 2. จาก Date/Time Fields
+// รายการวันที่ทั้งหมด
+=UNIQUE(FILTER(Date,(ID1="${entity}")*(ID2="${action}")))
+=UNIQUE(FILTER(datix,(datix<>"")))
+
+// 3. จาก Status Fields  
+// รายการ StatN ที่ใช้งาน
+=UNIQUE(FILTER(StatN,(ID1="${entity}")*(ID2="${action}")))
+
+// รายการ StatC ที่ใช้งาน
+=UNIQUE(FILTER(StatC,(ID1="${entity}")*(ID2="${action}")))
+
+// 4. Composite ID จากหลายฟิลด์
+// Full Transaction ID
+=UNIQUE(FILTER(ID1&"-"&ID2&"-"&StatN&"-"&StatC,(ID1<>"")*(ID2<>"")))
+
+// Entity-Action-Date ID
+=UNIQUE(FILTER(ID1&"-"&ID2&"-"&TEXT(Date,"YYYYMMDD"),(ID1="${entity}")*(ID2="${action}")))
+
+// Business Process ID
+=UNIQUE(FILTER(ID1&"_"&ID2&"_"&TEXT(ROW(ID1:ID1),"000"),(ID1="${entity}")*(ID2="${action}")))
+
+// =============================================================
+// REFERENCE TABLE GENERATION (สร้างตารางอ้างอิง)
+// =============================================================
+
+// สร้างตาราง Entity List
+Entity_List = UNIQUE(ID1)
+Action_List = UNIQUE(ID2)
+Status_List = UNIQUE(StatN&"|"&StatC)
+
+// สร้างตาราง Mapping
+Entity_Action_Map = UNIQUE(ID1&" → "&ID2)
+Full_Process_Map = UNIQUE(ID1&"|"&ID2&"|"&StatN&"|"&StatC)
+
+// สร้าง Index Reference
+Process_Index = MATCH(ID1&ID2,UNIQUE(ID1&ID2),0)
+Transaction_Index = MATCH(ID1&"|"&ID2&"|"&StatN,UNIQUE(ID1&"|"&ID2&"|"&StatN),0)
+
+// =============================================================
+// LOOKUP FROM ALTERNATIVE SOURCES
+// =============================================================
+
+// หา Entity จากลำดับ
+=INDEX(UNIQUE(ID1),ROW(A1))
+=INDEX(UNIQUE(FILTER(ID1,(ID1<>""))),ROW(A1))
+
+// หา Action จากลำดับ  
+=INDEX(UNIQUE(ID2),ROW(A1))
+
+// หา Process จากลำดับ
+=INDEX(UNIQUE(ID1&ID2),ROW(A1))
+
+// หา Status จากลำดับ
+=INDEX(UNIQUE(StatN&StatC),ROW(A1))
+
+// =============================================================
+// CONDITIONAL STARTING POINTS (เริ่มจากสถานะที่แน่นอน)
+// =============================================================
+
+// 1. เริ่มจากสถานะที่ "ยังไงก็ทรู" (Always True Conditions)
+// ประกาศเงื่อนไขพื้นฐานที่มั่นใจว่ามี
+
+// Base Condition: มี Entity และ Action
+Base_Condition = (ID1<>"")*(ID2<>"")
+
+// Valid Transaction: มีข้อมูลครบถ้วน
+Valid_Transaction = (ID1<>"")*(ID2<>"")*(Date<>"")*(StatN>=0)*(StatC<>"")
+
+// Has_Data: มีข้อมูลในระบบ
+Has_Data = (ID1<>"")+(ID2<>"")+(Date<>"")>0
+
+// 2. เริ่มจากสถานะเฉพาะที่รู้ว่ามี
+// กรณีที่รู้ว่ามี Entity นี้แน่นอน
+Known_Entity = (ID1="${entity}")
+Known_Action = (ID2="${action}")
+Known_Status = (StatN="${statN}")*(StatC="${statC}")
+
+// 3. การใช้งานเงื่อนไขเริ่มต้น
+// หาข้อมูลจากเงื่อนไขที่แน่นอน
+=FILTER(ID1,Base_Condition)
+=FILTER(ID2,Base_Condition)
+=FILTER(ID1&ID2,Valid_Transaction)
+
+// หาจากสถานะที่รู้ว่ามี
+=UNIQUE(FILTER(ID1,Known_Entity*(ID2<>"")))
+=UNIQUE(FILTER(ID2,Known_Action*(ID1<>"")))
+
+// 4. Conditional Cascade (ลำดับเงื่อนไข)
+// เริ่มจากกว้าง → แคบ
+Step1_All_Entities = UNIQUE(FILTER(ID1,(ID1<>"")))
+Step2_Entity_Actions = UNIQUE(FILTER(ID2,(ID1="${entity}")*(ID2<>"")))
+Step3_Entity_Action_Status = UNIQUE(FILTER(StatN&StatC,(ID1="${entity}")*(ID2="${action}")*(StatN>=0)*(StatC<>"")))
+
+// 5. Progressive Filtering (กรองแบบลำดับ)
+// ขั้นที่ 1: หาทุกอย่างที่มี Entity
+=FILTER(ID1&"|"&ID2&"|"&StatN&"|"&StatC,(ID1="${entity}")*(ID2<>"")*(StatN>=0)*(StatC<>""))
+
+// ขั้นที่ 2: เพิ่มเงื่อนไข Action
+=FILTER(ID1&"|"&ID2&"|"&StatN&"|"&StatC,(ID1="${entity}")*(ID2="${action}")*(StatN>=0)*(StatC<>""))
+
+// ขั้นที่ 3: เพิ่มเงื่อนไข Status
+=FILTER(ID1&"|"&ID2&"|"&StatN&"|"&StatC,(ID1="${entity}")*(ID2="${action}")*(StatN="${statN}")*(StatC="${statC}"))
+
+// 6. Safe Lookup (การหาที่ปลอดภัย)
+// เริ่มจากเงื่อนไขที่แน่ใจ 100%
+=IF(COUNTIF(ID1,"${entity}")>0,
+   UNIQUE(FILTER(ID2,(ID1="${entity}")*(ID2<>""))),
+   "NO_ENTITY_FOUND")
+
+=IF(COUNTIFS(ID1,"${entity}",ID2,"${action}")>0,
+   UNIQUE(FILTER(StatN&StatC,(ID1="${entity}")*(ID2="${action}")*(StatN>=0))),
+   "NO_ACTION_FOUND")
+
+// 7. Existence-Based Queries (ค้นหาตามการมีอยู่)
+// หาทุกอย่างที่มี slot1
+=UNIQUE(FILTER(ID1&ID2,(slot1<>"")*(ID1<>"")*(ID2<>"")))
+
+// หาทุกอย่างที่มี slot7 มากกว่า 0
+=UNIQUE(FILTER(ID1&ID2,(slot7>0)*(ID1<>"")*(ID2<>"")))
+
+// หาทุกอย่างที่มีข้อมูลครบ
+=UNIQUE(FILTER(ID1&ID2,(slot1<>"")*(slot7>0)*(ID1<>"")*(ID2<>"")))
+
+// =============================================================
+// STEP-BY-STEP ID DISCOVERY (ค้นหา ID แบบทีละขั้น)
+// =============================================================
+
+// ขั้นตอนที่ 1: หา Entity ที่มีอยู่จริง
+Available_Entities = UNIQUE(FILTER(ID1,(ID1<>"")))
+
+// ขั้นตอนที่ 2: หา Action ของ Entity นั้น  
+Available_Actions = UNIQUE(FILTER(ID2,(ID1=INDEX(Available_Entities,1))*(ID2<>"")))
+
+// ขั้นตอนที่ 3: หา Status ของ Entity+Action นั้น
+Available_Status = UNIQUE(FILTER(StatN&StatC,(ID1=INDEX(Available_Entities,1))*(ID2=INDEX(Available_Actions,1))*(StatN>=0)*(StatC<>"")))
+
+// ขั้นตอนที่ 4: หา ID จาก slot ที่มีข้อมูล
+Available_Slot_IDs = UNIQUE(FILTER(slot1,(ID1=INDEX(Available_Entities,1))*(ID2=INDEX(Available_Actions,1))*(slot1<>"")))
+
+// =============================================================
+// CONDITIONAL COUNTING & CONDITIONS
+// =============================================================
+
+// Count Unique Items
+=SUMPRODUCT((ID1="${entity}")*(ID2="${action}")/(COUNTIFS(ID1,"${entity}",ID2,"${action}",slot1,slot1)+(ID1<>"${entity}")+(ID2<>"${action}")))
+
+// Count with Multiple Conditions
+=COUNTIFS(ID1,"${entity}",ID2,"${action}",StatN,"${statN}",StatC,"${statC}")
+=COUNTIFS(ID1,"${entity}*",ID2,"${action}",slot7,">0")
+
+// Exists/Check Functions  
+=IF(COUNTIFS(ID1,"${entity}",ID2,"${action}")>0,"EXISTS","NOT_FOUND")
+=IF(SUMIFS(slot7,ID1,"${entity}",ID2,"${action}",StatC,"A")>0,"HAS_AMOUNT","NO_AMOUNT")
+
+// =============================================================
+// ADVANCED CONDITIONAL REFERENCES
+// =============================================================
+
+// Reference สำหรับใช้ต่อ
+Condition_${entity}_${action} = (ID1="${entity}")*(ID2="${action}")
+Condition_${entity}_${action}_Cash = (ID1="${entity}")*(ID2="${action}")*(StatN="0")
+Condition_${entity}_${action}_Amount = (ID1="${entity}")*(ID2="${action}")*(StatC="A")
+
+// ใช้ Condition ที่สร้างไว้
+=SUMPRODUCT(Condition_${entity}_${action}*slot7)
+=SUMPRODUCT(Condition_${entity}_${action}_Cash*slot1)
+=AVERAGE(IF(Condition_${entity}_${action}_Amount,slot7))
+
+// =============================================================
+// READY-TO-USE FORMULAS
+// =============================================================
+
+// Copy these formulas directly to your Excel sheet:
+${generateReadyFormulas(entity, action, statN, statC)}
+            `;
+            
+            document.getElementById('formulaOutput').textContent = formulas;
+        }
+
+        function generateReadyFormulas(entity, action, statN, statC) {
+            return `
+// คัดลอกสูตรเหล่านี้ไปใช้ใน Excel ได้เลย:
+
+=SUMIFS(slot7,ID1,"${entity}",ID2,"${action}",StatN,"${statN}",StatC,"${statC}")
+=SUMIFS(slot1,ID1,"${entity}",ID2,"${action}",StatC,"${statC}")
+=SUMIFS(slot7,ID1,"${entity}*",ID2,"${action}")
+=SUMIFS(slot1,ID1,"${entity}*",ID2,"${action}*")
+
+// สำหรับการวิเคราะห์ขั้นสูง:
+=SUMIFS(slot7,ID1,"${entity}",ID2,"${action}",Date,">="&TODAY()-30)
+=SUMIFS(slot7,ID1,"${entity}",ID2,"${action}",StatN,"0")/SUMIFS(slot7,ID1,"${entity}",ID2,"${action}",StatN,"1")
+            `;
+        }
+
+        function copyFormulas() {
+            const formulaText = document.getElementById('formulaOutput').textContent;
+            navigator.clipboard.writeText(formulaText).then(() => {
+                alert('สูตรถูกคัดลอกแล้ว! 📋');
+            });
+        }
+
+        function exportToExcel() {
+            alert('🚧 Export to Excel feature coming soon...');
+        }
+
+        function resetAll() {
+            document.getElementById('dataInput').value = '';
+            document.getElementById('behaviorAnswer').value = '';
+            document.getElementById('valueType').value = '';
+            document.getElementById('transactionType').value = '';
+            document.getElementById('mappingResults').innerHTML = `
+                <p style="text-align: center; color: #999; padding: 40px;">
+                    กรอกข้อมูลแล้วกด Generate เพื่อดู mapping
+                </p>
+            `;
+            document.getElementById('formulaOutput').textContent = `// กรอกข้อมูลแล้วกด Generate เพื่อสร้างสูตร
+
+Formulas will appear here...`;
+            document.getElementById('uncertaintyHelp').style.display = 'none';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Interactive Formula Generator Ready!');
+        });
+    </script>
+</body>
+</html>
