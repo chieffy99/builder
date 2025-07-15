@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Cards - Complete System</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&family=Sarabun:wght@300;400;500;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" defer></script>
+    <style>
+        :root {
+            --bg-primary: #050a18;
+            --bg-secondary: #100117f9;
+            --bg-third: rgba(255, 255, 255, 0.01);
+            --bg-card: rgba(25, 30, 45, 0.85);
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #6b8afd;
+            --accent-secondary: #9c5fff;
+            --status-0: #56ab2f;
+            --status-1: #fdcb6e;
+            --border-light: rgba(107, 138, 253, 0.3);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --card-glow: 0 0 15px rgba(107, 138, 253, 0.2);
+            --blur-effect: blur(10px);
+            
+            /* Z-index hierarchy */
+            --z-background: -1;
+            --z-workspace: 1;
+            --z-card: 10;
+            --z-card-active: 20;
+            --z-navbar: 100;
+            --z-fab: 1000;
+            --z-fab-menu: 1010;
+            --z-modal: 2000;
+            --z-context-menu: 2010;
+            --z-overlay: 3000;
+        }
+        
+        body {
+            font-family: 'Prompt', 'Sarabun', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* พื้นหลังเส้นและจุด */
+        .background-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: var(--z-background);
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .vertical-line {
+            position: absolute;
+            width: 1px;
+            height: 100vh;
+            background: linear-gradient(to bottom, transparent, rgba(107, 138, 253, 0.2), transparent);
+            animation: float 15s infinite linear;
+        }
+        
+        .dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: rgba(107, 138, 253, 0.5);
+            animation: pulse 3s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: rgba(10, 15, 30, 0.8);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border-bottom: 1px solid rgba(107, 138, 253, 0.2);
+            padding: 15px 25px;
+            position: sticky;
+            top: 0;
+            z-index: var(--z-navbar);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+        
+        .logo {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(107, 138, 253, 0.5);
+        }
+        
+        .navbar-title {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .navbar-menu a {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .navbar-menu a:hover {
+            background: rgba(107, 138, 253, 0.1);
+            color: var(--accent-primary);
+        }
+        
+        .navbar-menu a.active {
+            background: rgba(107, 138, 253, 0.15);
+            color: var(--accent-primary);
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            height: calc(100vh - 70px);
+            position: relative;
+        }
+        
+        /* Dashboard Workspace */
+        .dashboard-workspace {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            position: relative;
+            min-height: calc(100vh - 110px);
+            z-index: var(--z-workspace);
+            background: rgba(6, 6, 20, 0.3);
+        }
+        
+        /* Enhanced Card Styling */
+        .dashboard-card {
+            position: absolute;
+            min-width: 300px;
+            min-height: 200px;
+            max-width: 800px;
+            max-height: 600px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border: 1px solid rgba(107, 138, 253, 0.15);
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: box-shadow 0.3s, transform 0.2s;
+            z-index: var(--z-card);
+            
+            /* Data attributes support */
+        }
+        
+        .dashboard-card:hover {
+            box-shadow: 0 10px 40px rgba(107, 138, 253, 0.25);
+        }
+        
+        .dashboard-card.card-dragging {
+            opacity: 0.8;
+            z-index: var(--z-card-active);
+        }
+        
+        /* Card States */
+        .dashboard-card.card-locked {
+            border: 2px dashed #ff6b6b;
+            cursor: not-allowed;
+        }
+        
+        .dashboard-card.card-locked::before {
+            content: "🔒";
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 107, 107, 0.9);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 12px;
+            z-index: 10;
+        }
+        
+        .dashboard-card.card-mixable {
+            border-color: rgba(107, 138, 253, 0.3);
+        }
+        
+        .dashboard-card.card-mixable:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px rgba(107, 138, 253, 0.3);
+        }
+        
+        .dashboard-card.card-selected-for-mix {
+            border: 2px solid var(--accent-primary);
+            box-shadow: 0 0 20px rgba(107, 138, 253, 0.5);
+            transform: scale(1.02);
+        }
+        
+        .dashboard-card.card-mixed {
+            border: 2px solid #4caf50;
+            background: linear-gradient(135deg, var(--bg-card), rgba(76, 175, 80, 0.1));
+        }
+        
+        /* Card Header - Fixed Height */
+        .card-header {
+            height: 50px;
+            background: linear-gradient(45deg, rgba(107, 138, 253, 0.4), rgba(156, 95, 255, 0.4));
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: move;
+        }
+        
+        .card-locked .card-header {
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+        
+        .card-title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            max-width: 60%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .card-tools {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .card-tool {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 1rem;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .card-tool:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-tool.tool-locked {
+            color: #ff6b6b;
+        }
+        
+        .card-tool.tool-active {
+            background: rgba(107, 138, 253, 0.3);
+            color: var(--accent-primary);
+        }
+        
+        /* Card Body - Flexible */
+        .card-body {
+            flex: 1;
+            padding: 15px;
+            overflow: auto;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 10px;
+        }
+        
+        .card-body .chart-container {
+            width: 100%;
+            height: 100%;
+            min-height: 150px;
+        }
+        
+        .card-body .chart-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        /* Resize Handle */
+        .resize-handle {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 16px;
+            height: 16px;
+            cursor: nwse-resize;
+            background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.2) 50%);
+            border-bottom-right-radius: 6px;
+        }
+        
+        .resize-handle:hover {
+            background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.4) 50%);
+        }
+        
+        .card-locked .resize-handle {
+            display: none;
+        }
+        
+        /* FAB Button & Menu */
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: var(--z-fab);
+        }
+        
+        .fabBtn {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .fabBtn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(107, 138, 253, 0.4);
+        }
+        
+        /* FAB Menus */
+        .fab-menus {
+            position: absolute;
+            z-index: var(--z-fab-menu);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .fab-menus.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .vertical-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: absolute;
+            bottom: 75px;
+            right: 5px;
+            background: rgba(16, 1, 23, 0.85);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border-radius: 15px;
+            padding: 12px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .horizontal-menu {
+            display: flex;
+            flex-direction: row;
+            gap: 12px;
+            position: absolute;
+            bottom: 5px;
+            right: 75px;
+            background: rgba(16, 1, 23, 0.85);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border-radius: 15px;
+            padding: 12px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .horizontal-menu .menu-item .tooltip {
+            bottom: -5px;
+            transform: translateY(100%);
+        }
+
+        .menu-item {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            background: rgba(107, 138, 253, 0.1);
+            border: 1px solid rgba(107, 138, 253, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .menu-item:hover {
+            background: rgba(107, 138, 253, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(107, 138, 253, 0.3);
+        }
+        
+        /* Tooltip System */
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: calc(var(--font-size, 16px) * 0.05);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        
+        .tooltip.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .menu-item .tooltip {
+            left: -5px;
+            transform: translateX(-100%);
+        }
+        
+        .menu-item:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Context Menu */
+        .context-menu {
+            position: absolute;
+            background: var(--bg-card);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border-radius: 8px;
+            padding: 5px 0;
+            min-width: 150px;
+            box-shadow: var(--card-shadow);
+            display: none;
+            z-index: var(--z-context-menu);
+            border: 1px solid var(--border-light);
+        }
+        
+        .context-menu-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .context-menu-item:hover {
+            background: rgba(107, 138, 253, 0.1);
+        }
+        
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: var(--z-overlay);
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-light);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+            color: var(--accent-primary);
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            margin-bottom: 15px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-primary);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Card Types */
+        .card-type-chart {
+            border-left: 4px solid var(--accent-primary);
+        }
+        
+        .card-type-table {
+            border-left: 4px solid #4caf50;
+        }
+        
+        .card-type-summary {
+            border-left: 4px solid #ff9800;
+        }
+        
+        .card-type-custom {
+            border-left: 4px solid #9c27b0;
+        }
+        
+        /* Confirmation Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: var(--z-overlay);
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-light);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+            color: var(--accent-primary);
+            margin: 0;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            margin-bottom: 15px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-btn.primary {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+        
+        .modal-btn.secondary {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-primary);
+        }
+        
+        /* Card Mixing Modal */
+        .card-mixing-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: var(--z-overlay);
+        }
+        
+        .card-mixing-content {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-light);
+        }
+        
+        /* Mixing Modal Specific Styles */
+        .mix-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            background: rgba(107, 138, 253, 0.05);
+        }
+        
+        .mix-section h4 {
+            margin: 0 0 10px 0;
+            color: var(--accent-primary);
+            font-size: 1rem;
+        }
+        
+        .source-card-info {
+            padding: 10px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-primary);
+        }
+        
+        .card-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .card-option {
+            padding: 10px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .card-option:hover {
+            border-color: var(--accent-primary);
+            background: rgba(107, 138, 253, 0.1);
+        }
+        
+        .card-option.selected {
+            border-color: var(--accent-primary);
+            background: rgba(107, 138, 253, 0.2);
+        }
+        
+        .card-option-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .card-option-type {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .mix-type-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .radio-option:hover {
+            background: rgba(107, 138, 253, 0.05);
+            border-color: var(--accent-primary);
+        }
+        
+        .radio-option input[type="radio"] {
+            margin-top: 2px;
+        }
+        
+        .radio-option span {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        
+        .radio-option small {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* Notification Styles */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .notification {
+            font-family: 'Prompt', sans-serif;
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+
+        /* Mixed Card Styles */
+        .mixed-card-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            gap: 10px;
+        }
+        
+        .split-layout-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            height: 100%;
+        }
+        
+        .transformed-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            background: linear-gradient(45deg, rgba(107, 138, 253, 0.1), rgba(156, 95, 255, 0.1));
+            border-radius: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 10px 15px;
+            }
+            
+            .navbar-menu {
+                display: none;
+            }
+            
+            .dashboard-card {
+                min-width: 280px;
+                min-height: 180px;
+                max-width: calc(100vw - 20px);
+            }
+            
+            .card-header {
+                height: 44px;
+                padding: 8px 12px;
+            }
+            
+            .card-title {
+                font-size: 0.9rem;
+            }
+            
+            .card-tool {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- พื้นหลังเส้นและจุด -->
+    <div class="background-effect" id="backgroundEffect"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">
+            <div class="logo">DC</div>
+            <div class="navbar-title">Dashboard Cards</div>
+        </a>
+        <div class="navbar-menu">
+            <a href="#">หน้าหลัก</a>
+            <a href="#">Data Source</a>
+            <a href="#">Card Library</a>
+            <a href="#" class="active">Dashboard</a>
+        </div>
+    </nav>
+    
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Dashboard Workspace -->
+        <div class="dashboard-workspace" id="dashboardWorkspace">
+            <!-- การ์ดจะถูกสร้างโดย JavaScript -->
+        </div>
+    </div>
+    
+    <!-- FAB Container -->
+    <div class="fab-container">
+        <button class="fabBtn" id="fabBtn">+</button>
+        
+        <div class="fab-menus" id="fabMenus">
+            <div class="vertical-menu">
+                <div class="menu-item" data-card-type="line-chart">
+                    📈
+                    <span class="tooltip">กราฟเส้น</span>
+                </div>
+                <div class="menu-item" data-card-type="bar-chart">
+                    📊
+                    <span class="tooltip">กราฟแท่ง</span>
+                </div>
+                <div class="menu-item" data-card-type="pie-chart">
+                    🥧
+                    <span class="tooltip">กราฟวงกลม</span>
+                </div>
+                <div class="menu-item" data-card-type="table">
+                    📋
+                    <span class="tooltip">ตารางข้อมูล</span>
+                </div>
+                <div class="menu-item" data-card-type="summary">
+                    📄
+                    <span class="tooltip">สรุปข้อมูล</span>
+                </div>
+                <div class="menu-item" data-card-type="custom">
+                    ⚙️
+                    <span class="tooltip">กำหนดเอง</span>
+                </div>
+            </div>
+            
+            <!-- เมนูแนวนอน -->
+            <div class="horizontal-menu">
+                <div class="menu-item" data-card-type="line-chart">
+                    📈
+                    <span class="tooltip">กราฟเส้น</span>
+                </div>
+                <div class="menu-item" data-card-type="bar-chart">
+                    📊
+                    <span class="tooltip">กราฟแท่ง</span>
+                </div>
+                <div class="menu-item" data-card-type="pie-chart">
+                    🥧
+                    <span class="tooltip">กราฟวงกลม</span>
+                </div>
+                <div class="menu-item" data-card-type="table">
+                    📋
+                    <span class="tooltip">ตารางข้อมูล</span>
+                </div>
+                <div class="menu-item" data-card-type="summary">
+                    📄
+                    <span class="tooltip">สรุปข้อมูล</span>
+                </div>
+                <div class="menu-item" data-card-type="custom">
+                    ⚙️
+                    <span class="tooltip">กำหนดเอง</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" data-action="duplicate">📋 คัดลอก</div>
+        <div class="context-menu-item" data-action="export">📤 ส่งออก</div>
+        <div class="context-menu-item" data-action="delete" style="color: #ff6b6b;">🗑️ ลบการ์ด</div>
+    </div>
+    
+    <!-- Card Creation Modal -->
+    <div class="modal-overlay" id="cardCreationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">สร้างการ์ดใหม่</h3>
+                <button class="modal-close" id="closeCardModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">ชื่อการ์ด:</label>
+                    <input type="text" id="cardTitleInput" placeholder="ชื่อการ์ด" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: rgba(255,255,255,0.1); color: var(--text-primary);">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">ประเภท:</label>
+                    <select id="cardTypeSelect" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: rgba(255,255,255,0.1); color: var(--text-primary);">
+                        <option value="line-chart">กราฟเส้น</option>
+                        <option value="bar-chart">กราฟแท่ง</option>
+                        <option value="pie-chart">กราฟวงกลม</option>
+                        <option value="table">ตารางข้อมูล</option>
+                        <option value="summary">สรุปข้อมูล</option>
+                        <option value="custom">กำหนดเอง</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">ขนาด:</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="cardWidthInput" placeholder="กว้าง" min="300" max="800" value="350" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: rgba(255,255,255,0.1); color: var(--text-primary);">
+                        <input type="number" id="cardHeightInput" placeholder="สูง" min="200" max="600" value="250" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: rgba(255,255,255,0.1); color: var(--text-primary);">
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="cardMixableCheck" checked>
+                        <span>อนุญาตให้ผสมการ์ด</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelCardBtn">ยกเลิก</button>
+                <button class="btn btn-primary" id="createCardBtn">สร้างการ์ด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Card Factory Class
+        class CardFactory {
+            static nextId = 1;
+            
+            static createCard(options = {}) {
+                const {
+                    id = `card-${this.nextId++}`,
+                    title = 'New Card',
+                    type = 'line-chart',
+                    width = 350,
+                    height = 250,
+                    x = 100,
+                    y = 100,
+                    mixable = true,
+                    locked = false,
+                    data = null
+                } = options;
+                
+                const card = document.createElement('div');
+                card.className = `dashboard-card card-type-${type.split('-')[0]}`;
+                card.id = id;
+                card.style.width = `${width}px`;
+                card.style.height = `${height}px`;
+                card.style.left = `${x}px`;
+                card.style.top = `${y}px`;
+                
+                // Data attributes
+                card.setAttribute('data-card-id', id);
+                card.setAttribute('data-card-type', type);
+                card.setAttribute('data-mixable', mixable);
+                card.setAttribute('data-mouse-role', 'draggable-card');
+                
+                if (locked) {
+                    card.classList.add('card-locked');
+                }
+                
+                if (mixable) {
+                    card.classList.add('card-mixable');
+                }
+                
+                // Create card content
+                const content = this.createCardContent(type, data);
+                
+                card.innerHTML = `
+                    <div class="card-header" data-mouse-role="drag-handle">
+                        <h3 class="card-title">${title}</h3>
+                        <div class="card-tools">
+                            <button class="card-tool" data-action="lock" title="ล็อค/ปลดล็อค">
+                                ${locked ? '🔒' : '🔓'}
+                            </button>
+                            <button class="card-tool" data-action="mix" title="ผสมการ์ด">🔄</button>
+                            <button class="card-tool" data-action="settings" title="ตั้งค่า">⚙️</button>
+                            <button class="card-tool" data-action="close" title="ปิด">×</button>
+                        </div>
+                    </div>
+                    <div class="card-body" data-mouse-role="content-area">
+                        ${content}
+                    </div>
+                    <div class="resize-handle" data-mouse-role="resize-handle"></div>
+                `;
+                
+                return card;
+            }
+            
+            static createCardContent(type, data) {
+                switch(type) {
+                    case 'line-chart':
+                    case 'bar-chart':
+                    case 'pie-chart':
+                        return `<div class="chart-container"><canvas id="chart-${this.nextId}"></canvas></div>`;
+                    
+                    case 'table':
+                        return `
+                            <div class="table-container">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background: rgba(107, 138, 253, 0.1);">
+                                            <th style="padding: 8px; border: 1px solid var(--border-light);">รายการ</th>
+                                            <th style="padding: 8px; border: 1px solid var(--border-light);">ค่า</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td style="padding: 8px; border: 1px solid var(--border-light);">ข้อมูล 1</td><td style="padding: 8px; border: 1px solid var(--border-light);">100</td></tr>
+                                        <tr><td style="padding: 8px; border: 1px solid var(--border-light);">ข้อมูล 2</td><td style="padding: 8px; border: 1px solid var(--border-light);">250</td></tr>
+                                        <tr><td style="padding: 8px; border: 1px solid var(--border-light);">ข้อมูล 3</td><td style="padding: 8px; border: 1px solid var(--border-light);">180</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                    
+                    case 'mixed-data':
+                        return `
+                            <div class="mixed-card-content">
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">
+                                    🔄 ข้อมูลที่ผสมแล้ว
+                                </div>
+                                <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: rgba(107, 138, 253, 0.05); border-radius: 8px;">
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">ข้อมูลรวม</div>
+                                        <div style="font-size: 0.9rem; color: var(--text-secondary);">การ์ดที่ผสมจากหลายแหล่ง</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    
+                    case 'split-layout':
+                        return `
+                            <div class="split-layout-content">
+                                <div style="background: rgba(107, 138, 253, 0.05); border-radius: 8px; padding: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <div style="text-align: center;">
+                                        <div style="font-weight: bold;">การ์ด A</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary);">เนื้อหาส่วนที่ 1</div>
+                                    </div>
+                                </div>
+                                <div style="background: rgba(156, 95, 255, 0.05); border-radius: 8px; padding: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <div style="text-align: center;">
+                                        <div style="font-weight: bold;">การ์ด B</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary);">เนื้อหาส่วนที่ 2</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    
+                    case 'transformed':
+                        return `
+                            <div class="transformed-content">
+                                <div>
+                                    <div style="font-size: 1.5rem; margin-bottom: 10px;">🔄✨</div>
+                                    <div style="font-weight: bold; margin-bottom: 5px;">การ์ดที่แปลงรูปแบบ</div>
+                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">ข้อมูลที่ถูกแปลงเป็นรูปแบบใหม่</div>
+                                </div>
+                            </div>
+                        `;
+                    
+                    case 'summary':
+                        return `
+                            <div class="summary-container">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div style="text-align: center; padding: 10px; background: rgba(107, 138, 253, 0.1); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--accent-primary);">1,234</div>
+                                        <div style="font-size: 0.9rem; color: var(--text-secondary);">ยอดรวม</div>
+                                    </div>
+                                    <div style="text-align: center; padding: 10px; background: rgba(76, 175, 80, 0.1); border-radius: 8px;">
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: #4caf50;">+15%</div>
+                                        <div style="font-size: 0.9rem; color: var(--text-secondary);">เปลี่ยนแปลง</div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 15px; text-align: center;">
+                                    <p style="margin: 0; color: var(--text-secondary);">อัพเดตล่าสุด: ${new Date().toLocaleString('th-TH')}</p>
+                                </div>
+                            </div>
+                        `;
+                    
+                    case 'custom':
+                        return `
+                            <div class="custom-container">
+                                <div style="text-align: center; padding: 20px;">
+                                    <div style="font-size: 3rem; margin-bottom: 10px;">🎨</div>
+                                    <p style="margin: 0; color: var(--text-secondary);">การ์ดกำหนดเอง</p>
+                                    <p style="margin: 10px 0 0; font-size: 0.9rem; color: var(--text-secondary);">คลิกเพื่อเพิ่มเนื้อหา</p>
+                                </div>
+                            </div>
+                        `;
+                    
+                    default:
+                        return '<div style="padding: 20px; text-align: center;">เนื้อหาการ์ด</div>';
+                }
+            }
+            
+            static createSampleChart(cardId, chartType) {
+                const canvasId = `chart-${cardId.split('-')[1]}`;
+                const canvas = document.getElementById(canvasId);
+                
+                if (!canvas) return null;
+                
+                const ctx = canvas.getContext('2d');
+                
+                // Sample data
+                const sampleData = {
+                    labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.'],
+                    datasets: [{
+                        label: 'ข้อมูลตัวอย่าง',
+                        data: [12, 19, 3, 5, 2, 3],
+                        borderColor: 'rgba(107, 138, 253, 1)',
+                        backgroundColor: chartType === 'pie' ? 
+                            ['#6b8afd', '#9c5fff', '#4caf50', '#ff9800', '#f44336', '#2196f3'] :
+                            'rgba(107, 138, 253, 0.2)',
+                        borderWidth: 2
+                    }]
+                };
+                
+                const config = {
+                    type: chartType === 'line-chart' ? 'line' : 
+                          chartType === 'bar-chart' ? 'bar' : 'pie',
+                    data: sampleData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#e0e0e0',
+                                    font: { family: 'Prompt' }
+                                }
+                            }
+                        },
+                        scales: chartType !== 'pie-chart' ? {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#a0a0a0' }
+                            },
+                            x: {
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#a0a0a0' }
+                            }
+                        } : {}
+                    }
+                };
+                
+                return new Chart(ctx, config);
+            }
+        }
+        
+        // Dashboard Manager
+        class DashboardManager {
+            constructor() {
+                this.cards = new Map();
+                this.chartInstances = new Map();
+                this.workspace = document.getElementById('dashboardWorkspace');
+                this.contextMenu = document.getElementById('contextMenu');
+                this.dragState = { isDragging: false, isResizing: false };
+                this.tooltipManager = new TooltipManager();
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.createBackgroundEffect();
+                this.loadSampleCards();
+            }
+            
+            setupEventListeners() {
+                // FAB Button
+                const fabBtn = document.getElementById('fabBtn');
+                const fabMenus = document.getElementById('fabMenus');
+                
+                fabBtn.addEventListener('click', () => {
+                    fabMenus.classList.toggle('active');
+                    fabBtn.textContent = fabMenus.classList.contains('active') ? '×' : '+';
+                });
+                
+                // Close FAB menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!fabBtn.contains(e.target) && !fabMenus.contains(e.target)) {
+                        fabMenus.classList.remove('active');
+                        fabBtn.textContent = '+';
+                    }
+                });
+                
+                // Menu items
+                document.querySelectorAll('.menu-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const cardType = item.getAttribute('data-card-type');
+                        this.showCardCreationModal(cardType);
+                    });
+                });
+                
+                // ESC key handler
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        fabMenus.classList.remove('active');
+                        fabBtn.textContent = '+';
+                        this.contextMenu.style.display = 'none';
+                        document.getElementById('cardCreationModal').style.display = 'none';
+                    }
+                });
+                
+                // Context menu
+                document.addEventListener('click', () => {
+                    this.contextMenu.style.display = 'none';
+                });
+                
+                // Context menu actions
+                document.querySelectorAll('.context-menu-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const action = item.getAttribute('data-action');
+                        const cardId = this.contextMenu.getAttribute('data-card-id');
+                        this.handleContextAction(action, cardId);
+                        this.contextMenu.style.display = 'none';
+                    });
+                });
+                
+                // Card creation modal
+                this.setupCardCreationModal();
+                
+                // Confirmation modal
+                this.setupConfirmationModal();
+                
+                // Card mixing modal
+                this.setupCardMixingModal();
+            }
+            
+            setupCardCreationModal() {
+                const modal = document.getElementById('cardCreationModal');
+                const closeBtn = document.getElementById('closeCardModal');
+                const cancelBtn = document.getElementById('cancelCardBtn');
+                const createBtn = document.getElementById('createCardBtn');
+                
+                closeBtn.addEventListener('click', () => modal.style.display = 'none');
+                cancelBtn.addEventListener('click', () => modal.style.display = 'none');
+                createBtn.addEventListener('click', () => this.createCardFromModal());
+                
+                // Setup confirmation modal
+                this.setupConfirmationModal();
+                
+                // Setup mixing modal
+                this.setupMixingModal();
+            }
+
+            setupConfirmationModal() {
+                const modal = document.getElementById('confirmationModal');
+                const closeBtn = document.getElementById('closeConfirmModal');
+                const cancelBtn = document.getElementById('cancelConfirmBtn');
+                
+                closeBtn.addEventListener('click', () => modal.style.display = 'none');
+                cancelBtn.addEventListener('click', () => modal.style.display = 'none');
+            }
+
+            setupMixingModal() {
+                const modal = document.getElementById('cardMixingModal');
+                const closeBtn = document.getElementById('closeMixModal');
+                const cancelBtn = document.getElementById('cancelMixBtn');
+                const confirmBtn = document.getElementById('confirmMixBtn');
+                
+                closeBtn.addEventListener('click', () => modal.style.display = 'none');
+                cancelBtn.addEventListener('click', () => modal.style.display = 'none');
+                confirmBtn.addEventListener('click', () => this.confirmCardMix());
+            }
+            
+            setupConfirmationModal() {
+                const modal = document.getElementById('confirmationModal');
+                const closeBtn = document.getElementById('closeConfirmModal');
+                const cancelBtn = document.getElementById('cancelConfirmBtn');
+                const confirmBtn = document.getElementById('confirmActionBtn');
+                
+                closeBtn.addEventListener('click', () => modal.style.display = 'none');
+                cancelBtn.addEventListener('click', () => modal.style.display = 'none');
+                
+                confirmBtn.addEventListener('click', () => {
+                    const action = modal.getAttribute('data-action');
+                    const cardId = modal.getAttribute('data-card-id');
+                    
+                    this.handleContextAction(action, cardId);
+                    modal.style.display = 'none';
+                });
+            }
+            
+            setupCardMixingModal() {
+                const modal = document.getElementById('cardMixingModal');
+                const closeBtn = document.getElementById('closeMixModal');
+                const cancelBtn = document.getElementById('cancelMixBtn');
+                const confirmBtn = document.getElementById('confirmMixBtn');
+                
+                closeBtn.addEventListener('click', () => modal.style.display = 'none');
+                cancelBtn.addEventListener('click', () => modal.style.display = 'none');
+                
+                confirmBtn.addEventListener('click', () => {
+                    // Get selected cards and mix type
+                    const selectedCards = Array.from(document.querySelectorAll('.card-option.selected'))
+                        .map(card => card.getAttribute('data-card-id'));
+                    const mixType = document.querySelector('input[name="mixType"]:checked').value;
+                    
+                    this.mixCards(selectedCards, mixType);
+                    modal.style.display = 'none';
+                });
+            }
+            
+            showCardCreationModal(cardType = 'line-chart') {
+                const modal = document.getElementById('cardCreationModal');
+                const typeSelect = document.getElementById('cardTypeSelect');
+                
+                typeSelect.value = cardType;
+                modal.style.display = 'flex';
+                
+                // Focus on title input
+                document.getElementById('cardTitleInput').focus();
+            }
+            
+            createCardFromModal() {
+                const title = document.getElementById('cardTitleInput').value || 'ไม่มีชื่อ';
+                const type = document.getElementById('cardTypeSelect').value;
+                const width = parseInt(document.getElementById('cardWidthInput').value) || 350;
+                const height = parseInt(document.getElementById('cardHeightInput').value) || 250;
+                const mixable = document.getElementById('cardMixableCheck').checked;
+                
+                // Random position
+                const x = Math.random() * (this.workspace.offsetWidth - width);
+                const y = Math.random() * (this.workspace.offsetHeight - height);
+                
+                this.createCard({
+                    title,
+                    type,
+                    width,
+                    height,
+                    x,
+                    y,
+                    mixable
+                });
+                
+                // Reset form
+                document.getElementById('cardTitleInput').value = '';
+                document.getElementById('cardWidthInput').value = '350';
+                document.getElementById('cardHeightInput').value = '250';
+                document.getElementById('cardCreationModal').style.display = 'none';
+            }
+            
+            createCard(options) {
+                const card = CardFactory.createCard(options);
+                this.workspace.appendChild(card);
+                
+                // Store card data
+                this.cards.set(card.id, {
+                    element: card,
+                    type: options.type,
+                    title: options.title,
+                    locked: options.locked || false,
+                    mixable: options.mixable !== false
+                });
+                
+                // Setup interactions
+                this.setupCardInteractions(card);
+                
+                // Create chart if needed
+                if (options.type.includes('chart')) {
+                    setTimeout(() => {
+                        const chart = CardFactory.createSampleChart(card.id, options.type);
+                        if (chart) {
+                            this.chartInstances.set(card.id, chart);
+                        }
+                    }, 100);
+                }
+                
+                return card;
+            }
+            
+            setupCardInteractions(card) {
+                const cardId = card.id;
+                
+                // Dragging
+                this.setupDragging(card);
+                
+                // Resizing
+                this.setupResizing(card);
+                
+                // Context menu
+                card.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    this.showContextMenu(e.clientX, e.clientY, cardId);
+                });
+                
+                // Tool buttons
+                card.querySelectorAll('.card-tool').forEach(tool => {
+                    tool.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const action = tool.getAttribute('data-action');
+                        this.handleToolAction(action, cardId);
+                    });
+                });
+            }
+            
+            setupDragging(card) {
+                const header = card.querySelector('.card-header');
+                let isDragging = false;
+                let startX, startY, startLeft, startTop;
+                
+                header.addEventListener('mousedown', (e) => {
+                    if (card.classList.contains('card-locked')) return;
+                    if (e.target.closest('.card-tool')) return;
+                    
+                    isDragging = true;
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    startLeft = parseInt(card.style.left) || 0;
+                    startTop = parseInt(card.style.top) || 0;
+                    
+                    card.classList.add('card-dragging');
+                    document.addEventListener('mousemove', handleDrag);
+                    document.addEventListener('mouseup', stopDrag);
+                    
+                    e.preventDefault();
+                });
+                
+                const handleDrag = (e) => {
+                    if (!isDragging) return;
+                    
+                    const dx = e.clientX - startX;
+                    const dy = e.clientY - startY;
+                    
+                    card.style.left = `${startLeft + dx}px`;
+                    card.style.top = `${startTop + dy}px`;
+                };
+                
+                const stopDrag = () => {
+                    isDragging = false;
+                    card.classList.remove('card-dragging');
+                    document.removeEventListener('mousemove', handleDrag);
+                    document.removeEventListener('mouseup', stopDrag);
+                };
+            }
+            
+            setupResizing(card) {
+                const handle = card.querySelector('.resize-handle');
+                let isResizing = false;
+                let startX, startY, startWidth, startHeight;
+                
+                handle.addEventListener('mousedown', (e) => {
+                    if (card.classList.contains('card-locked')) return;
+                    
+                    isResizing = true;
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    startWidth = parseInt(window.getComputedStyle(card).width);
+                    startHeight = parseInt(window.getComputedStyle(card).height);
+                    
+                    document.addEventListener('mousemove', handleResize);
+                    document.addEventListener('mouseup', stopResize);
+                    
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+                
+                const handleResize = (e) => {
+                    if (!isResizing) return;
+                    
+                    const dx = e.clientX - startX;
+                    const dy = e.clientY - startY;
+                    
+                    const newWidth = Math.max(300, Math.min(800, startWidth + dx));
+                    const newHeight = Math.max(200, Math.min(600, startHeight + dy));
+                    
+                    card.style.width = `${newWidth}px`;
+                    card.style.height = `${newHeight}px`;
+                };
+                
+                const stopResize = () => {
+                    isResizing = false;
+                    document.removeEventListener('mousemove', handleResize);
+                    document.removeEventListener('mouseup', stopResize);
+                    
+                    // Update chart if exists
+                    const chart = this.chartInstances.get(card.id);
+                    if (chart) {
+                        setTimeout(() => chart.resize(), 100);
+                    }
+                };
+            }
+            
+            showContextMenu(x, y, cardId) {
+                this.contextMenu.style.left = `${x}px`;
+                this.contextMenu.style.top = `${y}px`;
+                this.contextMenu.style.display = 'block';
+                this.contextMenu.setAttribute('data-card-id', cardId);
+            }
+            
+            handleContextAction(action, cardId) {
+                // Context menu ยังคงมีไว้สำหรับ right-click
+                switch(action) {
+                    case 'duplicate':
+                        this.duplicateCard(cardId);
+                        break;
+                    case 'export':
+                        this.exportCard(cardId);
+                        break;
+                    case 'delete':
+                        if (confirm(`ลบการ์ด "${this.cards.get(cardId).title}" หรือไม่?\n\nการดำเนินการนี้ไม่สามารถย้อนกลับได้`)) {
+                            this.deleteCard(cardId);
+                        }
+                        break;
+                }
+            }
+            
+            handleToolAction(action, cardId) {
+                switch(action) {
+                    case 'lock':
+                        this.toggleLock(cardId);
+                        break;
+                    case 'mix':
+                        this.quickMixCard(cardId);
+                        break;
+                    case 'settings':
+                        this.showCardSettings(cardId);
+                        break;
+                    case 'close':
+                        if (confirm(`ลบการ์ด "${this.cards.get(cardId).title}" หรือไม่?`)) {
+                            this.deleteCard(cardId);
+                        }
+                        break;
+                }
+            }
+            
+            toggleLock(cardId) {
+                const cardData = this.cards.get(cardId);
+                if (!cardData) return;
+                
+                const card = cardData.element;
+                const lockBtn = card.querySelector('[data-action="lock"]');
+                
+                cardData.locked = !cardData.locked;
+                
+                if (cardData.locked) {
+                    card.classList.add('card-locked');
+                    lockBtn.textContent = '🔓';
+                    lockBtn.classList.add('tool-locked');
+                } else {
+                    card.classList.remove('card-locked');
+                    lockBtn.textContent = '🔒';
+                    lockBtn.classList.remove('tool-locked');
+                }
+            }
+            
+            deleteCard(cardId) {
+                const cardData = this.cards.get(cardId);
+                if (!cardData) return;
+                
+                // Remove chart instance
+                const chart = this.chartInstances.get(cardId);
+                if (chart) {
+                    chart.destroy();
+                    this.chartInstances.delete(cardId);
+                }
+                
+                // Remove from DOM
+                cardData.element.remove();
+                
+                // Remove from data
+                this.cards.delete(cardId);
+            }
+            
+            duplicateCard(cardId) {
+                const cardData = this.cards.get(cardId);
+                if (!cardData) return;
+                
+                const card = cardData.element;
+                const rect = card.getBoundingClientRect();
+                
+                this.createCard({
+                    title: cardData.title + ' (คัดลอก)',
+                    type: cardData.type,
+                    width: parseInt(card.style.width),
+                    height: parseInt(card.style.height),
+                    x: parseInt(card.style.left) + 20,
+                    y: parseInt(card.style.top) + 20,
+                    mixable: cardData.mixable
+                });
+            }
+            
+            editCard(cardId) {
+                alert('ฟีเจอร์แก้ไขการ์ดยังไม่พร้อมใช้งาน');
+            }
+            
+            prepareMixCard(cardId) {
+                const cardData = this.cards.get(cardId);
+                if (!cardData) return;
+                
+                const modal = document.getElementById('cardMixingModal');
+                const sourceInfo = document.getElementById('sourceCardInfo');
+                const cardSelector = document.getElementById('cardSelector');
+                
+                // Set source card info
+                sourceInfo.innerHTML = `
+                    <strong>${cardData.title}</strong>
+                    <div>ประเภท: ${cardData.type}</div>
+                    <div>ขนาด: ${parseInt(card.style.width)} x ${parseInt(card.style.height)}</div>
+                `;
+                
+                // Clear and populate card selector
+                cardSelector.innerHTML = '';
+                this.cards.forEach((data, id) => {
+                    if (id === cardId || data.locked) return;
+                    
+                    const option = document.createElement('div');
+                    option.className = 'card-option';
+                    option.setAttribute('data-card-id', id);
+                    option.textContent = data.title;
+                    
+                    // Select/Deselect on click
+                    option.addEventListener('click', () => {
+                        option.classList.toggle('selected');
+                    });
+                    
+                    cardSelector.appendChild(option);
+                });
+                
+                modal.style.display = 'flex';
+            }
+            
+            mixCards(cardIds, mixType) {
+                if (cardIds.length < 2) {
+                    alert('กรุณาเลือกการ์อย่างน้อย 2 การ์ด');
+                    return;
+                }
+                
+                // Dummy mix function
+                const mixedCard = {
+                    id: `card-mixed-${Date.now()}`,
+                    title: `การ์ดผสม: ${cardIds.join(' & ')}`,
+                    type: 'mixed-chart',
+                    width: 350,
+                    height: 250,
+                    x: 100,
+                    y: 100,
+                    mixable: true,
+                    locked: false,
+                    data: null
+                };
+                
+                this.createCard(mixedCard);
+            }
+            
+            exportCard(cardId) {
+                alert('ฟีเจอร์ส่งออกการ์ดยังไม่พร้อมใช้งาน');
+            }
+            
+            showCardSettings(cardId) {
+                alert('ฟีเจอร์ตั้งค่าการ์ดยังไม่พร้อมใช้งาน');
+            }
+            
+            createBackgroundEffect() {
+                const background = document.getElementById('backgroundEffect');
+                
+                // Create vertical lines
+                for (let i = 0; i < 10; i++) {
+                    const line = document.createElement('div');
+                    line.className = 'vertical-line';
+                    line.style.left = `${5 + i * 10}%`;
+                    line.style.animationDelay = `${i * 0.5}s`;
+                    background.appendChild(line);
+                }
+                
+                // Create dots
+                for (let i = 0; i < 50; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    dot.style.left = `${Math.random() * 100}%`;
+                    dot.style.top = `${Math.random() * 100}%`;
+                    dot.style.animationDelay = `${Math.random() * 3}s`;
+                    dot.style.opacity = Math.random() * 0.5 + 0.1;
+                    background.appendChild(dot);
+                }
+            }
+            
+            loadSampleCards() {
+                // Create sample cards
+                setTimeout(() => {
+                    this.createCard({
+                        title: 'ยอดขายรายเดือน',
+                        type: 'line-chart',
+                        x: 50,
+                        y: 50
+                    });
+                    
+                    this.createCard({
+                        title: 'การเปรียบเทียบสินค้า',
+                        type: 'bar-chart',
+                        x: 420,
+                        y: 50
+                    });
+                    
+                    this.createCard({
+                        title: 'สัดส่วนตลาด',
+                        type: 'pie-chart',
+                        x: 50,
+                        y: 320
+                    });
+                    
+                    this.createCard({
+                        title: 'ข้อมูลสรุป',
+                        type: 'summary',
+                        x: 420,
+                        y: 320
+                    });
+                }, 500);
+            }
+        }
+        
+        // Tooltip Manager
+        class TooltipManager {
+            constructor() {
+                this.currentTooltip = null;
+                this.tooltipTimer = null;
+            }
+            
+            show(element, text, delay = 400) {
+                this.hide();
+                
+                element.addEventListener('mouseenter', () => {
+                    this.tooltipTimer = setTimeout(() => {
+                        this.create(element, text);
+                    }, delay);
+                });
+                
+                element.addEventListener('mousemove', () => {
+                    this.hide();
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    this.hide();
+                });
+            }
+            
+            create(element, text) {
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip show';
+                tooltip.textContent = text;
+                
+                document.body.appendChild(tooltip);
+                
+                const rect = element.getBoundingClientRect();
+                const tooltipRect = tooltip.getBoundingClientRect();
+                
+                const x = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                const y = rect.top - tooltipRect.height - 10;
+                
+                tooltip.style.left = `${Math.max(10, x)}px`;
+                tooltip.style.top = `${Math.max(10, y)}px`;
+                
+                this.currentTooltip = tooltip;
+            }
+            
+            hide() {
+                clearTimeout(this.tooltipTimer);
+                
+                if (this.currentTooltip) {
+                    this.currentTooltip.remove();
+                    this.currentTooltip = null;
+                }
+            }
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            window.dashboardManager = new DashboardManager();
+        });
+    </script>
+</body>
+</html>
