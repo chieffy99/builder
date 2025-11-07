@@ -1,3 +1,6 @@
+2025-11-07: simplify UnifiedEventBus flow and center-based resize handling for dashboard cards
+2025-11-07: expand UnifiedEventBus to unify keyboard, touch, and pen flows for dashboard cards
+2025-11-06: add UnifiedEventBus for dashboard interactions
 2025-06-22: add shortcut panel and setup script
 2025-07-08: consolidated dashboard prototypes
 2025-07-08: add MIT license
