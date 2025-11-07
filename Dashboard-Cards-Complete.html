@@ -193,9 +193,14 @@
             
             /* Data attributes support */
         }
-        
+
         .dashboard-card:hover {
             box-shadow: 0 10px 40px rgba(107, 138, 253, 0.25);
+        }
+
+        .dashboard-card.card-hovering:not(.card-dragging) {
+            box-shadow: 0 14px 45px rgba(156, 95, 255, 0.3);
+            border-color: rgba(156, 95, 255, 0.35);
         }
         
         .dashboard-card.card-dragging {
@@ -1024,6 +1029,7 @@
     </div>
 
     <!-- JavaScript -->
+    <script src="scripts/unifiedEventBus.js"></script>
     <script>
         // Card Factory Class
         class CardFactory {
@@ -1085,7 +1091,18 @@
                     </div>
                     <div class="resize-handle" data-mouse-role="resize-handle"></div>
                 `;
-                
+
+                card.setAttribute('tabindex', '0');
+                const headerEl = card.querySelector('.card-header');
+                if (headerEl) {
+                    headerEl.setAttribute('tabindex', '0');
+                }
+
+                const resizeHandle = card.querySelector('.resize-handle');
+                if (resizeHandle) {
+                    resizeHandle.setAttribute('tabindex', '0');
+                }
+
                 return card;
             }
             
@@ -1256,9 +1273,11 @@
                 this.chartInstances = new Map();
                 this.workspace = document.getElementById('dashboardWorkspace');
                 this.contextMenu = document.getElementById('contextMenu');
-                this.dragState = { isDragging: false, isResizing: false };
                 this.tooltipManager = new TooltipManager();
-                
+                const eventRoot = this.workspace || document;
+                this.eventBus = new UnifiedEventBus(eventRoot);
+                this.interactionHandles = new Map();
+
                 this.init();
             }
             
@@ -1475,13 +1494,21 @@
             
             setupCardInteractions(card) {
                 const cardId = card.id;
-                
-                // Dragging
-                this.setupDragging(card);
-                
-                // Resizing
-                this.setupResizing(card);
-                
+
+                const existingHandles = this.interactionHandles.get(cardId);
+                if (existingHandles) {
+                    if (typeof existingHandles.drag === 'function') existingHandles.drag();
+                    if (typeof existingHandles.resize === 'function') existingHandles.resize();
+                    if (typeof existingHandles.hover === 'function') existingHandles.hover();
+                }
+
+                const handles = {
+                    drag: this.setupDragging(card),
+                    resize: this.setupResizing(card),
+                    hover: this.setupHover(card)
+                };
+                this.interactionHandles.set(cardId, handles);
+
                 // Context menu
                 card.addEventListener('contextmenu', (e) => {
                     e.preventDefault();
@@ -1500,89 +1527,126 @@
             
             setupDragging(card) {
                 const header = card.querySelector('.card-header');
-                let isDragging = false;
-                let startX, startY, startLeft, startTop;
-                
-                header.addEventListener('mousedown', (e) => {
-                    if (card.classList.contains('card-locked')) return;
-                    if (e.target.closest('.card-tool')) return;
-                    
-                    isDragging = true;
-                    startX = e.clientX;
-                    startY = e.clientY;
-                    startLeft = parseInt(card.style.left) || 0;
-                    startTop = parseInt(card.style.top) || 0;
-                    
-                    card.classList.add('card-dragging');
-                    document.addEventListener('mousemove', handleDrag);
-                    document.addEventListener('mouseup', stopDrag);
-                    
-                    e.preventDefault();
+                if (!header) {
+                    return () => {};
+                }
+
+                return this.eventBus.registerDraggable(card, {
+                    handle: header,
+                    canStart: (event) => {
+                        if (card.classList.contains('card-locked')) return false;
+                        if (event.target.closest('.card-tool')) return false;
+                        return true;
+                    },
+                    keyboardStep: 12,
+                    onStart: () => {
+                        card.classList.add('card-dragging');
+                        card.classList.remove('card-hovering');
+                        return {
+                            startLeft: Number.parseInt(card.style.left, 10) || 0,
+                            startTop: Number.parseInt(card.style.top, 10) || 0
+                        };
+                    },
+                    onMove: (_event, state) => {
+                        const { data, dx, dy } = state;
+                        card.style.left = `${data.startLeft + dx}px`;
+                        card.style.top = `${data.startTop + dy}px`;
+                    },
+                    onEnd: () => {
+                        card.classList.remove('card-dragging');
+                        if (!card.classList.contains('card-locked') && card.matches(':hover')) {
+                            card.classList.add('card-hovering');
+                        }
+                    }
                 });
-                
-                const handleDrag = (e) => {
-                    if (!isDragging) return;
-                    
-                    const dx = e.clientX - startX;
-                    const dy = e.clientY - startY;
-                    
-                    card.style.left = `${startLeft + dx}px`;
-                    card.style.top = `${startTop + dy}px`;
-                };
-                
-                const stopDrag = () => {
-                    isDragging = false;
-                    card.classList.remove('card-dragging');
-                    document.removeEventListener('mousemove', handleDrag);
-                    document.removeEventListener('mouseup', stopDrag);
-                };
             }
-            
+
+            setupHover(card) {
+                return this.eventBus.registerHover(card, {
+                    onEnter: () => {
+                        if (!card.classList.contains('card-locked')) {
+                            card.classList.add('card-hovering');
+                        }
+                    },
+                    onLeave: () => {
+                        card.classList.remove('card-hovering');
+                    }
+                });
+            }
+
             setupResizing(card) {
                 const handle = card.querySelector('.resize-handle');
-                let isResizing = false;
-                let startX, startY, startWidth, startHeight;
-                
-                handle.addEventListener('mousedown', (e) => {
-                    if (card.classList.contains('card-locked')) return;
-                    
-                    isResizing = true;
-                    startX = e.clientX;
-                    startY = e.clientY;
-                    startWidth = parseInt(window.getComputedStyle(card).width);
-                    startHeight = parseInt(window.getComputedStyle(card).height);
-                    
-                    document.addEventListener('mousemove', handleResize);
-                    document.addEventListener('mouseup', stopResize);
-                    
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-                
-                const handleResize = (e) => {
-                    if (!isResizing) return;
-                    
-                    const dx = e.clientX - startX;
-                    const dy = e.clientY - startY;
-                    
-                    const newWidth = Math.max(300, Math.min(800, startWidth + dx));
-                    const newHeight = Math.max(200, Math.min(600, startHeight + dy));
-                    
-                    card.style.width = `${newWidth}px`;
-                    card.style.height = `${newHeight}px`;
-                };
-                
-                const stopResize = () => {
-                    isResizing = false;
-                    document.removeEventListener('mousemove', handleResize);
-                    document.removeEventListener('mouseup', stopResize);
-                    
-                    // Update chart if exists
-                    const chart = this.chartInstances.get(card.id);
-                    if (chart) {
-                        setTimeout(() => chart.resize(), 100);
+                if (!handle) {
+                    return () => {};
+                }
+
+                return this.eventBus.registerResizable(card, {
+                    handle,
+                    canStart: () => !card.classList.contains('card-locked'),
+                    keyboardStep: 10,
+                    origin: 'center',
+                    onStart: () => {
+                        card.classList.remove('card-hovering');
+                        const computed = window.getComputedStyle(card);
+                        const startWidth = Number.parseFloat(computed.width) || card.offsetWidth;
+                        const startHeight = Number.parseFloat(computed.height) || card.offsetHeight;
+                        const startLeft = Number.parseFloat(card.style.left) || card.offsetLeft || 0;
+                        const startTop = Number.parseFloat(card.style.top) || card.offsetTop || 0;
+                        const longestSide = startWidth > startHeight ? startWidth : startHeight || 1;
+
+                        return {
+                            startLeft,
+                            startTop,
+                            startWidth,
+                            startHeight,
+                            minWidth: 300,
+                            minHeight: 200,
+                            maxWidth: 800,
+                            maxHeight: 600,
+                            longestSide
+                        };
+                    },
+                    onMove: (_event, state) => {
+                        const { data, dx, dy, lockScale, origin } = state;
+                        const longestSide = data.longestSide || (data.startWidth > data.startHeight ? data.startWidth : data.startHeight || 1);
+                        const ratioWidth = data.startWidth / longestSide;
+                        const ratioHeight = data.startHeight / longestSide;
+                        const deltaForLock = dx * dx >= dy * dy ? dx : dy;
+
+                        const widthDelta = lockScale ? deltaForLock * ratioWidth : dx;
+                        const heightDelta = lockScale ? deltaForLock * ratioHeight : dy;
+
+                        let nextWidth = data.startWidth + widthDelta;
+                        let nextHeight = data.startHeight + heightDelta;
+
+                        nextWidth = nextWidth < data.minWidth ? data.minWidth : nextWidth;
+                        nextWidth = nextWidth > data.maxWidth ? data.maxWidth : nextWidth;
+                        nextHeight = nextHeight < data.minHeight ? data.minHeight : nextHeight;
+                        nextHeight = nextHeight > data.maxHeight ? data.maxHeight : nextHeight;
+
+                        let nextLeft = data.startLeft;
+                        let nextTop = data.startTop;
+
+                        if (origin === 'center') {
+                            nextLeft = data.startLeft - (nextWidth - data.startWidth) / 2;
+                            nextTop = data.startTop - (nextHeight - data.startHeight) / 2;
+                        }
+
+                        card.style.width = `${nextWidth}px`;
+                        card.style.height = `${nextHeight}px`;
+                        card.style.left = `${nextLeft}px`;
+                        card.style.top = `${nextTop}px`;
+                    },
+                    onEnd: () => {
+                        if (!card.classList.contains('card-locked') && card.matches(':hover')) {
+                            card.classList.add('card-hovering');
+                        }
+                        const chart = this.chartInstances.get(card.id);
+                        if (chart) {
+                            setTimeout(() => chart.resize(), 100);
+                        }
                     }
-                };
+                });
             }
             
             showContextMenu(x, y, cardId) {
@@ -1639,6 +1703,7 @@
                 
                 if (cardData.locked) {
                     card.classList.add('card-locked');
+                    card.classList.remove('card-hovering', 'card-dragging');
                     lockBtn.textContent = '🔓';
                     lockBtn.classList.add('tool-locked');
                 } else {
@@ -1658,10 +1723,18 @@
                     chart.destroy();
                     this.chartInstances.delete(cardId);
                 }
-                
+
+                const handles = this.interactionHandles.get(cardId);
+                if (handles) {
+                    if (typeof handles.drag === 'function') handles.drag();
+                    if (typeof handles.resize === 'function') handles.resize();
+                    if (typeof handles.hover === 'function') handles.hover();
+                    this.interactionHandles.delete(cardId);
+                }
+
                 // Remove from DOM
                 cardData.element.remove();
-                
+
                 // Remove from data
                 this.cards.delete(cardId);
             }
