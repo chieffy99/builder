@@ -1,5 +1,3 @@
-import pytest
-
 from backend.utils.datadict_mapping import (
     map_statN,
     map_statC,

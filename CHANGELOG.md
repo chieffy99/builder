@@ -13,3 +13,7 @@
 2025-07-09: add card mixing prototype
 2025-07-11: add Filename-as-Header white paper page
 2025-09-19: AGENTS.md
+2026-03-08: refactor dashboard card drag and resize into primitive-checking-meaning-start-action-end flow
+2026-03-13: restore straightforward drag/resize handlers for dashboard cards to preserve prior behavior
+2026-03-13: unify dashboard card move/resize into a global signal-driven interaction core
+2026-03-13: configure flake8 exclusions to avoid virtualenv scan timeouts

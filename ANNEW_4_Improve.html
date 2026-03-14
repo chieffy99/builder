@@ -1044,125 +1044,175 @@
                     return id;
                 },
                 
+                interactionState: {
+                    mode: 'none',
+                    phase: 'idle',
+                    card: null,
+                    cardId: '',
+                    startX: 0,
+                    startY: 0,
+                    startLeft: 0,
+                    startTop: 0,
+                    startWidth: 0,
+                    startHeight: 0
+                },
+                interactionBound: 0,
+
+                normalizeSignal: function(rawX, rawY, button, stage) {
+                    const requestScale = window.__dashRequestScale ?? null;
+                    const defaultScale = window.__dashDefaultScale ?? null;
+                    const scalar = requestScale ?? defaultScale ?? 1;
+                    const sx = rawX * scalar;
+                    const sy = rawY * scalar;
+                    const safeButton = (typeof button === 'number') ? button : 0;
+                    return {
+                        x: sx,
+                        y: sy,
+                        button: safeButton,
+                        stage: stage
+                    };
+                },
+
+                bindGlobalInteraction: function() {
+                    const self = this;
+                    const alreadyBound = self.interactionBound ? 1 : 0;
+
+                    if (alreadyBound === 0) {
+                        document.addEventListener('mousemove', function(evt) {
+                            const signal = self.normalizeSignal(evt.clientX, evt.clientY, 0, 'move');
+                            self.runInteraction(signal);
+                        });
+
+                        document.addEventListener('mouseup', function(evt) {
+                            const signal = self.normalizeSignal(evt.clientX, evt.clientY, evt.button, 'up');
+                            self.runInteraction(signal);
+                        });
+
+                        self.interactionBound = 1;
+                    }
+                },
+
+                armInteraction: function(card, cardId, mode, signal, options) {
+                    const config = options || {};
+                    const toolHit = config.toolHit ? 1 : 0;
+                    const stopPropagation = config.stopPropagation ? 1 : 0;
+
+                    const cardInfo = this.cards.find(c => c.id === cardId) || null;
+                    const locked = (cardInfo && cardInfo.isLocked) ? 1 : 0;
+                    const canArm = (signal.stage === 'down' && signal.button === 0 && toolHit === 0 && locked === 0) ? 1 : 0;
+
+                    if (canArm) {
+                        const state = this.interactionState;
+                        state.mode = mode;
+                        state.phase = 'active';
+                        state.card = card;
+                        state.cardId = cardId;
+                        state.startX = signal.x;
+                        state.startY = signal.y;
+                        state.startLeft = parseInt(card.style.left, 10) || 0;
+                        state.startTop = parseInt(card.style.top, 10) || 0;
+                        state.startWidth = parseInt(window.getComputedStyle(card).width, 10) || card.offsetWidth;
+                        state.startHeight = parseInt(window.getComputedStyle(card).height, 10) || card.offsetHeight;
+
+                        const moveMode = (mode === 'move') ? 1 : 0;
+                        const resizeMode = (mode === 'resize') ? 1 : 0;
+                        card.classList.toggle('card-dragging', moveMode === 1);
+                        card.style.zIndex = moveMode ? 100 : card.style.zIndex;
+
+                        if (resizeMode) {
+                            const eventObj = config.eventObj || null;
+                            if (eventObj) {
+                                eventObj.preventDefault();
+                                if (stopPropagation) {
+                                    eventObj.stopPropagation();
+                                }
+                            }
+                        }
+                    }
+                },
+
+                runInteraction: function(signal) {
+                    const state = this.interactionState;
+                    const active = (state.phase === 'active' && state.card) ? 1 : 0;
+                    const moveMode = (state.mode === 'move') ? 1 : 0;
+                    const resizeMode = (state.mode === 'resize') ? 1 : 0;
+                    const stepMove = (active && signal.stage === 'move' && moveMode) ? 1 : 0;
+                    const stepResize = (active && signal.stage === 'move' && resizeMode) ? 1 : 0;
+                    const stepEnd = (active && signal.stage === 'up') ? 1 : 0;
+
+                    if (stepMove || stepResize) {
+                        const dx = signal.x - state.startX;
+                        const dy = signal.y - state.startY;
+                        const nextLeft = state.startLeft + dx;
+                        const nextTop = state.startTop + dy;
+                        const nextWidth = Math.max(250, state.startWidth + dx);
+                        const nextHeight = Math.max(200, state.startHeight + dy);
+
+                        state.card.style.left = stepMove ? `${nextLeft}px` : state.card.style.left;
+                        state.card.style.top = stepMove ? `${nextTop}px` : state.card.style.top;
+                        state.card.style.width = stepResize ? `${nextWidth}px` : state.card.style.width;
+                        state.card.style.height = stepResize ? `${nextHeight}px` : state.card.style.height;
+                    }
+
+                    if (stepEnd) {
+                        const endedCard = state.card;
+                        const endedCardId = state.cardId;
+                        const endedResize = resizeMode ? 1 : 0;
+
+                        endedCard.classList.remove('card-dragging');
+                        setTimeout(() => {
+                            endedCard.style.zIndex = '';
+                        }, 100);
+
+                        state.mode = 'none';
+                        state.phase = 'idle';
+                        state.card = null;
+                        state.cardId = '';
+
+                        if (endedResize) {
+                            const cardInfo = this.cards.find(c => c.id === endedCardId) || null;
+                            if (cardInfo && cardInfo.chartType) {
+                                setTimeout(() => {
+                                    this.createSampleChart(endedCardId, cardInfo.chartType);
+                                }, 100);
+                            }
+                        }
+                    }
+                },
+
                 makeDraggable: function(card) {
-                    let isDragging = false;
-                    let startX, startY, startLeft, startTop;
-                    
                     const header = card.querySelector('.card-header');
                     const cardId = card.id;
                     const self = this;
-                    
-                    header.addEventListener('mousedown', function(e) {
-                        // ข้ามถ้าคลิกที่ปุ่มในส่วนหัวการ์ด
-                        if (e.target.closest('.card-tool')) {
-                            return;
-                        }
-                        
-                        // ตรวจสอบว่าการ์ดล็อคอยู่หรือไม่
-                        const cardInfo = self.cards.find(c => c.id === cardId);
-                        if (cardInfo && cardInfo.isLocked) {
-                            return; // ไม่อนุญาตให้ลาก
-                        }
-                        
-                        isDragging = true;
-                        startX = e.clientX;
-                        startY = e.clientY;
-                        startLeft = parseInt(card.style.left) || 0;
-                        startTop = parseInt(card.style.top) || 0;
-                        
-                        card.classList.add('card-dragging');
-                        
-                        // ย้ายการ์ดมาด้านหน้า
-                        card.style.zIndex = 100;
-                        
-                        document.addEventListener('mousemove', dragMove);
-                        document.addEventListener('mouseup', dragEnd);
-                        
-                        e.preventDefault();
+
+                    self.bindGlobalInteraction();
+
+                    header.addEventListener('mousedown', function(evt) {
+                        const signal = self.normalizeSignal(evt.clientX, evt.clientY, evt.button, 'down');
+                        const toolHit = evt.target.closest('.card-tool') ? 1 : 0;
+                        self.armInteraction(card, cardId, 'move', signal, {
+                            toolHit: toolHit
+                        });
                     });
-                    
-                    function dragMove(e) {
-                        if (!isDragging) return;
-                        
-                        const dx = e.clientX - startX;
-                        const dy = e.clientY - startY;
-                        
-                        card.style.left = `${startLeft + dx}px`;
-                        card.style.top = `${startTop + dy}px`;
-                    }
-                    
-                    function dragEnd() {
-                        isDragging = false;
-                        card.classList.remove('card-dragging');
-                        
-                        // คืน z-index
-                        setTimeout(() => {
-                            card.style.zIndex = '';
-                        }, 100);
-                        
-                        document.removeEventListener('mousemove', dragMove);
-                        document.removeEventListener('mouseup', dragEnd);
-                    }
                 },
-                
+
                 makeResizable: function(card) {
-                    let isResizing = false;
-                    let startX, startY, startWidth, startHeight;
-                    
                     const handle = card.querySelector('.resize-handle');
                     const cardId = card.id;
                     const self = this;
-                    
-                    handle.addEventListener('mousedown', function(e) {
-                        // ตรวจสอบว่าการ์ดล็อคอยู่หรือไม่
-                        const cardInfo = self.cards.find(c => c.id === cardId);
-                        if (cardInfo && cardInfo.isLocked) {
-                            return; // ไม่อนุญาตให้ปรับขนาด
-                        }
-                        
-                        isResizing = true;
-                        startX = e.clientX;
-                        startY = e.clientY;
-                        startWidth = parseInt(window.getComputedStyle(card).width);
-                        startHeight = parseInt(window.getComputedStyle(card).height);
-                        
-                        document.addEventListener('mousemove', resizeMove);
-                        document.addEventListener('mouseup', resizeEnd);
-                        
-                        e.preventDefault();
-                        e.stopPropagation();
+
+                    self.bindGlobalInteraction();
+
+                    handle.addEventListener('mousedown', function(evt) {
+                        const signal = self.normalizeSignal(evt.clientX, evt.clientY, evt.button, 'down');
+                        self.armInteraction(card, cardId, 'resize', signal, {
+                            toolHit: 0,
+                            stopPropagation: 1,
+                            eventObj: evt
+                        });
                     });
-                    
-                    function resizeMove(e) {
-                        if (!isResizing) return;
-                        
-                        const dx = e.clientX - startX;
-                        const dy = e.clientY - startY;
-                        
-                        const newWidth = Math.max(250, startWidth + dx);
-                        const newHeight = Math.max(200, startHeight + dy);
-                        
-                        card.style.width = `${newWidth}px`;
-                        card.style.height = `${newHeight}px`;
-                    }
-                    
-                    function resizeEnd() {
-                        isResizing = false;
-                        
-                        document.removeEventListener('mousemove', resizeMove);
-                        document.removeEventListener('mouseup', resizeEnd);
-                        
-                        // อัปเดตกราฟหลังปรับขนาด
-                        const cardInfo = self.cards.find(c => c.id === cardId);
-                        
-                        if (cardInfo && cardInfo.chartType) {
-                            setTimeout(() => {
-                                self.createSampleChart(cardId, cardInfo.chartType);
-                            }, 100);
-                        }
-                    }
                 },
-                
+
                 toggleCardLock: function(cardId) {
                     const cardInfo = this.cards.find(c => c.id === cardId);
                     if (!cardInfo) return;
