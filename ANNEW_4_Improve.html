@@ -881,6 +881,181 @@
                 });
             });
 
+            class CardSignalEmitter {
+                constructor(card, cardId, manager) {
+                    this['card'] = card;
+                    this['cardId'] = cardId;
+                    this['manager'] = manager;
+                    this['r'] = null;
+                    this['d'] = null;
+                    this['target'] = null;
+                    this['mode'] = 'none';
+                    this['active'] = 0;
+                    this['w'] = 0;
+                    this['h'] = 0;
+                    this['rawX'] = 0;
+                    this['rawY'] = 0;
+                    this['clientX'] = 0;
+                    this['clientY'] = 0;
+                    this['startX'] = 0;
+                    this['startY'] = 0;
+                    this['invX'] = 0;
+                    this['invY'] = 0;
+                    this['currentX'] = 0;
+                    this['currentY'] = 0;
+                    this['baseLeft'] = 0;
+                    this['baseTop'] = 0;
+                    this['newX'] = 0;
+                    this['newY'] = 0;
+                }
+
+                sanitizeSignal(signal) {
+                    const safeSignal = signal || {};
+                    const safeRawX = (typeof safeSignal['rawX'] === 'number') ? safeSignal['rawX'] : 0;
+                    const safeRawY = (typeof safeSignal['rawY'] === 'number') ? safeSignal['rawY'] : 0;
+                    const safeButton = (typeof safeSignal['button'] === 'number') ? safeSignal['button'] : 0;
+                    const safeStage = safeSignal['stage'] || 'idle';
+
+                    return {
+                        rawX: safeRawX,
+                        rawY: safeRawY,
+                        button: safeButton,
+                        stage: safeStage,
+                        r: safeSignal['r'] ?? null,
+                        d: safeSignal['d'] ?? null
+                    };
+                }
+
+                resolveTarget(targetNode) {
+                    const safeTarget = (targetNode && typeof targetNode['closest'] === 'function') ? targetNode : null;
+                    const cardNode = safeTarget ? safeTarget['closest']('.dashboard-card') : null;
+                    const sameCard = (cardNode === this['card']) ? 1 : 0;
+                    const resizeNode = (sameCard && safeTarget) ? safeTarget['closest']('.resize-handle') : null;
+                    const headerNode = (sameCard && safeTarget) ? safeTarget['closest']('.card-header') : null;
+                    const toolNode = (sameCard && safeTarget) ? safeTarget['closest']('.card-tool') : null;
+                    const moveHit = (headerNode && toolNode === null && resizeNode === null) ? 1 : 0;
+                    const sizeHit = resizeNode ? 1 : 0;
+
+                    return {
+                        target: sameCard ? safeTarget : null,
+                        moveHit: moveHit,
+                        sizeHit: sizeHit
+                    };
+                }
+
+                keyPressed(signal) {
+                    this['r'] = signal['r'] ?? null;
+                    this['d'] = signal['d'] ?? null;
+                }
+
+                whatTrigger(signal, hit) {
+                    const cardInfo = this['manager']['cards']['find']((item) => item['id'] === this['cardId']) || null;
+                    const locked = (cardInfo && cardInfo['isLocked']) ? 1 : 0;
+                    const scale = this['r'] ?? this['d'] ?? 1;
+                    const moveGate = (signal['stage'] === 'down' && signal['button'] === 0 && hit['moveHit'] === 1 && locked === 0) ? 1 : 0;
+                    const sizeGate = (signal['stage'] === 'down' && signal['button'] === 0 && hit['sizeHit'] === 1 && locked === 0) ? 1 : 0;
+                    const openGate = (moveGate || sizeGate) ? 1 : 0;
+                    const computed = window['getComputedStyle'](this['card']);
+                    const widthNow = parseInt(computed['width'], 10) || this['card']['offsetWidth'] || 250;
+                    const heightNow = parseInt(computed['height'], 10) || this['card']['offsetHeight'] || 200;
+                    const leftNow = parseInt(this['card']['style']['left'], 10) || 0;
+                    const topNow = parseInt(this['card']['style']['top'], 10) || 0;
+                    const modeNow = sizeGate ? 'resize' : (moveGate ? 'move' : this['mode']);
+                    const nextStartX = signal['rawX'] * scale;
+                    const nextStartY = signal['rawY'] * scale;
+
+                    this['target'] = openGate ? hit['target'] : this['target'];
+                    this['mode'] = openGate ? modeNow : this['mode'];
+                    this['active'] = openGate ? 1 : this['active'];
+                    this['w'] = openGate ? widthNow : this['w'];
+                    this['h'] = openGate ? heightNow : this['h'];
+                    this['baseLeft'] = openGate ? leftNow : this['baseLeft'];
+                    this['baseTop'] = openGate ? topNow : this['baseTop'];
+                    this['startX'] = openGate ? nextStartX : this['startX'];
+                    this['startY'] = openGate ? nextStartY : this['startY'];
+                    this['invX'] = openGate ? (nextStartX - widthNow) : this['invX'];
+                    this['invY'] = openGate ? (nextStartY - heightNow) : this['invY'];
+                    this['card']['classList']['toggle']('card-dragging', openGate ? modeNow === 'move' : this['mode'] === 'move');
+                    this['card']['style']['zIndex'] = (openGate && modeNow === 'move') ? 100 : this['card']['style']['zIndex'];
+                }
+
+                howAction(signal) {
+                    const scale = this['r'] ?? this['d'] ?? 1;
+                    const holdGate = this['active'] ? 1 : 0;
+                    const nextCurrentX = signal['rawX'] * scale;
+                    const nextCurrentY = signal['rawY'] * scale;
+
+                    this['rawX'] = signal['rawX'];
+                    this['rawY'] = signal['rawY'];
+                    this['clientX'] = signal['rawX'];
+                    this['clientY'] = signal['rawY'];
+                    this['currentX'] = holdGate ? nextCurrentX : this['currentX'];
+                    this['currentY'] = holdGate ? nextCurrentY : this['currentY'];
+                }
+
+                whereEnd(signal) {
+                    const holdGate = this['active'] ? 1 : 0;
+                    const moveGate = (holdGate && signal['stage'] === 'move' && this['mode'] === 'move') ? 1 : 0;
+                    const sizeGate = (holdGate && signal['stage'] === 'move' && this['mode'] === 'resize') ? 1 : 0;
+                    const endGate = (holdGate && signal['stage'] === 'up') ? 1 : 0;
+                    const cardInfo = this['manager']['cards']['find']((item) => item['id'] === this['cardId']) || null;
+                    const chartType = (cardInfo && cardInfo['chartType']) ? cardInfo['chartType'] : '';
+                    const nextLeft = moveGate ? (this['baseLeft'] + (this['currentX'] - this['startX'])) : this['baseLeft'];
+                    const nextTop = moveGate ? (this['baseTop'] + (this['currentY'] - this['startY'])) : this['baseTop'];
+                    const nextWidthRaw = sizeGate ? (this['currentX'] - this['invX']) : this['w'];
+                    const nextHeightRaw = sizeGate ? (this['currentY'] - this['invY']) : this['h'];
+                    const nextWidth = nextWidthRaw < 250 ? 250 : nextWidthRaw;
+                    const nextHeight = nextHeightRaw < 200 ? 200 : nextHeightRaw;
+                    const resizeRebuild = (endGate && this['mode'] === 'resize' && chartType) ? 1 : 0;
+
+                    this['newX'] = moveGate ? (this['currentX'] - this['startX']) : this['newX'];
+                    this['newY'] = moveGate ? (this['currentY'] - this['startY']) : this['newY'];
+                    this['w'] = sizeGate ? nextWidth : this['w'];
+                    this['h'] = sizeGate ? nextHeight : this['h'];
+                    this['card']['style']['left'] = moveGate ? `${nextLeft}px` : this['card']['style']['left'];
+                    this['card']['style']['top'] = moveGate ? `${nextTop}px` : this['card']['style']['top'];
+                    this['card']['style']['width'] = sizeGate ? `${nextWidth}px` : this['card']['style']['width'];
+                    this['card']['style']['height'] = sizeGate ? `${nextHeight}px` : this['card']['style']['height'];
+
+                    if (endGate) {
+                        this['card']['classList']['remove']('card-dragging');
+                        setTimeout(() => {
+                            this['card']['style']['zIndex'] = '';
+                        }, 100);
+                    }
+
+                    if (resizeRebuild) {
+                        setTimeout(() => {
+                            this['manager']['createSampleChart'](this['cardId'], chartType);
+                        }, 100);
+                    }
+
+                    this['active'] = endGate ? 0 : this['active'];
+                    this['mode'] = endGate ? 'none' : this['mode'];
+                    this['target'] = endGate ? null : this['target'];
+
+                    return {
+                        active: this['active'],
+                        mode: this['mode'],
+                        target: this['target'],
+                        newX: this['newX'],
+                        newY: this['newY'],
+                        w: this['w'],
+                        h: this['h']
+                    };
+                }
+
+                emit(signal, targetNode) {
+                    const safeSignal = this['sanitizeSignal'](signal);
+                    const hit = this['resolveTarget'](targetNode);
+
+                    this['keyPressed'](safeSignal);
+                    this['whatTrigger'](safeSignal, hit);
+                    this['howAction'](safeSignal);
+                    return this['whereEnd'](safeSignal);
+                }
+            }
+
             // Dashboard Manager
             const dashboardManager = {
                 cards: [],
@@ -943,11 +1118,8 @@
                         isLocked: false
                     });
                     
-                    // ทำให้เลื่อนได้
-                    this.makeDraggable(card);
-                    
-                    // ทำให้ปรับขนาดได้
-                    this.makeResizable(card);
+                    // ผูกการโต้ตอบแบบตัวปล่อยสัญญาณชุดเดียว
+                    this.bindCardInteraction(card);
                     
                     // เพิ่ม event handlers
                     this.addCardEventHandlers(card, id);
@@ -1021,11 +1193,8 @@
                         isLocked: false
                     });
                     
-                    // ทำให้เลื่อนได้
-                    this.makeDraggable(card);
-                    
-                    // ทำให้ปรับขนาดได้
-                    this.makeResizable(card);
+                    // ผูกการโต้ตอบแบบตัวปล่อยสัญญาณชุดเดียว
+                    this.bindCardInteraction(card);
                     
                     // เพิ่ม event handlers
                     this.addCardEventHandlers(card, id);
@@ -1044,32 +1213,36 @@
                     return id;
                 },
                 
-                interactionState: {
-                    mode: 'none',
-                    phase: 'idle',
-                    card: null,
-                    cardId: '',
-                    startX: 0,
-                    startY: 0,
-                    startLeft: 0,
-                    startTop: 0,
-                    startWidth: 0,
-                    startHeight: 0
-                },
+                interactionEmitters: new Map(),
+                activeEmitterId: '',
                 interactionBound: 0,
 
-                normalizeSignal: function(rawX, rawY, button, stage) {
-                    const requestScale = window.__dashRequestScale ?? null;
-                    const defaultScale = window.__dashDefaultScale ?? null;
-                    const scalar = requestScale ?? defaultScale ?? 1;
-                    const sx = rawX * scalar;
-                    const sy = rawY * scalar;
+                normalizeSignal: function(rawX, rawY, button, stage, shiftDown, controlDown) {
+                    const requestScale = shiftDown ? (window.__dashRequestScale ?? 1) : null;
+                    const defaultScale = controlDown ? (window.__dashDefaultScale ?? 1) : null;
                     const safeButton = (typeof button === 'number') ? button : 0;
+                    const safeStage = stage || 'idle';
                     return {
-                        x: sx,
-                        y: sy,
+                        rawX: rawX,
+                        rawY: rawY,
+                        clientX: rawX,
+                        clientY: rawY,
                         button: safeButton,
-                        stage: stage
+                        stage: safeStage,
+                        isDown: (safeStage === 'down' || safeStage === 'move') ? 1 : 0,
+                        r: requestScale,
+                        d: defaultScale
+                    };
+                },
+
+                resolveEmitterRoute: function(targetNode) {
+                    const safeTarget = (targetNode && typeof targetNode['closest'] === 'function') ? targetNode : null;
+                    const cardNode = safeTarget ? safeTarget['closest']('.dashboard-card') : null;
+                    const cardId = cardNode ? cardNode['id'] : '';
+
+                    return {
+                        cardNode: cardNode,
+                        cardId: cardId
                     };
                 },
 
@@ -1078,139 +1251,90 @@
                     const alreadyBound = self.interactionBound ? 1 : 0;
 
                     if (alreadyBound === 0) {
+                        document.addEventListener('mousedown', function(evt) {
+                            const signal = self.normalizeSignal(
+                                evt.clientX,
+                                evt.clientY,
+                                evt.button,
+                                'down',
+                                evt.shiftKey,
+                                evt.ctrlKey
+                            );
+                            self.dispatchSignal(signal, evt.target);
+                        });
+
                         document.addEventListener('mousemove', function(evt) {
-                            const signal = self.normalizeSignal(evt.clientX, evt.clientY, 0, 'move');
-                            self.runInteraction(signal);
+                            const signal = self.normalizeSignal(
+                                evt.clientX,
+                                evt.clientY,
+                                0,
+                                'move',
+                                evt.shiftKey,
+                                evt.ctrlKey
+                            );
+                            self.dispatchSignal(signal, evt.target);
                         });
 
                         document.addEventListener('mouseup', function(evt) {
-                            const signal = self.normalizeSignal(evt.clientX, evt.clientY, evt.button, 'up');
-                            self.runInteraction(signal);
+                            const signal = self.normalizeSignal(
+                                evt.clientX,
+                                evt.clientY,
+                                evt.button,
+                                'up',
+                                evt.shiftKey,
+                                evt.ctrlKey
+                            );
+                            self.dispatchSignal(signal, evt.target);
+                        });
+
+                        document.addEventListener('keydown', function(evt) {
+                            const signal = self.normalizeSignal(
+                                0,
+                                0,
+                                0,
+                                'key',
+                                evt.shiftKey,
+                                evt.ctrlKey
+                            );
+                            self.dispatchSignal(signal, null);
+                        });
+
+                        document.addEventListener('keyup', function(evt) {
+                            const signal = self.normalizeSignal(
+                                0,
+                                0,
+                                0,
+                                'key',
+                                evt.shiftKey,
+                                evt.ctrlKey
+                            );
+                            self.dispatchSignal(signal, null);
                         });
 
                         self.interactionBound = 1;
                     }
                 },
 
-                armInteraction: function(card, cardId, mode, signal, options) {
-                    const config = options || {};
-                    const toolHit = config.toolHit ? 1 : 0;
-                    const stopPropagation = config.stopPropagation ? 1 : 0;
+                dispatchSignal: function(signal, targetNode) {
+                    const route = this.resolveEmitterRoute(targetNode);
+                    const routeId = (signal.stage === 'down') ? route.cardId : this.activeEmitterId;
+                    const activeId = routeId || this.activeEmitterId || '';
+                    const emitter = this.interactionEmitters.get(activeId) || null;
 
-                    const cardInfo = this.cards.find(c => c.id === cardId) || null;
-                    const locked = (cardInfo && cardInfo.isLocked) ? 1 : 0;
-                    const canArm = (signal.stage === 'down' && signal.button === 0 && toolHit === 0 && locked === 0) ? 1 : 0;
-
-                    if (canArm) {
-                        const state = this.interactionState;
-                        state.mode = mode;
-                        state.phase = 'active';
-                        state.card = card;
-                        state.cardId = cardId;
-                        state.startX = signal.x;
-                        state.startY = signal.y;
-                        state.startLeft = parseInt(card.style.left, 10) || 0;
-                        state.startTop = parseInt(card.style.top, 10) || 0;
-                        state.startWidth = parseInt(window.getComputedStyle(card).width, 10) || card.offsetWidth;
-                        state.startHeight = parseInt(window.getComputedStyle(card).height, 10) || card.offsetHeight;
-
-                        const moveMode = (mode === 'move') ? 1 : 0;
-                        const resizeMode = (mode === 'resize') ? 1 : 0;
-                        card.classList.toggle('card-dragging', moveMode === 1);
-                        card.style.zIndex = moveMode ? 100 : card.style.zIndex;
-
-                        if (resizeMode) {
-                            const eventObj = config.eventObj || null;
-                            if (eventObj) {
-                                eventObj.preventDefault();
-                                if (stopPropagation) {
-                                    eventObj.stopPropagation();
-                                }
-                            }
-                        }
+                    if (emitter) {
+                        const emission = emitter.emit(signal, targetNode);
+                        const keepActive = emission && emission.active ? 1 : 0;
+                        this.activeEmitterId = keepActive ? activeId : '';
                     }
                 },
 
-                runInteraction: function(signal) {
-                    const state = this.interactionState;
-                    const active = (state.phase === 'active' && state.card) ? 1 : 0;
-                    const moveMode = (state.mode === 'move') ? 1 : 0;
-                    const resizeMode = (state.mode === 'resize') ? 1 : 0;
-                    const stepMove = (active && signal.stage === 'move' && moveMode) ? 1 : 0;
-                    const stepResize = (active && signal.stage === 'move' && resizeMode) ? 1 : 0;
-                    const stepEnd = (active && signal.stage === 'up') ? 1 : 0;
-
-                    if (stepMove || stepResize) {
-                        const dx = signal.x - state.startX;
-                        const dy = signal.y - state.startY;
-                        const nextLeft = state.startLeft + dx;
-                        const nextTop = state.startTop + dy;
-                        const nextWidth = Math.max(250, state.startWidth + dx);
-                        const nextHeight = Math.max(200, state.startHeight + dy);
-
-                        state.card.style.left = stepMove ? `${nextLeft}px` : state.card.style.left;
-                        state.card.style.top = stepMove ? `${nextTop}px` : state.card.style.top;
-                        state.card.style.width = stepResize ? `${nextWidth}px` : state.card.style.width;
-                        state.card.style.height = stepResize ? `${nextHeight}px` : state.card.style.height;
-                    }
-
-                    if (stepEnd) {
-                        const endedCard = state.card;
-                        const endedCardId = state.cardId;
-                        const endedResize = resizeMode ? 1 : 0;
-
-                        endedCard.classList.remove('card-dragging');
-                        setTimeout(() => {
-                            endedCard.style.zIndex = '';
-                        }, 100);
-
-                        state.mode = 'none';
-                        state.phase = 'idle';
-                        state.card = null;
-                        state.cardId = '';
-
-                        if (endedResize) {
-                            const cardInfo = this.cards.find(c => c.id === endedCardId) || null;
-                            if (cardInfo && cardInfo.chartType) {
-                                setTimeout(() => {
-                                    this.createSampleChart(endedCardId, cardInfo.chartType);
-                                }, 100);
-                            }
-                        }
-                    }
+                createCardEmitter: function(card, cardId) {
+                    return new CardSignalEmitter(card, cardId, this);
                 },
 
-                makeDraggable: function(card) {
-                    const header = card.querySelector('.card-header');
-                    const cardId = card.id;
-                    const self = this;
-
-                    self.bindGlobalInteraction();
-
-                    header.addEventListener('mousedown', function(evt) {
-                        const signal = self.normalizeSignal(evt.clientX, evt.clientY, evt.button, 'down');
-                        const toolHit = evt.target.closest('.card-tool') ? 1 : 0;
-                        self.armInteraction(card, cardId, 'move', signal, {
-                            toolHit: toolHit
-                        });
-                    });
-                },
-
-                makeResizable: function(card) {
-                    const handle = card.querySelector('.resize-handle');
-                    const cardId = card.id;
-                    const self = this;
-
-                    self.bindGlobalInteraction();
-
-                    handle.addEventListener('mousedown', function(evt) {
-                        const signal = self.normalizeSignal(evt.clientX, evt.clientY, evt.button, 'down');
-                        self.armInteraction(card, cardId, 'resize', signal, {
-                            toolHit: 0,
-                            stopPropagation: 1,
-                            eventObj: evt
-                        });
-                    });
+                bindCardInteraction: function(card) {
+                    this.bindGlobalInteraction();
+                    this.interactionEmitters.set(card.id, this.createCardEmitter(card, card.id));
                 },
 
                 toggleCardLock: function(cardId) {
@@ -1402,6 +1526,8 @@
                         cardElement.remove();
                     }
                     
+                    this.interactionEmitters.delete(cardId);
+                    this.activeEmitterId = (this.activeEmitterId === cardId) ? '' : this.activeEmitterId;
                     this.cards = this.cards.filter(card => card.id !== cardId);
                 },
 
