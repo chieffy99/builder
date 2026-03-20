@@ -18,3 +18,6 @@
 2026-03-13: unify dashboard card move/resize into a global signal-driven interaction core
 2026-03-13: configure flake8 exclusions to avoid virtualenv scan timeouts
 2026-03-20: add recursive-loop-suppression skill for behavior-critique handling
+2026-03-20: merge dashboard card move and resize start logic into one emitter-style card interaction binding
+2026-03-20: refactor card interactions into global-signal emitters with whatTrigger howAction whereEnd flow
+2026-03-20: move card drag and resize memory into CardSignalEmitter with wish-style trigger action end phases
