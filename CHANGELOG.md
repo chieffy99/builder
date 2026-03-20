@@ -17,4 +17,4 @@
 2026-03-13: restore straightforward drag/resize handlers for dashboard cards to preserve prior behavior
 2026-03-13: unify dashboard card move/resize into a global signal-driven interaction core
 2026-03-13: configure flake8 exclusions to avoid virtualenv scan timeouts
-2026-03-16: add recursive-loop-suppression skill for behavior-critique handling
+2026-03-20: add recursive-loop-suppression skill for behavior-critique handling
